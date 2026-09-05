@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import type { MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 
@@ -11,6 +11,30 @@ function sqlString(value: unknown): string {
 function sqlNumber(value: unknown): string {
   return typeof value === "number" && Number.isFinite(value) ? String(value) : "null";
 }
+function sqlValue(value: unknown): string {
+  if (value === null || value === undefined) return "null";
+  if (typeof value === "number") return Number.isFinite(value) ? String(value) : "null";
+  if (typeof value === "boolean") return value ? "1" : "0";
+  return sqlString(value);
+}
+
+// Ordered parent-before-child so importFrom() satisfies foreign keys on a fresh db.
+export const EXPORT_TABLES = [
+  "games",
+  "markets",
+  "market_prices",
+  "market_events",
+  "market_orderbooks",
+  "provider_mappings",
+  "provider_health",
+  "model_predictions",
+  "signals",
+  "alerts",
+  "edge_events",
+  "market_lag_events",
+  "replay_sessions",
+  "backtest_results",
+] as const;
 
 export class SqliteStore {
   readonly path: string;
@@ -47,6 +71,35 @@ export class SqliteStore {
     return Number(out) || 0;
   }
 
+  /** Dumps every table to <dir>/<table>.json plus a manifest.json. Returns row counts per table. */
+  exportTo(dir: string): Record<string, number> {
+    mkdirSync(dir, { recursive: true });
+    const manifest: Record<string, number> = {};
+    for (const table of EXPORT_TABLES) {
+      const rows = this.queryJson(`select * from ${table};`);
+      writeFileSync(join(dir, `${table}.json`), JSON.stringify(rows, null, 2), "utf8");
+      manifest[table] = rows.length;
+    }
+    writeFileSync(join(dir, "manifest.json"), JSON.stringify({ exportedAt: new Date().toISOString(), dbPath: this.path, tables: manifest }, null, 2), "utf8");
+    return manifest;
+  }
+
+  /** Loads <dir>/<table>.json (as produced by exportTo) back into this db via insert-or-replace. Missing files are skipped. */
+  importFrom(dir: string): Record<string, number> {
+    const manifest: Record<string, number> = {};
+    for (const table of EXPORT_TABLES) {
+      const file = join(dir, `${table}.json`);
+      if (!existsSync(file)) continue;
+      const rows = JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>[];
+      if (rows.length > 0) {
+        const columns = Object.keys(rows[0]);
+        this.transaction(rows.map((row) => `insert or replace into ${table}(${columns.join(",")}) values(${columns.map((c) => sqlValue(row[c])).join(",")});`).join("\n"));
+      }
+      manifest[table] = rows.length;
+    }
+    return manifest;
+  }
+
   private marketSql(market: NormalizedMarket, changeHash: string): string {
     const rawJson = JSON.stringify(market.raw);
     const eventJson = JSON.stringify(market);
@@ -62,4 +115,8 @@ export class SqliteStore {
   private transaction(sql: string) { if (sql.trim()) this.exec(`begin;\n${sql}\ncommit;`); }
   private exec(sql: string) { execFileSync("sqlite3", [this.path], { input: sql }); }
   private query(sql: string) { return execFileSync("sqlite3", [this.path, sql], { encoding: "utf8" }); }
+  private queryJson(sql: string): Record<string, unknown>[] {
+    const out = execFileSync("sqlite3", ["-json", this.path, sql], { encoding: "utf8" }).trim();
+    return out ? JSON.parse(out) : [];
+  }
 }

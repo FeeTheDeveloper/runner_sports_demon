@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { resolve } from "node:path";
 import { loadDotEnv, intEnv } from "./utils/env.js";
 import { createMarketConnectors } from "./connectors/index.js";
 import { MarketStateCache } from "./state/market-state/cache.js";
@@ -18,8 +19,21 @@ if (command === "start") {
 } else if (command === "init-db") {
   store.init();
   console.log(`Initialized ${store.path}`);
+} else if (command === "export") {
+  const dir = process.argv[3] ?? `exports/${new Date().toISOString().replace(/[:.]/g, "-")}`;
+  console.log(JSON.stringify(store.exportTo(dir), null, 2));
+  console.log(`Exported ${store.path} to ${resolve(dir)}`);
+} else if (command === "import") {
+  const dir = process.argv[3];
+  if (!dir) {
+    console.log("Usage: runner-scout import <dir>");
+    process.exit(1);
+  }
+  store.init();
+  console.log(JSON.stringify(store.importFrom(dir), null, 2));
+  console.log(`Imported ${resolve(dir)} into ${store.path}`);
 } else {
-  console.log("Usage: runner-scout start [--once] [--api --port 8787] | init-db");
+  console.log("Usage: runner-scout start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
 }
 
 function intArg(flag: string, fallback: number): number {
