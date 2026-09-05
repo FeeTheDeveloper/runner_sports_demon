@@ -184,7 +184,18 @@ create table if not exists game_flow_snapshots (
   payload_json text not null
 );
 
+create table if not exists totals_flow_snapshots (id text primary key, runner_event_id text not null, source_timestamp text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_projections (id text primary key, runner_event_id text not null, market_type text not null, team_id text, source_timestamp text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_market_snapshots (id text primary key, runner_event_id text, market_type text not null, bookmaker text not null, line real not null, price real, source_timestamp text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_trend_scores (id text primary key, runner_event_id text not null, over_score real not null, under_score real not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_signals (id text primary key, runner_event_id text not null, signal_type text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_decision_windows (id text primary key, runner_event_id text not null, market_type text not null, status text not null, detected_at text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_window_transitions (id integer primary key autoincrement, window_id text not null references totals_decision_windows(id), from_status text, to_status text not null, processed_timestamp text not null, payload_json text not null);
+create table if not exists totals_set_points (id text primary key, runner_event_id text not null, set_point_type text not null, status text not null default 'PENDING', processed_timestamp text not null, payload_json text not null);
+
 create index if not exists market_prices_market_time_idx on market_prices(market_id, processed_timestamp desc);
 create index if not exists market_events_market_time_idx on market_events(market_id, processed_timestamp desc);
 create index if not exists markets_provider_status_idx on markets(provider, status);
 create index if not exists game_flow_observations_event_time_idx on game_flow_observations(runner_event_id, observed_at desc);
+create index if not exists totals_windows_event_status_idx on totals_decision_windows(runner_event_id, status);
+create index if not exists totals_projections_event_time_idx on totals_projections(runner_event_id, processed_timestamp desc);

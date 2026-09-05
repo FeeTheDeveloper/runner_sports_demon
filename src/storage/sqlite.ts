@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import type { GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
+import type { TotalsDecisionWindow, TotalsFlowState, TotalsMarketSnapshot, TotalsProjection } from "../totals/types.js";
 
 function sqlString(value: unknown): string {
   if (value === undefined || value === null) return "null";
@@ -36,6 +37,8 @@ export const EXPORT_TABLES = [
   "backtest_results",
   "game_flow_observations",
   "game_flow_snapshots",
+  "totals_flow_snapshots", "totals_projections", "totals_market_snapshots", "totals_trend_scores",
+  "totals_signals", "totals_decision_windows", "totals_window_transitions", "totals_set_points",
 ] as const;
 
 export class SqliteStore {
@@ -73,6 +76,19 @@ export class SqliteStore {
       values(${sqlString(observation.id)},${sqlString(observation.runnerEventId)},${sqlString(observation.source)},${sqlString(observation.observedAt)},${sqlString(observation.receivedAt)},${sqlNumber(observation.confidence)},${sqlString(JSON.stringify(observation))});
       insert or replace into game_flow_snapshots(runner_event_id,updated_at,payload_json)
       values(${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.updatedAt)},${sqlString(JSON.stringify(snapshot))});`);
+  }
+
+  persistTotals(flow: TotalsFlowState, projections: TotalsProjection[], markets: TotalsMarketSnapshot[], windows: TotalsDecisionWindow[]) {
+    const now = new Date().toISOString();
+    const statements = [`insert or replace into totals_flow_snapshots(id,runner_event_id,source_timestamp,processed_timestamp,payload_json) values(${sqlString(stableHash(flow))},${sqlString(flow.runnerEventId)},${sqlString(flow.timestamp)},${sqlString(now)},${sqlString(JSON.stringify(flow))});`];
+    for (const p of projections) statements.push(`insert or replace into totals_projections(id,runner_event_id,market_type,team_id,source_timestamp,processed_timestamp,payload_json) values(${sqlString(stableHash(p))},${sqlString(p.runnerEventId)},${sqlString(p.marketType)},${sqlString(p.teamId)},${sqlString(p.timestamp)},${sqlString(now)},${sqlString(JSON.stringify(p))});`);
+    for (const m of markets) statements.push(`insert or replace into totals_market_snapshots(id,runner_event_id,market_type,bookmaker,line,price,source_timestamp,processed_timestamp,payload_json) values(${sqlString(m.id)},${sqlString(m.runnerEventId)},${sqlString(m.marketType)},${sqlString(m.bookmaker)},${sqlNumber(m.line)},${sqlNumber(m.price)},${sqlString(m.timestamp)},${sqlString(now)},${sqlString(JSON.stringify(m))});`);
+    for (const w of windows) statements.push(`insert or replace into totals_decision_windows(id,runner_event_id,market_type,status,detected_at,processed_timestamp,payload_json) values(${sqlString(w.id)},${sqlString(w.runnerEventId)},${sqlString(w.marketType)},${sqlString(w.status)},${sqlString(w.detectedAt)},${sqlString(w.processedTimestamp)},${sqlString(JSON.stringify(w))});`);
+    this.transaction(statements.join("\n"));
+  }
+
+  totalsRows(table: "totals_flow_snapshots" | "totals_projections" | "totals_market_snapshots" | "totals_decision_windows", runnerEventId?: string) {
+    return this.queryJson(`select payload_json from ${table}${runnerEventId ? ` where runner_event_id=${sqlString(runnerEventId)}` : ""} order by processed_timestamp desc;`).map(row => JSON.parse(String(row.payload_json)) as Record<string, unknown>);
   }
 
   count(table: string): number {
