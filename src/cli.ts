@@ -20,13 +20,14 @@ if (command === "start") {
   store.init();
   console.log(`Initialized ${store.path}`);
 } else if (command === "export") {
-  const dir = process.argv[3] ?? `exports/${new Date().toISOString().replace(/[:.]/g, "-")}`;
+  const base = process.argv[3] ?? process.env.RUNNER_SCOUT_EXPORT_DIR ?? "exports";
+  const dir = process.argv[3] ? base : `${base}/${new Date().toISOString().replace(/[:.]/g, "-")}`;
   console.log(JSON.stringify(store.exportTo(dir), null, 2));
   console.log(`Exported ${store.path} to ${resolve(dir)}`);
 } else if (command === "import") {
-  const dir = process.argv[3];
+  const dir = process.argv[3] ?? process.env.RUNNER_SCOUT_IMPORT_DIR;
   if (!dir) {
-    console.log("Usage: runner-scout import <dir>");
+    console.log("Usage: runner-scout import <dir> (or set RUNNER_SCOUT_IMPORT_DIR)");
     process.exit(1);
   }
   store.init();

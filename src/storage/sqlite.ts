@@ -112,11 +112,13 @@ export class SqliteStore {
       values(${sqlString(market.id)},${sqlString(market.provider)},'snapshot',${sqlString(changeHash)},${sqlString(eventJson)},${sqlString(market.sourceTimestamp)},${sqlString(market.receivedTimestamp)},${sqlString(market.processedTimestamp)});`;
   }
 
+  private static readonly MAX_BUFFER = 500 * 1024 * 1024;
+
   private transaction(sql: string) { if (sql.trim()) this.exec(`begin;\n${sql}\ncommit;`); }
-  private exec(sql: string) { execFileSync("sqlite3", [this.path], { input: sql }); }
-  private query(sql: string) { return execFileSync("sqlite3", [this.path, sql], { encoding: "utf8" }); }
+  private exec(sql: string) { execFileSync("sqlite3", [this.path], { input: sql, maxBuffer: SqliteStore.MAX_BUFFER }); }
+  private query(sql: string) { return execFileSync("sqlite3", [this.path, sql], { encoding: "utf8", maxBuffer: SqliteStore.MAX_BUFFER }); }
   private queryJson(sql: string): Record<string, unknown>[] {
-    const out = execFileSync("sqlite3", ["-json", this.path, sql], { encoding: "utf8" }).trim();
+    const out = execFileSync("sqlite3", ["-json", this.path, sql], { encoding: "utf8", maxBuffer: SqliteStore.MAX_BUFFER }).trim();
     return out ? JSON.parse(out) : [];
   }
 }
