@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import type { MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
@@ -20,7 +20,9 @@ export class SqliteStore {
   }
 
   init() {
-    this.exec(readFileSync(new URL("./schema.sql", import.meta.url), "utf8"));
+    const builtSchema = new URL("./schema.sql", import.meta.url);
+    const sourceSchema = resolve(process.cwd(), "src/storage/schema.sql");
+    this.exec(readFileSync(existsSync(builtSchema) ? builtSchema : sourceSchema, "utf8"));
   }
 
   persistMarkets(markets: NormalizedMarket[]): MarketEvent[] {

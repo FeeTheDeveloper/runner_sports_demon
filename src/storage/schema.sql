@@ -19,9 +19,11 @@ create table if not exists provider_mappings (
   mapping_method text not null check (mapping_method in ('manual','exact','fuzzy','title')),
   confidence real not null check (confidence between 0 and 1),
   verified integer not null default 0,
-  created_at text not null default (datetime('now')),
-  unique(provider, provider_event_id, coalesce(provider_market_id, ''))
+  created_at text not null default (datetime('now'))
 );
+
+create unique index if not exists provider_mappings_unique_idx
+  on provider_mappings(provider, provider_event_id, coalesce(provider_market_id, ''));
 
 create table if not exists markets (
   id text primary key,
