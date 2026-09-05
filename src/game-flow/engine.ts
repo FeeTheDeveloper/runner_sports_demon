@@ -12,6 +12,7 @@ const latentStates = new Set<LatentStateType>([
   "SCHEME_SHIFT", "COVERAGE_CHANGE", "BLITZ_CHANGE", "TEMPO_CHANGE", "FATIGUE",
   "WEATHER_CHANGE", "COACHING_ADJUSTMENT", "LINEUP_CHANGE",
 ]);
+const observationSources = new Set(["GAME_FEED", "YOUTUBE_TV_OBSERVATION", "HUMAN_ANALYST", "CLAUDE_RESEARCH", "RUNNER_AI", "VERIFIED_NEWS"]);
 
 function clamp(value: number, min = -1, max = 1): number {
   return Math.max(min, Math.min(max, value));
@@ -30,6 +31,7 @@ function direction(delta: number | undefined): FlowDirection {
 
 export function validateGameFlowObservation(observation: GameFlowObservation): void {
   if (!observation.runnerEventId || !observation.id) throw new Error("observation id and runnerEventId are required");
+  if (!observationSources.has(observation.source)) throw new Error("unsupported observation source");
   if (!Number.isFinite(observation.confidence) || observation.confidence < 0 || observation.confidence > 1) {
     throw new Error("confidence must be between 0 and 1");
   }
@@ -65,6 +67,9 @@ export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSn
     scoreDiff: previous.homeScore !== undefined && previous.awayScore !== undefined ? previous.homeScore - previous.awayScore : undefined,
   }) : regime;
   const transitions = previousRegime !== regime ? [{ from: previousRegime, to: regime, observedAt: latest.observedAt }] : [];
+  const momentumDelta = previousMomentum === undefined ? undefined : momentum - previousMomentum;
+  const momentumDirection = previousMomentum !== undefined && previousMomentum * momentum < 0 && Math.abs(momentumDelta ?? 0) >= 0.05
+    ? "REVERSING" : direction(momentumDelta);
   return {
     runnerEventId: latest.runnerEventId,
     updatedAt: latest.receivedAt,
@@ -75,7 +80,7 @@ export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSn
     clockSecondsRemaining: latest.clockSecondsRemaining,
     possession: latest.possession,
     momentum,
-    momentumDirection: direction(previousMomentum === undefined ? undefined : momentum - previousMomentum),
+    momentumDirection,
     tempo: latest.tempo,
     possessionDominance: latest.possessionDominance,
     pressure: latest.pressure,
