@@ -6,6 +6,7 @@ import type {
   GameRegime,
   LatentStateType,
 } from "../types.js";
+import { deriveTotalsFlowState } from "./totals.js";
 
 const latentStates = new Set<LatentStateType>([
   "PLAYER_LIMITATION", "PLAYER_ROLE_SHIFT", "SUBSTITUTION", "SNAP_RESTRICTION",
@@ -94,6 +95,14 @@ export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSn
     coachingAdjustments: ordered.flatMap((observation) => observation.coachingAdjustment ? [observation.coachingAdjustment] : []),
     transitions,
     latestObservationId: latest.id,
+    totals: deriveTotalsFlowState(ordered, {
+      runnerEventId: latest.runnerEventId,
+      updatedAt: latest.receivedAt,
+      homeScore: latest.homeScore,
+      awayScore: latest.awayScore,
+      period: latest.period,
+      clockSecondsRemaining: latest.clockSecondsRemaining,
+    }),
   };
 }
 
