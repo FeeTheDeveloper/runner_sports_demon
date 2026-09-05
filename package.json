@@ -1,0 +1,36 @@
+{
+  "name": "runner-live-market-scout",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first Runner Sports live prediction-market intelligence engine.",
+  "type": "module",
+  "bin": {
+    "runner-scout": "dist/cli.js",
+    "runner": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/cli.js start",
+    "dev": "node --loader ts-node/esm src/cli.ts",
+    "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js",
+    "scout": "npm run build && node dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/FeeTheDeveloper/runner_sports_demon"
+  },
+  "keywords": ["runner-sports", "kalshi", "polymarket", "market-intelligence"],
+  "author": "Fee The Developer / Runner Sports & Analytics",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ws": "8.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.29",
+    "@types/ws": "8.18.1",
+    "typescript": "5.9.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
