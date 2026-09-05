@@ -26,6 +26,12 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     if (path === "/health") response.end(JSON.stringify({ ok: true, updatedAt: new Date().toISOString() }));
     else if (path === "/markets/live") response.end(JSON.stringify({ data: cache.all() }));
     else if (path === "/games/live") response.end(JSON.stringify({ data: flow.allSnapshots() }));
+    else if (path === "/totals/live") response.end(JSON.stringify({ data: flow.allSnapshots().map((snapshot) => ({
+      runnerEventId: snapshot.runnerEventId,
+      timestamp: snapshot.totals.timestamp,
+      totals: snapshot.totals,
+      signals: snapshot.totalsSignals,
+    })) }));
     else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [] }));
     else { response.statusCode = 404; response.end(JSON.stringify({ error: "not_found" })); }
   });

@@ -21,6 +21,75 @@ export type GameRegime =
 
 export type FlowDirection = "RISING" | "FALLING" | "STABLE" | "REVERSING" | "UNKNOWN";
 
+export interface TotalsFlowState {
+  runnerEventId: string;
+  timestamp: string;
+  currentScoreTotal: number;
+  projectedFinalTotal?: number;
+  projectedHomeTeamTotal?: number;
+  projectedAwayTeamTotal?: number;
+  expectedRemainingPossessions?: number;
+  homeExpectedPointsPerDrive?: number;
+  awayExpectedPointsPerDrive?: number;
+  scoringPaceDirection: FlowDirection;
+  possessionPaceDirection: FlowDirection;
+  scoringConversionSuppression?: number;
+  redZoneOpportunityRate?: number;
+  explosivePlayPressure?: number;
+  clockDrainPressure?: number;
+  overTrendScore?: number;
+  underTrendScore?: number;
+}
+
+export type TotalsSignalType =
+  | "TOTAL_OVER_BUILDING" | "TOTAL_UNDER_BUILDING"
+  | "TEAM_TOTAL_OVER_BUILDING" | "TEAM_TOTAL_UNDER_BUILDING"
+  | "HALFTIME_OVER_WINDOW" | "HALFTIME_UNDER_WINDOW"
+  | "QUARTER_OVER_WINDOW" | "QUARTER_UNDER_WINDOW"
+  | "SCORING_CONVERSION_SUPPRESSION" | "SCORING_REGRESSION_CANDIDATE"
+  | "PACE_ACCELERATION" | "PACE_COLLAPSE" | "CLOCK_DRAIN"
+  | "GARBAGE_TIME_OVER" | "GARBAGE_TIME_UNDER";
+
+export type TotalsWindowStatus =
+  | "DETECTED" | "WATCH" | "ARMED" | "ACTIONABLE"
+  | "DECAYING" | "EXPIRED" | "SUPPRESSED";
+
+export type NextSetPointType =
+  | "END_CURRENT_POSSESSION" | "NEXT_POSSESSION" | "SCORE" | "TURNOVER"
+  | "RED_ZONE_ENTRY" | "END_QUARTER" | "HALFTIME" | "OPENING_3Q_DRIVE"
+  | "Q4_10:00" | "Q4_7:30" | "Q4_5:00" | "Q4_3:00" | "Q4_2:00"
+  | "MAJOR_INJURY" | "MARKET_SUSPENSION_REOPEN";
+
+export interface TotalsDecisionWindow {
+  id: string;
+  runnerEventId: string;
+  marketType: string;
+  selection: string;
+  marketLine: number;
+  marketPrice?: number;
+  runnerProjection: number;
+  edge: number;
+  overTrendScore?: number;
+  underTrendScore?: number;
+  confidence: number;
+  status: TotalsWindowStatus;
+  openedAt?: string;
+  expiresAt?: string;
+  peakEdge?: number;
+  currentEdge?: number;
+  nextSetPoint?: string;
+  reasons: string[];
+  suppressions?: string[];
+  market?: string;
+  detectedAt?: string;
+  windowOpenedAt?: string;
+  windowExpiresAt?: string;
+  secondsRemaining?: number;
+  nextSetPointType?: NextSetPointType;
+  nextSetPointReason?: string;
+  marketsToReevaluate?: string[];
+}
+
 export type LatentStateType =
   | "PLAYER_LIMITATION"
   | "PLAYER_ROLE_SHIFT"
@@ -85,6 +154,8 @@ export interface GameFlowSnapshot {
   coachingAdjustments: string[];
   transitions: Array<{ from: GameRegime; to: GameRegime; observedAt: string }>;
   latestObservationId: string;
+  totals: TotalsFlowState;
+  totalsSignals: TotalsSignalType[];
 }
 
 export interface ProviderHealth {
