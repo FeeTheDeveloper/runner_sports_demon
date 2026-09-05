@@ -37,6 +37,36 @@ export function deriveTotalsFlowState(
   };
 }
 
+export function deriveTotalsSignals(snapshot: Pick<GameFlowSnapshot, "totals" | "regime">): TotalsSignalType[] {
+  const signals: TotalsSignalType[] = [];
+  if (snapshot.totals.scoringPaceDirection === "RISING") signals.push("PACE_ACCELERATION");
+  if (snapshot.totals.scoringPaceDirection === "FALLING") signals.push("PACE_COLLAPSE");
+  if (snapshot.totals.clockDrainPressure !== undefined && snapshot.totals.clockDrainPressure > 0.5) signals.push("CLOCK_DRAIN");
+  if (snapshot.regime === "GARBAGE_TIME") {
+    signals.push(snapshot.totals.scoringPaceDirection === "RISING" ? "GARBAGE_TIME_OVER" : "GARBAGE_TIME_UNDER");
+  }
+  return signals;
+}
+
+export function nextFootballSetPoint(period?: number, clockSecondsRemaining?: number): {
+  type: NextSetPointType;
+  reason: string;
+  markets: string[];
+} {
+  if (period === 2 && clockSecondsRemaining !== undefined && clockSecondsRemaining <= 0) {
+    return { type: "HALFTIME", reason: "Reprice after halftime adjustments and the opening second-half drive.", markets: DEFAULT_MARKETS };
+  }
+  if (period === 3 && clockSecondsRemaining !== undefined && clockSecondsRemaining <= 0) {
+    return { type: "OPENING_3Q_DRIVE", reason: "Reprice when the opening fourth-quarter drive establishes pace.", markets: DEFAULT_MARKETS };
+  }
+  if (period === 4 && clockSecondsRemaining !== undefined) {
+    for (const [threshold, type] of [[600, "Q4_10:00"], [450, "Q4_7:30"], [300, "Q4_5:00"], [180, "Q4_3:00"], [120, "Q4_2:00"]] as const) {
+      if (clockSecondsRemaining <= threshold) return { type, reason: `Reprice at ${type.replace("Q4_", "")} remaining in the fourth quarter.`, markets: DEFAULT_MARKETS };
+    }
+  }
+  return { type: "NEXT_POSSESSION", reason: "Reprice after the next possession resolves.", markets: DEFAULT_MARKETS };
+}
+
 function elapsedGameSeconds(observation?: GameFlowObservation): number | undefined {
   if (observation?.clockSecondsRemaining === undefined || observation.period === undefined) return undefined;
   const periodLength = 900;
@@ -110,10 +140,10 @@ export function createTotalsDecisionWindow(input: TotalsMarketInput, timerConfig
     secondsRemaining: seconds,
     peakEdge: edge,
     currentEdge: edge,
-    nextSetPoint: "next possession",
-    nextSetPointType: "NEXT_POSSESSION",
-    nextSetPointReason: "Reprice after the next possession resolves.",
-    marketsToReevaluate: DEFAULT_MARKETS,
+    nextSetPoint: nextFootballSetPoint(undefined, undefined).type,
+    nextSetPointType: nextFootballSetPoint(undefined, undefined).type,
+    nextSetPointReason: nextFootballSetPoint(undefined, undefined).reason,
+    marketsToReevaluate: nextFootballSetPoint(undefined, undefined).markets,
     reasons: input.reasons ?? [],
     ...(input.signalType ? { reasons: [...(input.reasons ?? []), input.signalType] } : {}),
   };
@@ -133,9 +163,9 @@ export function advanceTotalsDecisionWindow(
     peakEdge,
     secondsRemaining: expires ? Math.max(0, Math.ceil((Date.parse(expires) - Date.parse(now)) / 1000)) : undefined,
     status: expired ? "EXPIRED" : Math.abs(currentEdge) < Math.abs(window.edge) * 0.5 ? "DECAYING" : window.status,
-    nextSetPoint: expired ? "next possession" : window.nextSetPoint,
-    nextSetPointType: expired ? "NEXT_POSSESSION" : window.nextSetPointType,
-    marketsToReevaluate: expired ? DEFAULT_MARKETS : window.marketsToReevaluate,
+    nextSetPoint: expired ? nextFootballSetPoint(undefined, undefined).type : window.nextSetPoint,
+    nextSetPointType: expired ? nextFootballSetPoint(undefined, undefined).type : window.nextSetPointType,
+    marketsToReevaluate: expired ? nextFootballSetPoint(undefined, undefined).markets : window.marketsToReevaluate,
   };
 }
 

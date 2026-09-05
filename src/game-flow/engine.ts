@@ -6,7 +6,7 @@ import type {
   GameRegime,
   LatentStateType,
 } from "../types.js";
-import { deriveTotalsFlowState } from "./totals.js";
+import { deriveTotalsFlowState, deriveTotalsSignals } from "./totals.js";
 
 const latentStates = new Set<LatentStateType>([
   "PLAYER_LIMITATION", "PLAYER_ROLE_SHIFT", "SUBSTITUTION", "SNAP_RESTRICTION",
@@ -71,7 +71,7 @@ export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSn
   const momentumDelta = previousMomentum === undefined ? undefined : momentum - previousMomentum;
   const momentumDirection = previousMomentum !== undefined && previousMomentum * momentum < 0 && Math.abs(momentumDelta ?? 0) >= 0.05
     ? "REVERSING" : direction(momentumDelta);
-  return {
+  const result: GameFlowSnapshot = {
     runnerEventId: latest.runnerEventId,
     updatedAt: latest.receivedAt,
     observationCount: observations.length,
@@ -103,7 +103,10 @@ export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSn
       period: latest.period,
       clockSecondsRemaining: latest.clockSecondsRemaining,
     }),
+    totalsSignals: [],
   };
+  result.totalsSignals = deriveTotalsSignals(result);
+  return result;
 }
 
 function classifyRegime(input: GameFlowObservation & { momentum: number; scoreDiff?: number }): GameRegime {

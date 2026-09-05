@@ -155,6 +155,7 @@ export interface GameFlowSnapshot {
   transitions: Array<{ from: GameRegime; to: GameRegime; observedAt: string }>;
   latestObservationId: string;
   totals: TotalsFlowState;
+  totalsSignals: TotalsSignalType[];
 }
 
 export interface ProviderHealth {

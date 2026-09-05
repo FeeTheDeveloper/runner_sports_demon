@@ -39,5 +39,7 @@ const snapshot = analyzeGameFlow([
 assert.equal(snapshot?.regime, "COMEBACK_WINDOW");
 assert.equal(snapshot?.momentumDirection, "REVERSING");
 assert.deepEqual(snapshot?.latentStates, ["SCHEME_SHIFT"]);
+assert.equal(snapshot?.totals.currentScoreTotal, 15);
+assert.equal(snapshot?.totals.scoringPaceDirection, "RISING");
 assert.throws(() => validateGameFlowObservation(observation({ confidence: 2 })), /confidence/);
 console.log("game flow tests passed");
