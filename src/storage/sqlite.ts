@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
+import type { GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 
 function sqlString(value: unknown): string {
@@ -34,6 +34,8 @@ export const EXPORT_TABLES = [
   "market_lag_events",
   "replay_sessions",
   "backtest_results",
+  "game_flow_observations",
+  "game_flow_snapshots",
 ] as const;
 
 export class SqliteStore {
@@ -64,6 +66,13 @@ export class SqliteStore {
     this.transaction(health.map((h) => `insert into provider_health(provider, connected, last_message_at, last_error, reconnect_attempts, event_count, latency_ms, updated_at)
       values(${sqlString(h.provider)}, ${h.connected ? 1 : 0}, ${sqlString(h.lastMessageAt)}, ${sqlString(h.lastError)}, ${h.reconnectAttempts}, ${h.eventCount}, ${sqlNumber(h.latencyMs)}, ${sqlString(now)})
       on conflict(provider) do update set connected=excluded.connected,last_message_at=excluded.last_message_at,last_error=excluded.last_error,reconnect_attempts=excluded.reconnect_attempts,event_count=excluded.event_count,latency_ms=excluded.latency_ms,updated_at=excluded.updated_at;`).join("\n"));
+  }
+
+  persistGameFlow(observation: GameFlowObservation, snapshot: GameFlowSnapshot) {
+    this.transaction(`insert or replace into game_flow_observations(id,runner_event_id,source,observed_at,received_at,confidence,payload_json)
+      values(${sqlString(observation.id)},${sqlString(observation.runnerEventId)},${sqlString(observation.source)},${sqlString(observation.observedAt)},${sqlString(observation.receivedAt)},${sqlNumber(observation.confidence)},${sqlString(JSON.stringify(observation))});
+      insert or replace into game_flow_snapshots(runner_event_id,updated_at,payload_json)
+      values(${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.updatedAt)},${sqlString(JSON.stringify(snapshot))});`);
   }
 
   count(table: string): number {

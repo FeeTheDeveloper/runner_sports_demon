@@ -6,15 +6,17 @@ import { MarketStateCache } from "./state/market-state/cache.js";
 import { SqliteStore } from "./storage/sqlite.js";
 import { startIngestion } from "./ingestion.js";
 import { startApi } from "./api/server.js";
+import { GameFlowEngine } from "./game-flow/engine.js";
 
 loadDotEnv();
 const command = process.argv[2] ?? "start";
 const cache = new MarketStateCache();
 const store = new SqliteStore();
+const flow = new GameFlowEngine();
 
 if (command === "start") {
   const api = process.argv.includes("--api");
-  if (api) startApi(cache, intArg("--port", 8787));
+  if (api) startApi(cache, intArg("--port", 8787), flow, store);
   await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once") });
 } else if (command === "init-db") {
   store.init();

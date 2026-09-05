@@ -27,6 +27,7 @@ This initial foundation implements market ingestion, market normalization, SQLit
    - `src/storage/schema.sql`: SQLite schema for markets, market prices, market events, provider mappings, health, model predictions, signals, alerts, replay, and backtests.
    - `src/storage/sqlite.ts`: Small SQLite wrapper using the system `sqlite3` binary.
    - Persistence is event-oriented: state changes are hashed and inserted into append-only market event/price tables.
+   - Game-flow observations and derived snapshots are stored separately so authorized human/AI observations remain replayable without treating them as authoritative numerical feeds.
 
 5. **Models and signals**
    - `src/models/probability/baseline.ts`: Baseline implied probability model for smoke testing.
@@ -36,10 +37,13 @@ This initial foundation implements market ingestion, market normalization, SQLit
 6. **Interfaces**
    - Terminal dashboard: prints live Kalshi/Polymarket market rows sorted by liquidity/volume.
    - Local HTTP API: `/health`, `/markets/live`, `/edges/live`, `/signals/live`, `/games/live`.
+   - `POST /observations` accepts structured observations from `GAME_FEED`, `YOUTUBE_TV_OBSERVATION`, `HUMAN_ANALYST`, `CLAUDE_RESEARCH`, `RUNNER_AI`, or `VERIFIED_NEWS`; it does not ingest or archive video.
 
 ## Data flow
 
 Provider API/WebSocket → connector health/retry → provider payload validation → normalized market → market-state cache → SQLite current market upsert + event/price insert → dashboard/API → future model/signal/alert pipeline.
+
+Structured observation → game-flow engine → momentum/regime/latent-state snapshot → SQLite/API. YouTube TV is an observational source only; ESPN and other machine-readable feeds remain authoritative for numerical game state.
 
 ## Latency invariant
 
