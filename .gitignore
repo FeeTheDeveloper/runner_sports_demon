@@ -1,6 +1,11 @@
 node_modules/
 dist/
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
 *.db
 *.db-shm
 *.db-wal
