@@ -9,7 +9,7 @@ This repository is the primary Runner Sports & Analytics intelligence engine. `r
 Codex, Claude Code, GitHub Copilot, and VS Code work from this repository as the shared source of truth. Do not create agent-specific forks of production logic or separate secret files that drift from the repository contract.
 
 Before changing code:
-1. Read `PROJECT_HANDOFF.md` when present, `ARCHITECTURE.md`, `CURRENT_INFRASTRUCTURE_AUDIT.md`, `DATA_SOURCES.md`, `MODEL_NOTES.md`, and `BACKTESTING.md`.
+1. Read `PROJECT_HANDOFF.md` when present, `ARCHITECTURE.md`, `CURRENT_INFRASTRUCTURE_AUDIT.md`, `DATA_SOURCES.md`, `MODEL_NOTES.md`, `BACKTESTING.md`, and `CLAUDE_CREW_RESEARCH_PROTOCOL.md` (live-research format and research-to-engineering handoff conventions).
 2. Inspect the relevant implementation and tests.
 3. Check git status and current branch.
 4. Preserve working behavior unless the task explicitly changes it.
