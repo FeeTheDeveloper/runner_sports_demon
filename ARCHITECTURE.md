@@ -49,7 +49,7 @@ Structured observation → game-flow engine → momentum/regime/latent-state sna
 
 Every game-flow snapshot includes a conservative `totals` payload and `totalsSignals` list. Values that cannot be supported by the observation stream remain absent; the engine does not infer team rates, red-zone rates, or conversion suppression without inputs.
 
-`src/game-flow/totals.ts` owns totals signal names, decision-window lifecycle, configurable user decision timers, and football reprice checkpoints. Decision windows are informational only and never execute wagers. `/totals/live` exposes the derived payload for dashboards.
+`src/totals/` owns normalized totals markets, exposed football heuristic projections, trend scoring, SSC/suppression, selection-aware decision windows, server-time expiration, edge decay, set points, halftime packets, ladders, persistence, and deterministic replay. `src/game-flow/totals.ts` remains a compatibility layer for the first Game Flow implementation. Decision windows are informational only and never execute wagers.
 
 ## Latency invariant
 

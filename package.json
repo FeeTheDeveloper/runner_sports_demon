@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "node dist/cli.js start",
-    "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js && node dist/tests/game-flow.test.js && node dist/tests/totals.test.js",
+    "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js && node dist/tests/game-flow.test.js && node dist/tests/totals.test.js && node dist/tests/totals-engine.test.js",
     "scout": "npm run build && node dist/cli.js"
   },
   "repository": {
