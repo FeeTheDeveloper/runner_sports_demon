@@ -19,5 +19,5 @@ assert.equal(window.status, "ACTIONABLE");
 assert.equal(window.secondsRemaining, 30);
 assert.equal(advanceTotalsDecisionWindow(window, "2026-09-05T20:00:31.000Z").status, "EXPIRED");
 assert.equal(decisionTimerSeconds({ marketType: "HALFTIME_TOTAL" }), 120);
-assert.equal(nextFootballSetPoint(4, 280).type, "Q4_5:00");
+assert.equal(nextFootballSetPoint(4, 280).type, "Q4_3:00");
 console.log("totals tests passed");

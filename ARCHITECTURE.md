@@ -45,6 +45,12 @@ Provider API/WebSocket → connector health/retry → provider payload validatio
 
 Structured observation → game-flow engine → momentum/regime/latent-state snapshot → SQLite/API. YouTube TV is an observational source only; ESPN and other machine-readable feeds remain authoritative for numerical game state.
 
+## Totals desk
+
+Every game-flow snapshot includes a conservative `totals` payload and `totalsSignals` list. Values that cannot be supported by the observation stream remain absent; the engine does not infer team rates, red-zone rates, or conversion suppression without inputs.
+
+`src/game-flow/totals.ts` owns totals signal names, decision-window lifecycle, configurable user decision timers, and football reprice checkpoints. Decision windows are informational only and never execute wagers. `/totals/live` exposes the derived payload for dashboards.
+
 ## Latency invariant
 
 Every important record should carry:

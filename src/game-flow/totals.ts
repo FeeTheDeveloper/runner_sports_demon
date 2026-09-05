@@ -24,7 +24,7 @@ export function deriveTotalsFlowState(
   const scoreDelta = previousTotal === undefined ? undefined : currentScoreTotal - previousTotal;
   const tempoDelta = latest?.tempo !== undefined && previous?.tempo !== undefined ? latest.tempo - previous.tempo : undefined;
   const elapsed = elapsedGameSeconds(latest);
-  const projectedFinalTotal = elapsed !== undefined && elapsed > 0
+  const projectedFinalTotal = isFootball(latest?.sport) && elapsed !== undefined && elapsed > 0
     ? currentScoreTotal / elapsed * 3600 : undefined;
 
   return {
@@ -35,6 +35,10 @@ export function deriveTotalsFlowState(
     scoringPaceDirection: direction(scoreDelta),
     possessionPaceDirection: direction(tempoDelta),
   };
+}
+
+function isFootball(sport?: string): boolean {
+  return sport?.toUpperCase() === "NFL" || sport?.toUpperCase() === "NCAAF" || sport?.toUpperCase() === "FOOTBALL";
 }
 
 export function deriveTotalsSignals(snapshot: Pick<GameFlowSnapshot, "totals" | "regime">): TotalsSignalType[] {
@@ -61,7 +65,7 @@ export function nextFootballSetPoint(period?: number, clockSecondsRemaining?: nu
   }
   if (period === 4 && clockSecondsRemaining !== undefined) {
     for (const [threshold, type] of [[600, "Q4_10:00"], [450, "Q4_7:30"], [300, "Q4_5:00"], [180, "Q4_3:00"], [120, "Q4_2:00"]] as const) {
-      if (clockSecondsRemaining <= threshold) return { type, reason: `Reprice at ${type.replace("Q4_", "")} remaining in the fourth quarter.`, markets: DEFAULT_MARKETS };
+      if (clockSecondsRemaining > threshold) return { type, reason: `Reprice at ${type.replace("Q4_", "")} remaining in the fourth quarter.`, markets: DEFAULT_MARKETS };
     }
   }
   return { type: "NEXT_POSSESSION", reason: "Reprice after the next possession resolves.", markets: DEFAULT_MARKETS };
@@ -90,6 +94,9 @@ export interface TotalsMarketInput {
   confidence: number;
   reasons?: string[];
   signalType?: TotalsSignalType;
+  period?: number;
+  clockSecondsRemaining?: number;
+  suppressions?: string[];
   detectedAt?: string;
   now?: string;
 }
@@ -119,7 +126,12 @@ export function createTotalsDecisionWindow(input: TotalsMarketInput, timerConfig
   const seconds = decisionTimerSeconds(input, timerConfig);
   const expiresAt = new Date(Date.parse(detectedAt) + seconds * 1000).toISOString();
   const edge = input.runnerProjection - input.marketLine;
-  const status: TotalsWindowStatus = input.confidence >= 0.7 && Math.abs(edge) >= 1 ? "ACTIONABLE" : "WATCH";
+  const status: TotalsWindowStatus = input.suppressions?.length
+    ? "SUPPRESSED"
+    : input.confidence < 0.4
+      ? "SUPPRESSED"
+      : input.confidence >= 0.7 && Math.abs(edge) >= 1 ? "ACTIONABLE" : "WATCH";
+  const nextPoint = nextFootballSetPoint(input.period, input.clockSecondsRemaining);
   return {
     id: stableHash({ ...input, detectedAt }),
     runnerEventId: input.runnerEventId,
@@ -140,11 +152,12 @@ export function createTotalsDecisionWindow(input: TotalsMarketInput, timerConfig
     secondsRemaining: seconds,
     peakEdge: edge,
     currentEdge: edge,
-    nextSetPoint: nextFootballSetPoint(undefined, undefined).type,
-    nextSetPointType: nextFootballSetPoint(undefined, undefined).type,
-    nextSetPointReason: nextFootballSetPoint(undefined, undefined).reason,
-    marketsToReevaluate: nextFootballSetPoint(undefined, undefined).markets,
+    nextSetPoint: nextPoint.type,
+    nextSetPointType: nextPoint.type,
+    nextSetPointReason: nextPoint.reason,
+    marketsToReevaluate: nextPoint.markets,
     reasons: input.reasons ?? [],
+    suppressions: input.suppressions ?? (status === "SUPPRESSED" ? ["LOW_CONFIDENCE"] : undefined),
     ...(input.signalType ? { reasons: [...(input.reasons ?? []), input.signalType] } : {}),
   };
 }
