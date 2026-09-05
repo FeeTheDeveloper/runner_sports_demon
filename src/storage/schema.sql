@@ -168,6 +168,23 @@ create table if not exists backtest_results (
   created_at text not null default (datetime('now'))
 );
 
+create table if not exists game_flow_observations (
+  id text primary key,
+  runner_event_id text not null,
+  source text not null,
+  observed_at text not null,
+  received_at text not null,
+  confidence real not null check(confidence between 0 and 1),
+  payload_json text not null
+);
+
+create table if not exists game_flow_snapshots (
+  runner_event_id text primary key,
+  updated_at text not null,
+  payload_json text not null
+);
+
 create index if not exists market_prices_market_time_idx on market_prices(market_id, processed_timestamp desc);
 create index if not exists market_events_market_time_idx on market_events(market_id, processed_timestamp desc);
 create index if not exists markets_provider_status_idx on markets(provider, status);
+create index if not exists game_flow_observations_event_time_idx on game_flow_observations(runner_event_id, observed_at desc);
