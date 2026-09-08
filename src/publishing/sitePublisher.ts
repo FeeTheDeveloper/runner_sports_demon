@@ -1,5 +1,5 @@
 import type { GameFlowSnapshot, NormalizedMarket, ProviderHealth } from "../types.js";
-import { baselineImpliedProbability, type ProbabilityPrediction } from "../models/probability/baseline.js";
+import { type ProbabilityPrediction } from "../models/probability/baseline.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsProjection } from "../totals/types.js";
 import { boolEnv, intEnv, optionalStringEnv } from "../utils/env.js";
 
@@ -88,28 +88,34 @@ export class SitePublisher {
     if (!this.enabled) return;
     const publishedAt = input.publishedAt ?? new Date().toISOString();
     const shouldPublishHeartbeat = Date.now() - this.lastHeartbeatAt >= this.heartbeatMs || input.engineStatus !== "running";
-    if (!shouldPublishHeartbeat) return;
-    this.lastHeartbeatAt = Date.now();
 
-    const forecasts = input.forecasts ?? input.markets.flatMap((market) => {
-      const prediction = baselineImpliedProbability(market);
-      return prediction ? [{ market, prediction }] : [];
-    });
-    await Promise.all([
-      this.publishEngineStatus({
+    // TASK-06B: no market-derived forecast fallback. Publishing the market's own
+    // devigged implied probability as a Runner forecast is a claim we cannot support.
+    // MODEL_NOTES.md: the baseline is not a predictive model. Publish nothing instead.
+    const forecasts = input.forecasts ?? [];
+
+    // TASK-06A: heartbeat is interval-gated; semantic domain publishes are not.
+    const work: Promise<unknown>[] = [];
+
+    if (shouldPublishHeartbeat) {
+      this.lastHeartbeatAt = Date.now();
+      work.push(this.publishEngineStatus({
         status: input.engineStatus,
         heartbeatAt: publishedAt,
         activeProviders: input.health.filter((entry) => entry.connected).map((entry) => entry.provider),
         activeGames: new Set(input.markets.map((market) => market.runnerEventId).filter(Boolean)).size,
         metadata: { marketEventCount: input.marketEventCount, priceEventCount: input.priceEventCount },
-      }),
-      this.publishProviderHealth(input.health, publishedAt),
-      this.publishForecasts(forecasts, publishedAt),
-      input.gameFlow?.length ? this.publishGameFlow(input.gameFlow, publishedAt) : Promise.resolve(),
-      input.totals?.length ? this.publishTotals(input.totals, publishedAt) : Promise.resolve(),
-      input.totals?.length ? this.publishSignals(input.totals.flatMap((evaluation) => evaluation.windows), publishedAt) : Promise.resolve(),
-      input.pickHealth?.length ? this.publishPickHealth(input.pickHealth, publishedAt) : Promise.resolve(),
-    ]);
+      }));
+    }
+
+    work.push(this.publishProviderHealth(input.health, publishedAt));
+    if (forecasts.length) work.push(this.publishForecasts(forecasts, publishedAt));
+    if (input.gameFlow?.length) work.push(this.publishGameFlow(input.gameFlow, publishedAt));
+    if (input.totals?.length) work.push(this.publishTotals(input.totals, publishedAt));
+    if (input.totals?.length) work.push(this.publishSignals(input.totals.flatMap((evaluation) => evaluation.windows), publishedAt));
+    if (input.pickHealth?.length) work.push(this.publishPickHealth(input.pickHealth, publishedAt));
+
+    await Promise.all(work);
   }
 
   async publishEngineStatus(input: {
