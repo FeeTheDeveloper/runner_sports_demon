@@ -270,7 +270,7 @@ export class SitePublisher {
       published_at: publishedAt,
       metadata: window,
       updated_at: publishedAt,
-    })));
+    }));
     await this.upsert("runner_totals_windows", windows);
   }
 
