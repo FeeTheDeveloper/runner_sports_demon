@@ -20,11 +20,25 @@ The Kalshi documentation host was not directly reachable from this sandbox, so i
 
 The Polymarket documentation host was not directly reachable from this sandbox. The implementation uses the existing Runner Sports Gamma integration and public documentation/search results for the CLOB market WebSocket location.
 
+## Architecture boundary
+
+Demon SQLite
+    = full-fidelity local engine store
+
+Runner Site Supabase
+    = shared cloud data plane and published intelligence bus
+
+Runner Site
+    = presentation/subscriber layer
+
+Demon
+    = live intelligence engine
+
 ## Existing Runner Sports feeds to integrate next
 
 - Odds API provider from `runner_sports-site/lib/providers/oddsApi.ts`.
 - ESPN provider from `runner_sports-site/lib/providers/espnApi.ts`.
-- Supabase team registry and provider mappings from existing migrations.
+- Site Supabase team registry and provider mappings remain shared cloud data used by the presentation layer; they are not the primary Demon persistence layer.
 
 ## Staleness rules
 

@@ -4,6 +4,22 @@
 
 A local-first intelligence service that observes live games and prediction markets, persists every meaningful market state change, estimates fair value, detects lag/divergence, and emits alerts without auto-trading.
 
+```text
+Demon SQLite
+    = full-fidelity local engine store
+
+Runner Site Supabase
+    = shared cloud data plane and published intelligence bus
+
+Runner Site
+    = presentation/subscriber layer
+
+Demon
+    = live intelligence engine
+```
+
+The engine remains local-first. The Runner Site Supabase project is optional and exists for curated publishing; it is not the Demon-owned operational store.
+
 ## Phase implemented here
 
 This initial foundation implements market ingestion, market normalization, SQLite persistence, a live in-memory cache, provider health tracking, a terminal dashboard, and a minimal local API. Prediction modeling beyond baseline implied probability is intentionally deferred.

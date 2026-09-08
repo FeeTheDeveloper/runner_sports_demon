@@ -1,5 +1,21 @@
 # Setup
 
+## Architecture contract
+
+Demon SQLite
+    = full-fidelity local engine store
+
+Runner Site Supabase
+    = shared cloud data plane and published intelligence bus
+
+Runner Site
+    = presentation/subscriber layer
+
+Demon
+    = live intelligence engine
+
+This project runs locally first. Site publishing is optional and will not block initialization when credentials are absent.
+
 ## Requirements
 
 - Node.js 22+

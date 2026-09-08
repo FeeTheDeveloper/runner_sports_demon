@@ -5,7 +5,8 @@ Reference repository audited remotely: `FeeTheDeveloper/runner_sports-site`.
 ## Existing application shape
 
 - Next.js 15 / React 19 application with API routes under `app/api` and server-only data providers under `lib/providers`.
-- Supabase is the operational store. Server routes use a service-role client; row-level security is enabled on core tables.
+- The website uses Runner Site Supabase as the shared cloud data plane and published intelligence bus; it is a presentation/subscriber layer, not the Demon-owned operational store.
+- Demon remains local-first with SQLite as the authoritative engine store, while optional cloud publishing sends curated state into the site plane.
 - Existing scheduled ingestion is implemented as protected cron API routes, not as long-running local workers.
 
 ## Sports and odds feeds

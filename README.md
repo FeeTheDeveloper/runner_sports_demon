@@ -2,6 +2,22 @@
 
 Local-first Runner Sports market intelligence service for live Kalshi and Polymarket monitoring.
 
+## Architecture contract
+
+Demon SQLite
+    = full-fidelity local engine store
+
+Runner Site Supabase
+    = shared cloud data plane and published intelligence bus
+
+Runner Site
+    = presentation/subscriber layer
+
+Demon
+    = live intelligence engine
+
+This repository remains local-first. SQLite is the authoritative engine store, while the Runner Site Supabase project is optional and only receives curated intelligence snapshots rather than raw tick streams.
+
 ## Operational now
 
 - Kalshi REST market discovery with optional auth signing.
