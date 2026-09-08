@@ -7,6 +7,7 @@ export interface ForecastPublishInput {
   market: NormalizedMarket;
   prediction: ProbabilityPrediction;
   sport?: string;
+  eventId?: string;
   event?: string;
   marketType?: string;
   selection?: string;
@@ -106,6 +107,7 @@ export class SitePublisher {
       this.publishForecasts(forecasts, publishedAt),
       input.gameFlow?.length ? this.publishGameFlow(input.gameFlow, publishedAt) : Promise.resolve(),
       input.totals?.length ? this.publishTotals(input.totals, publishedAt) : Promise.resolve(),
+      input.totals?.length ? this.publishSignals(input.totals.flatMap((evaluation) => evaluation.windows), publishedAt) : Promise.resolve(),
       input.pickHealth?.length ? this.publishPickHealth(input.pickHealth, publishedAt) : Promise.resolve(),
     ]);
   }
@@ -215,6 +217,11 @@ export class SitePublisher {
   }
 
   async publishTotals(evaluations: Array<{ flow: TotalsFlowState; projections: TotalsProjection[]; windows: TotalsDecisionWindow[] }>, publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
+    await this.publishTotalsState(evaluations.map(({ flow, projections }) => ({ flow, projections })), publishedAt, context);
+    await this.publishTotalsWindows(evaluations.flatMap(({ windows }) => windows), publishedAt, context);
+  }
+
+  async publishTotalsState(evaluations: Array<{ flow: TotalsFlowState; projections: TotalsProjection[] }>, publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
     const states = evaluations.map(({ flow, projections }) => {
       const game = projections.find((projection) => projection.marketType === "GAME_TOTAL");
       return {
@@ -244,7 +251,11 @@ export class SitePublisher {
         updated_at: publishedAt,
       };
     });
-    const windows = evaluations.flatMap(({ windows: entries }) => entries.map((window) => ({
+    await this.upsert("runner_totals", states);
+  }
+
+  async publishTotalsWindows(entries: TotalsDecisionWindow[], publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
+    const windows = entries.map((window) => ({
       id: window.id,
       runner_event_id: window.runnerEventId,
       sport: text(context.sport, "unknown"),
@@ -260,7 +271,7 @@ export class SitePublisher {
       metadata: window,
       updated_at: publishedAt,
     })));
-    await Promise.all([this.upsert("runner_totals", states), windows.length ? this.upsert("runner_totals_windows", windows) : Promise.resolve()]);
+    await this.upsert("runner_totals_windows", windows);
   }
 
   async publishSignals(entries: TotalsDecisionWindow[], publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
