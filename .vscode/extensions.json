@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "eamodio.gitlens",
+    "ms-azuretools.vscode-docker",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
+}
