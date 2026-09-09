@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "policy": {
+    "historical_core_start": 2006,
+    "historical_core_end": 2025,
+    "live_start": 2026,
+    "raw_is_immutable": true,
+    "cache_before_network": true,
+    "paid_api_policy": "gap_fill_or_live_only",
+    "required_lineage": ["source_id", "source_name", "source_url", "retrieved_at", "season", "sport", "dataset", "sha256", "quality_status"]
+  },
+  "sources": [
+    {
+      "source_id": "nflverse_pbp",
+      "sport": "NFL",
+      "dataset": "play_by_play",
+      "tier": "open_programmatic",
+      "cost_class": "free",
+      "format": "parquet",
+      "url_template": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.parquet",
+      "season_start": 1999,
+      "enabled": true
+    },
+    {
+      "source_id": "mlb_statsapi",
+      "sport": "MLB",
+      "dataset": "game_and_play_by_play",
+      "tier": "league_web_api",
+      "cost_class": "free",
+      "format": "json",
+      "base_url": "https://statsapi.mlb.com/api",
+      "enabled": true,
+      "notes": "Implement schedule-first gamePk discovery, then cache raw game/PBP responses."
+    },
+    {
+      "source_id": "nhl_web_api",
+      "sport": "NHL",
+      "dataset": "game_and_play_by_play",
+      "tier": "league_web_api",
+      "cost_class": "free",
+      "format": "json",
+      "base_url": "https://api-web.nhle.com",
+      "enabled": true,
+      "notes": "Cache schedule/gamecenter payloads locally before normalization."
+    },
+    {
+      "source_id": "the_odds_api",
+      "sport": "MULTI",
+      "dataset": "historical_market_snapshots",
+      "tier": "paid_provider",
+      "cost_class": "paid",
+      "enabled": true,
+      "notes": "Do not bulk-call by default. Use only where historical coverage exists and the free/open warehouse lacks market state. Persist every paid response so it is never purchased twice."
+    }
+  ]
+}
