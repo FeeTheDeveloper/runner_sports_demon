@@ -1,0 +1,5 @@
+# Runner Sports historical ingestion dependencies
+# Keep the acquisition layer intentionally small and local-first.
+requests>=2.32,<3
+pyarrow>=17,<22
+duckdb>=1.1,<2
