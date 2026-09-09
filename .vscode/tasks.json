@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {"label":"Runner: Install","type":"shell","command":"npm ci","problemMatcher":[]},
+    {"label":"Runner: Build","type":"npm","script":"build","group":{"kind":"build","isDefault":true},"problemMatcher":["$tsc"]},
+    {"label":"Runner: Test","type":"npm","script":"test","group":{"kind":"test","isDefault":true},"problemMatcher":[]},
+    {"label":"Runner: Start","type":"npm","script":"start","isBackground":true,"problemMatcher":[]},
+    {"label":"Runner: Scout Help","type":"shell","command":"npm run scout -- --help","problemMatcher":[]},
+    {"label":"Runner: Verify","dependsOrder":"sequence","dependsOn":["Runner: Build","Runner: Test"],"problemMatcher":[]},
+    {"label":"Runner: Bootstrap","dependsOrder":"sequence","dependsOn":["Runner: Install","Runner: Verify"],"problemMatcher":[]}
+  ]
+}
