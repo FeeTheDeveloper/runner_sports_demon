@@ -42,8 +42,10 @@ export const EXPORT_TABLES = [
 ] as const;
 
 export class SqliteStore {
+  private static sqliteVerified = false;
   readonly path: string;
   constructor(path = process.env.RUNNER_SCOUT_DB ?? ".runner-scout.db") {
+    SqliteStore.ensureSqliteBinary();
     this.path = resolve(path);
     mkdirSync(dirname(this.path), { recursive: true });
   }
@@ -138,6 +140,16 @@ export class SqliteStore {
   }
 
   private static readonly MAX_BUFFER = 500 * 1024 * 1024;
+  private static ensureSqliteBinary() {
+    if (SqliteStore.sqliteVerified) return;
+    try {
+      execFileSync("sqlite3", ["-version"], { stdio: ["ignore", "ignore", "pipe"], maxBuffer: SqliteStore.MAX_BUFFER });
+      SqliteStore.sqliteVerified = true;
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`sqlite3 binary is required but not available. Install sqlite3 and ensure it is on PATH. ${detail}`);
+    }
+  }
 
   private transaction(sql: string) { if (sql.trim()) this.exec(`begin;\n${sql}\ncommit;`); }
   private exec(sql: string) { execFileSync("sqlite3", [this.path], { input: sql, maxBuffer: SqliteStore.MAX_BUFFER }); }

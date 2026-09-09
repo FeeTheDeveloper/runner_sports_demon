@@ -45,7 +45,15 @@ export class PolymarketConnector implements Connector {
       this.healthTracker.ok();
       ws.send(JSON.stringify({ assets_ids: assetIds, type: "market" }));
     });
-    ws.on("message", (data) => { this.healthTracker.ok(); onMessage(JSON.parse(data.toString())); });
+    ws.on("message", (data) => {
+      try {
+        const parsed = JSON.parse(data.toString());
+        this.healthTracker.ok();
+        onMessage(parsed);
+      } catch (error) {
+        this.healthTracker.error(error);
+      }
+    });
     ws.on("close", () => this.healthTracker.reconnecting());
     ws.on("error", (error) => this.healthTracker.error(error));
     return ws;

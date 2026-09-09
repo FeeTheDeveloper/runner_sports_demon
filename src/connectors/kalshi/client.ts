@@ -1,4 +1,4 @@
-import { constants, createPrivateKey, sign } from "node:crypto";
+import { constants, createHmac, createPrivateKey, sign } from "node:crypto";
 import WebSocket from "ws";
 import type { Connector, NormalizedMarket, ProviderHealth } from "../../types.js";
 import { HealthTracker } from "../providerHealth.js";
@@ -55,7 +55,15 @@ export class KalshiConnector implements Connector {
       this.healthTracker.ok();
       ws.send(JSON.stringify({ id: 1, cmd: "subscribe", params: { channels: ["orderbook_snapshot", "orderbook_delta", "ticker_v2", "trade"], market_tickers: tickers } }));
     });
-    ws.on("message", (data) => { this.healthTracker.ok(); onMessage(JSON.parse(data.toString())); });
+    ws.on("message", (data) => {
+      try {
+        const parsed = JSON.parse(data.toString());
+        this.healthTracker.ok();
+        onMessage(parsed);
+      } catch (error) {
+        this.healthTracker.error(error);
+      }
+    });
     ws.on("close", () => this.healthTracker.reconnecting());
     ws.on("error", (error) => this.healthTracker.error(error));
     return ws;
@@ -72,7 +80,8 @@ export class KalshiConnector implements Connector {
       const privateKey = createPrivateKey(Buffer.from(encodedPrivateKey, "base64").toString("utf8"));
       signature = sign("sha256", Buffer.from(`${timestamp}${method}${path}`), { key: privateKey, padding: constants.RSA_PKCS1_PSS_PADDING, saltLength: 32 }).toString("base64");
     } else {
-      signature = sign("sha256", Buffer.from(`${timestamp}${method}${path}`), sharedSecret!).toString("base64");
+      if (!sharedSecret) throw new Error("Kalshi API secret is required when private key auth is not configured");
+      signature = createHmac("sha256", sharedSecret).update(`${timestamp}${method}${path}`).digest("base64");
     }
     return { "KALSHI-ACCESS-KEY": keyId, "KALSHI-ACCESS-SIGNATURE": signature, "KALSHI-ACCESS-TIMESTAMP": timestamp };
   }
