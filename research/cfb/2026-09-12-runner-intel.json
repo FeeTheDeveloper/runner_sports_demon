@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "runner-intel-v1",
+  "sport": "CFB",
+  "date": "2026-09-12",
+  "source": "RUNNER_AI",
+  "purpose": "Replayable analyst intelligence captured during AP Top 25 monitoring. These records are observations and model annotations, not authoritative numerical feeds.",
+  "observations": [
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:OREGON:OKLAHOMA_STATE",
+      "observedAt": "2026-09-12T21:30:00Z",
+      "confidence": 0.95,
+      "notes": "Pregame Oregon favorite thesis failed materially. Live monitoring identified Oklahoma State structural control well before settlement. Tag for postgame regime review: rushing/explosive-play profile, Oregon offensive efficiency, drive sustainability, and favorite-strength assumptions. Final reported monitoring result: Oklahoma State 39, Oregon 31. Preserve original pregame forecast separately; do not rewrite history."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:OKLAHOMA:MICHIGAN",
+      "observedAt": "2026-09-12T19:30:00Z",
+      "confidence": 0.9,
+      "notes": "Pregame Oklahoma spread thesis failed while the Under thesis held. Live flow showed Michigan game-state control and Oklahoma turnovers despite later convergence in offensive efficiency. Classify side miss separately from totals read; investigate turnover/drive-finish effects and Oklahoma OL pressure assumptions."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:ARIZONA_STATE:TEXAS_AM",
+      "observedAt": "2026-09-12T20:15:00Z",
+      "confidence": 0.9,
+      "notes": "Final margin favored Texas A&M, but monitored underlying offense favored Arizona State for substantial stretches and the result was heavily affected by turnovers/field position. Grade outcome separately from mechanism. Tag as variance-sensitive cover and retain underlying efficiency evidence for calibration."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:UTAH_STATE:WASHINGTON",
+      "observedAt": "2026-09-12T21:00:00Z",
+      "confidence": 0.85,
+      "notes": "Washington controlled underlying play volume and yardage while failing to create expected scoreboard separation for much of the game. Tag favorite-margin model for red-zone/drive-finishing calibration rather than treating Utah State as snap-for-snap control."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:ARIZONA:BYU",
+      "observedAt": "2026-09-12T20:45:00Z",
+      "confidence": 0.8,
+      "notes": "Live monitoring downgraded BYU ATS confidence when Arizona controlled early play volume and possession while BYU retained an efficiency advantage. Preserve distinction between outright-win thesis and spread-margin thesis."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:OHIO_STATE:TEXAS",
+      "observedAt": "2026-09-12T22:00:00Z",
+      "confidence": 0.75,
+      "notes": "Pregame Runner baseline favored Ohio State +1.5 with an approximate 27-24 projection. Texas RB Derrek Cooper was confirmed unavailable during monitoring. This is a pregame baseline observation only; live numerical state must come from an authoritative game feed."
+    },
+    {
+      "runnerEventId": "RUNNER:CFB:2026-09-12:TENNESSEE:GEORGIA_TECH",
+      "observedAt": "2026-09-12T22:00:00Z",
+      "confidence": 0.75,
+      "notes": "Pregame monitoring identified Georgia Tech spread value as Tennessee market price expanded beyond Runner fair range. Tennessee LB Arion Carter return improved Tennessee defensive floor and reduced, but did not erase, the modeled spread discrepancy."
+    }
+  ]
+}
