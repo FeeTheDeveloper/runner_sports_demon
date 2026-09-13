@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mapEspnStatus, normalizeEspnScoreboard } from "../games/discovery/espn.js";
+import { EspnCfbScheduleClient, mapEspnStatus, normalizeEspnScoreboard } from "../games/discovery/espn.js";
 
 const games = normalizeEspnScoreboard({
   events: [{
@@ -27,4 +27,5 @@ assert.equal(games[0].awayScore, 10);
 assert.equal(games[0].homeScore, 7);
 assert.equal(mapEspnStatus("post"), "final");
 assert.equal(mapEspnStatus("unknown"), "unknown");
+assert.equal(new URL((new EspnCfbScheduleClient() as unknown as { baseUrl: string }).baseUrl).pathname, "/apis/site/v2/sports/football/college-football/scoreboard");
 console.log("games tests passed");

@@ -61,7 +61,7 @@ function validRank(rank?: number): number | undefined { return rank !== undefine
 function parseScore(score?: string): number | undefined { const parsed = Number(score); return Number.isFinite(parsed) ? parsed : undefined; }
 
 export class EspnCfbScheduleClient {
-  private readonly baseUrl = process.env.ESPN_SCOREBOARD_URL ?? "https://site.api.espn.com/apis/site/v2/sports/college-football/scoreboard";
+  private readonly baseUrl = process.env.ESPN_SCOREBOARD_URL ?? "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard";
 
   async fetch(date = new Date().toISOString().slice(0, 10)): Promise<CfbGame[]> {
     const url = new URL(this.baseUrl);

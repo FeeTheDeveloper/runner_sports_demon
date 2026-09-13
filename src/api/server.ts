@@ -70,6 +70,10 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
       const data = view === "projections" ? evaluation.projections : view === "signals" ? evaluation.windows.flatMap(w=>w.reasons) : view === "windows" ? evaluation.windows : view === "set-points" ? evaluation.windows.map(w=>({ windowId:w.id,nextSetPoint:w.nextSetPoint })) : evaluation;
       response.end(JSON.stringify({ data })); return;
     }
+    if (request.method === "GET" && path === "/games/live") {
+      response.end(JSON.stringify({ data: flow.allSnapshots() }));
+      return;
+    }
     const gameMatch = path.match(/^\/games\/([^/]+)(?:\/(flow|markets|props))?$/);
     if (request.method === "GET" && gameMatch) {
       const runnerEventId = decodeURIComponent(gameMatch[1]);
