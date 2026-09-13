@@ -1,10 +1,8 @@
 export type GameStatus = "scheduled" | "in_progress" | "final" | "postponed" | "canceled" | "unknown";
 
-export interface CfbGame {
+interface BaseFootballGame {
   runnerEventId: string;
   providerEventId: string;
-  sport: "CFB";
-  league: "NCAAF";
   awayTeam: string;
   homeTeam: string;
   awayAbbreviation?: string;
@@ -26,3 +24,15 @@ export interface CfbGame {
   processedTimestamp: string;
   raw: unknown;
 }
+
+export interface CfbGame extends BaseFootballGame {
+  sport: "CFB";
+  league: "NCAAF";
+}
+
+export interface NflGame extends BaseFootballGame {
+  sport: "NFL";
+  league: "NFL";
+}
+
+export type FootballGame = CfbGame | NflGame;
