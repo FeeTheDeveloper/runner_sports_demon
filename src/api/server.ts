@@ -4,6 +4,7 @@ import { MarketStateCache } from "../state/market-state/cache.js";
 import { GameFlowEngine } from "../game-flow/engine.js";
 import { SqliteStore } from "../storage/sqlite.js";
 import { TotalsRuntime } from "../totals/runtime.js";
+import { renderWebDashboard } from "../dashboard/web.js";
 
 export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFlowEngine(), store?: SqliteStore) {
   const totals = new TotalsRuntime(store);
@@ -12,6 +13,11 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     response.setHeader("access-control-allow-origin", "*");
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
     const path = request.url?.split("?")[0];
+    if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
+      response.setHeader("content-type", "text/html; charset=utf-8");
+      response.end(renderWebDashboard());
+      return;
+    }
     if (request.method === "POST" && path === "/observations") {
       try {
         const observation = JSON.parse(await readBody(request));
