@@ -23,7 +23,7 @@ export function normalizeEspnFootballScoreboard(
   flavor: FootballFlavor,
   processedTimestamp = new Date().toISOString(),
 ): FootballGame[] {
-  return (payload.events ?? []).flatMap((event) => {
+  return (payload.events ?? []).flatMap((event): FootballGame[] => {
     const competition = event.competitions?.[0];
     const competitors = competition?.competitors ?? [];
     const away = competitors.find((competitor) => competitor.homeAway === "away");
