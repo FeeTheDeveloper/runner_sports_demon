@@ -14,6 +14,7 @@
     {"label":"Runner: Totals","type":"shell","command":"Invoke-WebRequest http://localhost:8787/totals/live -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
     {"label":"Runner: Alerts","type":"shell","command":"Invoke-WebRequest http://localhost:8787/totals/alerts -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
     {"label":"Runner: Contracts","type":"npm","script":"contracts:validate","problemMatcher":[]},
+    {"label":"Runner: Command Route","type":"shell","command":"npm run runner:command -- \"${input:runnerCommand}\"","problemMatcher":[]},
     {"label":"Runner: System Validate","type":"npm","script":"system:validate","problemMatcher":[]},
     {"label":"Runner: Start Intelligence Stack","dependsOrder":"parallel","dependsOn":["Runner: Start"],"problemMatcher":[]},
     {"label":"Verse: R Package Check","type":"shell","command":"Rscript -e \"if (!requireNamespace('devtools', quietly=TRUE)) stop('devtools is required'); devtools::check()\"","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
@@ -27,6 +28,7 @@
     {"label":"Site: Build","type":"shell","command":"npm run build","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
     {"label":"Site: Lint","type":"shell","command":"npm run lint","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
     {"label":"Site: Dev","type":"shell","command":"npm run dev","isBackground":true,"options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
-    {"label":"Runner: Validate Full Stack","dependsOrder":"sequence","dependsOn":["Runner: Contracts","Demon: Validate Verse Export","Runner: Verify","Site: Build","Runner: System Validate"],"problemMatcher":[]}
+    {"label":"Runner: Validate Full Stack","dependsOrder":"sequence","dependsOn":["Verse: R Package Check","Runner: Contracts","Demon: Validate Verse Export","Runner: Verify","Site: Build","Runner: System Validate"],"problemMatcher":[]}
   ]
+  ,"inputs":[{"id":"runnerCommand","type":"promptString","description":"Runner natural-language command","default":"RUNNER STATUS"}]
 }

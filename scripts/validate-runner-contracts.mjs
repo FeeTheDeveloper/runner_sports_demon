@@ -2,6 +2,8 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+const registry = JSON.parse(readFileSync(join(root, ".runner", "command-registry.json"), "utf8"));
+if (registry.schema_version !== "runner.command-registry.v1" || !Array.isArray(registry.commands) || registry.commands.length < 20) throw new Error("command registry is missing or incomplete");
 const contractsDir = join(root, "contracts");
 const requiredContracts = ["runner-event.schema.json", "verse-export.schema.json", "model-manifest.schema.json", "feature-manifest.schema.json", "live-observation.schema.json", "game-flow.schema.json", "market-snapshot.schema.json", "model-output.schema.json", "site-publish.schema.json", "postgame-result.schema.json"];
 const failures = [];
