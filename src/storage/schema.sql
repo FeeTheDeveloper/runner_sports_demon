@@ -95,6 +95,10 @@ create table if not exists provider_health (
   reconnect_attempts integer not null,
   event_count integer not null,
   latency_ms real,
+  status text,
+  rate_limit_remaining real,
+  rate_limit_used real,
+  next_retry_at text,
   updated_at text not null
 );
 
@@ -199,3 +203,81 @@ create index if not exists markets_provider_status_idx on markets(provider, stat
 create index if not exists game_flow_observations_event_time_idx on game_flow_observations(runner_event_id, observed_at desc);
 create index if not exists totals_windows_event_status_idx on totals_decision_windows(runner_event_id, status);
 create index if not exists totals_projections_event_time_idx on totals_projections(runner_event_id, processed_timestamp desc);
+
+
+create table if not exists raw_provider_events (
+  id integer primary key autoincrement,
+  provider text not null,
+  event_type text not null,
+  provider_event_id text,
+  payload_json text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  change_hash text not null,
+  unique(provider, event_type, provider_event_id, change_hash)
+);
+
+create table if not exists game_state_snapshots (
+  id integer primary key autoincrement,
+  runner_event_id text not null,
+  provider text not null,
+  provider_event_id text not null,
+  payload_json text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  change_hash text not null,
+  unique(runner_event_id, provider, change_hash)
+);
+
+create table if not exists sports_market_snapshots (
+  snapshot_id integer primary key autoincrement,
+  market_id text not null,
+  provider text not null,
+  provider_event_id text not null,
+  runner_event_id text,
+  bookmaker_key text not null,
+  market_key text not null,
+  market_kind text not null,
+  selection text not null,
+  line real,
+  american_price real,
+  executable integer not null,
+  status text not null,
+  payload_json text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  change_hash text not null,
+  unique(market_id, change_hash)
+);
+
+create table if not exists runner_baselines (
+  id text primary key,
+  runner_event_id text not null,
+  phase text not null check(phase in ('PRE_GAME','CURRENT')),
+  target text not null,
+  selection text not null,
+  model_name text not null,
+  model_version text not null,
+  source_type text not null check(source_type in ('RUNNER_MODEL','EXTERNAL_MODEL')),
+  fair_probability real,
+  fair_line real,
+  confidence real not null check(confidence between 0 and 1),
+  data_quality real not null check(data_quality between 0 and 1),
+  payload_json text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null
+);
+
+create trigger if not exists runner_baselines_no_update before update on runner_baselines
+begin select raise(abort, 'runner baselines are immutable'); end;
+create trigger if not exists runner_baselines_no_delete before delete on runner_baselines
+begin select raise(abort, 'runner baselines are immutable'); end;
+
+create index if not exists raw_provider_events_time_idx on raw_provider_events(provider, processed_timestamp desc);
+create index if not exists game_state_snapshots_event_time_idx on game_state_snapshots(runner_event_id, processed_timestamp desc);
+create index if not exists sports_market_event_time_idx on sports_market_snapshots(runner_event_id, processed_timestamp desc);
+create index if not exists runner_baselines_event_time_idx on runner_baselines(runner_event_id, processed_timestamp desc);

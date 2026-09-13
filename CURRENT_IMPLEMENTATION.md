@@ -5,3 +5,6 @@ Implemented: Kalshi/Polymarket observation foundation, canonical market cache, S
 Provider-limited: verified live sportsbook derivative availability, possession/drive richness, injuries, timeouts, starter removal, and liquidity vary by feed. Unsupported inputs remain absent and reduce confidence.
 
 Next calibration stage: ingest representative games, measure projection error and window quality by market family, calibrate possession/PPD and trend weights, and validate suppression thresholds before treating `ACTIONABLE` as production-grade decision support.
+
+
+P0 live desk now adds ESPN CFB date/ranked schedule discovery, canonical live state and summary enrichment, The Odds API v4 CFB sportsbook normalization, independent provider polling/health, immutable Runner baseline intake, guarded model-vs-market comparisons, append-only replay storage, expanded game APIs, and the tabbed RUNNER LIVE DESK dashboard. No sportsbook-derived baseline or automatic execution is enabled. External Odds API health remains unavailable until `ODDS_API_KEY` is configured and a request succeeds.

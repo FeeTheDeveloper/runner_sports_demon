@@ -14,7 +14,20 @@ export function teamCode(name: string): string {
   return last.slice(0, 3).toUpperCase();
 }
 
-export function buildRunnerEventId(input: { sport: string; startsAt: string; awayTeam: string; homeTeam: string }): string {
-  const date = new Date(input.startsAt).toISOString().slice(0, 10);
-  return `RUNNER:${input.sport.toUpperCase()}:${date}:${teamCode(input.awayTeam)}:${teamCode(input.homeTeam)}`;
+function providerCode(value: string | undefined, fallback: string): string {
+  const clean = value?.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return clean || teamCode(fallback);
+}
+
+export function canonicalSport(sport: string): string {
+  const normalized = normalizeToken(sport);
+  if (["cfb", "ncaaf", "college football", "americanfootball ncaaf"].includes(normalized)) return "CFB";
+  return sport.toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+export function buildRunnerEventId(input: { sport: string; startsAt: string; awayTeam: string; homeTeam: string; awayCode?: string; homeCode?: string }): string {
+  const startsAt = new Date(input.startsAt);
+  if (!Number.isFinite(startsAt.getTime())) throw new Error("startsAt must be a valid timestamp");
+  const date = startsAt.toISOString().slice(0, 10);
+  return `RUNNER:${canonicalSport(input.sport)}:${date}:${providerCode(input.awayCode, input.awayTeam)}:${providerCode(input.homeCode, input.homeTeam)}`;
 }
