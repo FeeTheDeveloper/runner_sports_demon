@@ -1,23 +1,30 @@
-import type { CfbGame } from "../types.js";
-import { EspnCfbScheduleClient } from "./espn.js";
+import type { CfbGame, FootballGame, NflGame } from "../types.js";
+import { EspnCfbScheduleClient, EspnNflScheduleClient } from "./espn.js";
 
-export class CfbScheduleService {
-  private readonly client: EspnCfbScheduleClient;
-  private readonly cache = new Map<string, CfbGame[]>();
+class FootballScheduleService<T extends FootballGame> {
+  private readonly cache = new Map<string, T[]>();
 
-  constructor(client = new EspnCfbScheduleClient()) { this.client = client; }
+  constructor(private readonly client: { fetch(date?: string): Promise<T[]> }) {}
 
-  async schedule(date: string): Promise<CfbGame[]> {
+  async schedule(date: string): Promise<T[]> {
     const games = await this.client.fetch(date);
     this.cache.set(date, games);
     return games;
   }
 
-  async today(date = new Date().toISOString().slice(0, 10)): Promise<CfbGame[]> { return this.schedule(date); }
+  async today(date = new Date().toISOString().slice(0, 10)): Promise<T[]> { return this.schedule(date); }
 
-  cached(date: string): CfbGame[] { return this.cache.get(date) ?? []; }
+  cached(date: string): T[] { return this.cache.get(date) ?? []; }
 
-  find(runnerEventId: string): CfbGame | undefined {
+  find(runnerEventId: string): T | undefined {
     return [...this.cache.values()].flat().find((game) => game.runnerEventId === runnerEventId);
   }
+}
+
+export class CfbScheduleService extends FootballScheduleService<CfbGame> {
+  constructor(client = new EspnCfbScheduleClient()) { super(client); }
+}
+
+export class NflScheduleService extends FootballScheduleService<NflGame> {
+  constructor(client = new EspnNflScheduleClient()) { super(client); }
 }
