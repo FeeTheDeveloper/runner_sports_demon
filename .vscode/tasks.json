@@ -7,6 +7,23 @@
     {"label":"Runner: Start","type":"npm","script":"start","isBackground":true,"problemMatcher":[]},
     {"label":"Runner: Scout Help","type":"shell","command":"npm run scout -- --help","problemMatcher":[]},
     {"label":"Runner: Verify","dependsOrder":"sequence","dependsOn":["Runner: Build","Runner: Test"],"problemMatcher":[]},
-    {"label":"Runner: Bootstrap","dependsOrder":"sequence","dependsOn":["Runner: Install","Runner: Verify"],"problemMatcher":[]}
+    {"label":"Runner: Bootstrap","dependsOrder":"sequence","dependsOn":["Runner: Install","Runner: Verify"],"problemMatcher":[]},
+    {"label":"Runner: Health","type":"shell","command":"Invoke-WebRequest http://localhost:8787/health -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
+    {"label":"Runner: NFL Schedule","type":"shell","command":"Invoke-WebRequest 'http://localhost:8787/schedule/nfl' -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
+    {"label":"Runner: Markets","type":"shell","command":"Invoke-WebRequest http://localhost:8787/markets/live -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
+    {"label":"Runner: Totals","type":"shell","command":"Invoke-WebRequest http://localhost:8787/totals/live -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
+    {"label":"Runner: Alerts","type":"shell","command":"Invoke-WebRequest http://localhost:8787/totals/alerts -UseBasicParsing | Select-Object -ExpandProperty Content","problemMatcher":[]},
+    {"label":"Runner: Contracts","type":"npm","script":"contracts:validate","problemMatcher":[]},
+    {"label":"Runner: System Validate","type":"npm","script":"system:validate","problemMatcher":[]},
+    {"label":"Runner: Start Intelligence Stack","dependsOrder":"parallel","dependsOn":["Runner: Start"],"problemMatcher":[]},
+    {"label":"Verse: Setup","type":"shell","command":"npm install","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Validate","type":"shell","command":"npm test","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Build Features","type":"shell","command":"npm run build:features","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Export Demon Artifacts","type":"shell","command":"npm run export:demon","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Site: Install","type":"shell","command":"npm install","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
+    {"label":"Site: Build","type":"shell","command":"npm run build","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
+    {"label":"Site: Test","type":"shell","command":"npm test","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
+    {"label":"Site: Dev","type":"shell","command":"npm run dev","isBackground":true,"options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
+    {"label":"Runner: Validate Full Stack","dependsOrder":"sequence","dependsOn":["Verse: Validate","Runner: Contracts","Runner: Verify","Site: Build","Runner: System Validate"],"problemMatcher":[]}
   ]
 }

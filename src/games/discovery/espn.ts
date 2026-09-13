@@ -11,7 +11,7 @@ type FootballFlavor = { sport: "CFB"; league: "NCAAF" } | { sport: "NFL"; league
 export function mapEspnStatus(state?: string): GameStatus {
   if (state === "in") return "in_progress";
   if (state === "post") return "final";
-  if (state === "scheduled") return "scheduled";
+  if (state === "scheduled" || state === "pre") return "scheduled";
   if (state === "canceled") return "canceled";
   if (state === "postponed") return "postponed";
   return "unknown";

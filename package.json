@@ -12,7 +12,9 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/cli.js start",
     "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js && node dist/tests/game-flow.test.js && node dist/tests/games.test.js && node dist/tests/totals.test.js && node dist/tests/totals-engine.test.js && node dist/tests/site-publisher.test.js",
-    "scout": "npm run build && node dist/cli.js"
+    "scout": "npm run build && node dist/cli.js",
+    "contracts:validate": "node scripts/validate-runner-contracts.mjs",
+    "system:validate": "node scripts/validate-runner-repositories.mjs"
   },
   "repository": {
     "type": "git",

@@ -40,6 +40,8 @@ export function renderWebDashboard(): string {
     .game-score { align-items: end; margin-bottom: 18px; color: var(--lime); font: 600 2rem/1 Georgia, serif; }
     .game-score span { color: var(--muted); font: 12px ui-monospace, monospace; }
     .game-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: 12px; }
+    .sports { display: flex; gap: 8px; margin-bottom: 18px; }
+    .sports button.active { border-color: var(--lime); color: var(--lime); }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 760px; }
     th, td { padding: 14px 20px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
@@ -59,7 +61,8 @@ export function renderWebDashboard(): string {
     </header>
     <nav aria-label="Runner desk sections"><button type="button">Live desk</button><button type="button">Games</button><button type="button">Markets</button><button type="button">Totals</button><button type="button">Props</button><button type="button">Alerts</button><button type="button">Models</button><button type="button">Replay</button><button type="button">Providers</button></nav>
     <section class="panel">
-      <div class="panel-head"><h2>Today's CFB slate</h2><span class="subtle" id="games-note">Authoritative ESPN feed</span></div>
+      <div class="panel-head"><h2>Today's slate</h2><span class="subtle" id="games-note">Authoritative ESPN feed</span></div>
+      <div class="sports" style="padding: 14px 20px 0"><button class="active" data-sport="cfb" type="button">NCAAF</button><button data-sport="nfl" type="button">NFL</button><button data-sport="all" type="button">ALL</button></div>
       <div class="games" id="games" style="padding: 14px 20px"><div class="empty">Loading today's games...</div></div>
     </section>
     <section class="metrics" aria-label="Market summary">
@@ -81,15 +84,17 @@ export function renderWebDashboard(): string {
     const money = value => value == null ? '-' : Math.round(value).toLocaleString('en-US');
     const pct = value => value == null ? '-' : (value * 100).toFixed(1) + '%';
     const time = value => value ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--';
+    let selectedSport = 'cfb';
     async function load() {
       const dot = document.querySelector('#status-dot');
       try {
-        const [healthResponse, marketsResponse, gamesResponse] = await Promise.all([fetch('/health'), fetch('/markets/live'), fetch('/schedule/today')]);
+        const gameRequests = selectedSport === 'all' ? [fetch('/schedule/today?sport=cfb'), fetch('/schedule/today?sport=nfl')] : [fetch('/schedule/today?sport=' + selectedSport)];
+        const [healthResponse, marketsResponse, ...gameResponses] = await Promise.all([fetch('/health'), fetch('/markets/live'), ...gameRequests]);
         if (!healthResponse.ok || !marketsResponse.ok) throw new Error('API unavailable');
         const health = await healthResponse.json();
         const markets = (await marketsResponse.json()).data || [];
-        const gamesPayload = await gamesResponse.json();
-        const games = gamesResponse.ok ? (gamesPayload.data || []) : [];
+        const gamePayloads = await Promise.all(gameResponses.map(response => response.json()));
+        const games = gameResponses.every(response => response.ok) ? gamePayloads.flatMap(payload => payload.data || []) : [];
         const providers = [...new Set(markets.map(m => m.provider))];
         const topLiquidity = Math.max(0, ...markets.map(m => m.liquidity || 0));
         document.querySelector('#market-count').textContent = markets.length.toLocaleString();
@@ -99,8 +104,8 @@ export function renderWebDashboard(): string {
         document.querySelector('#status-text').textContent = 'Live';
         dot.classList.remove('off');
         document.querySelector('#market-note').textContent = markets.length + ' markets in local cache';
-        document.querySelector('#games-note').textContent = gamesResponse.ok ? games.length + ' games found' : 'ESPN feed unavailable';
-        document.querySelector('#games').innerHTML = games.length ? games.map(game => '<article class="game"><div class="game-top"><span>' + game.status.replace('_', ' ') + '</span><span>' + (game.statusDetail || new Date(game.kickoff).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</span></div><h3>' + (game.awayRank ? '#' + game.awayRank + ' ' : '') + game.awayTeam + ' <span class="subtle">@</span> ' + (game.homeRank ? '#' + game.homeRank + ' ' : '') + game.homeTeam + '</h3><div class="game-score"><span>Score</span><b>' + (game.awayScore ?? '-') + ' — ' + (game.homeScore ?? '-') + '</b></div><div class="game-meta"><span>' + (game.venue || 'Venue pending') + '</span><span>' + game.runnerEventId + '</span></div></article>').join('') : '<div class="empty">' + (gamesResponse.ok ? 'No CFB games returned for today.' : 'Schedule unavailable. ESPN did not return authoritative game state.') + '</div>';
+        document.querySelector('#games-note').textContent = gameResponses.every(response => response.ok) ? games.length + ' games found' : 'ESPN feed unavailable';
+        document.querySelector('#games').innerHTML = games.length ? games.map(game => '<article class="game"><div class="game-top"><span>' + game.sport + ' · ' + game.status.replace('_', ' ') + '</span><span>' + (game.statusDetail || new Date(game.kickoff).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</span></div><h3>' + (game.awayRank ? '#' + game.awayRank + ' ' : '') + game.awayTeam + ' <span class="subtle">@</span> ' + (game.homeRank ? '#' + game.homeRank + ' ' : '') + game.homeTeam + '</h3><div class="game-score"><span>Score</span><b>' + (game.awayScore ?? '-') + ' — ' + (game.homeScore ?? '-') + '</b></div><div class="game-meta"><span>' + (game.venue || 'Venue pending') + '</span><span>' + game.runnerEventId + '</span></div></article>').join('') : '<div class="empty">' + (gameResponses.every(response => response.ok) ? 'No games returned for today.' : 'Schedule unavailable. ESPN did not return authoritative game state.') + '</div>';
         document.querySelector('#health').innerHTML = providers.length ? providers.map(provider => '<div class="provider"><span class="dot"></span><b>' + provider + '</b><span>available</span></div>').join('') : '<span class="subtle">No provider data yet</span>';
         document.querySelector('#markets').innerHTML = markets.length ? markets.map(m => '<tr><td>' + (m.provider || '-') + '</td><td class="title" title="' + (m.title || '') + '">' + (m.title || '-') + '</td><td class="price">' + pct(m.yesPrice) + '</td><td>' + pct(m.bid) + ' / ' + pct(m.ask) + '</td><td>' + money(m.liquidity) + '</td><td>' + money(m.volume) + '</td><td>' + (m.sport || '-') + '</td></tr>').join('') : '<tr><td class="empty" colspan="7">No live markets in the cache.</td></tr>';
       } catch (error) {
@@ -110,6 +115,7 @@ export function renderWebDashboard(): string {
       }
     }
     document.querySelector('#refresh').addEventListener('click', load);
+    document.querySelectorAll('[data-sport]').forEach(button => button.addEventListener('click', () => { selectedSport = button.dataset.sport; document.querySelectorAll('[data-sport]').forEach(item => item.classList.toggle('active', item === button)); load(); }));
     load();
     setInterval(load, 15000);
   </script>

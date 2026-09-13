@@ -180,7 +180,7 @@ export interface RawProviderEvent {
 
 export interface NormalizedMarket {
   id: string;
-  provider: "kalshi" | "polymarket";
+  provider: "kalshi" | "polymarket" | "odds_api";
   externalId: string;
   eventId?: string;
   runnerEventId?: string;

@@ -48,6 +48,7 @@ assert.equal(nflGames[0].league, "NFL");
 assert.equal(nflGames[0].awayRank, undefined);
 assert.equal(nflGames[0].status, "scheduled");
 assert.equal(mapEspnStatus("post"), "final");
+assert.equal(mapEspnStatus("pre"), "scheduled");
 assert.equal(mapEspnStatus("unknown"), "unknown");
 assert.equal(new URL((new EspnCfbScheduleClient() as unknown as { baseUrl: string }).baseUrl).pathname, "/apis/site/v2/sports/football/college-football/scoreboard");
 assert.equal(new URL((new EspnNflScheduleClient() as unknown as { baseUrl: string }).baseUrl).pathname, "/apis/site/v2/sports/football/nfl/scoreboard");

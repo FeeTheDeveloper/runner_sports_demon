@@ -12,6 +12,9 @@ This repository is preloaded for repeatable agent-driven engineering in VS Code.
 - `.vscode/extensions.json` — recommended editor enablers.
 - `.vscode/settings.json` — shared workspace defaults.
 - `.env.example` — environment-variable contract only; secrets stay local.
+- `contracts/` — versioned cross-repository JSON Schemas.
+- `.runner/` — handoffs, work claims, and machine-readable system status.
+- `runner-sports-intelligence.code-workspace` — Demon, Verse, and Site multi-root workspace.
 
 ## Agent routing
 | Action | Agent |
@@ -36,6 +39,11 @@ Use **Terminal -> Run Task**:
 - `Runner: Verify` — build + tests.
 - `Runner: Start` — start local scout.
 - `Runner: Scout Help` — inspect CLI commands.
+- `Runner: Contracts` — validate versioned schemas and handoffs.
+- `Runner: System Validate` — verify sibling repository presence.
+- `Runner: Validate Full Stack` — Verse validation, contract validation, Demon verification, Site build, and repository checks.
+
+Open `runner-sports-intelligence.code-workspace` to work across Demon, `../rsaa_verse`, and `../runner_sports-site` with the same ownership and handoff state.
 
 ## Local setup
 1. Pull the branch/repository.
