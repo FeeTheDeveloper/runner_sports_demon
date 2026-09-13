@@ -4,7 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import type { GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsMarketSnapshot, TotalsProjection } from "../totals/types.js";
-import type { CfbGame } from "../games/types.js";
+import type { FootballGame } from "../games/types.js";
 
 function sqlString(value: unknown): string {
   if (value === undefined || value === null) return "null";
@@ -81,7 +81,7 @@ export class SqliteStore {
       values(${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.updatedAt)},${sqlString(JSON.stringify(snapshot))});`);
   }
 
-  persistGames(games: CfbGame[]) {
+  persistGames(games: FootballGame[]) {
     const now = new Date().toISOString();
     this.transaction(games.map((game) => `insert into games(id,sport,league,home_team,away_team,starts_at,status,updated_at)
       values(${sqlString(game.runnerEventId)},${sqlString(game.sport)},${sqlString(game.league)},${sqlString(game.homeTeam)},${sqlString(game.awayTeam)},${sqlString(game.kickoff)},${sqlString(game.status)},${sqlString(now)})

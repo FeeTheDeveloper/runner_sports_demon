@@ -1,10 +1,12 @@
 import { buildRunnerEventId } from "../../normalization/events/canonicalId.js";
 import { fetchJson } from "../../utils/http.js";
-import type { CfbGame, GameStatus } from "../types.js";
+import type { CfbGame, FootballGame, GameStatus, NflGame } from "../types.js";
 
 interface EspnCompetitor { team?: { displayName?: string; abbreviation?: string }; homeAway?: string; score?: string; curatedRank?: { current?: number }; }
 interface EspnCompetition { id?: string; date?: string; competitors?: EspnCompetitor[]; venue?: { fullName?: string }; status?: { type?: { state?: string; description?: string; detail?: string }; period?: number; displayClock?: string }; situation?: { possession?: string }; }
 interface EspnScoreboard { events?: Array<{ id?: string; date?: string; competitions?: EspnCompetition[] }>; }
+
+type FootballFlavor = { sport: "CFB"; league: "NCAAF" } | { sport: "NFL"; league: "NFL" };
 
 export function mapEspnStatus(state?: string): GameStatus {
   if (state === "in") return "in_progress";
@@ -15,7 +17,12 @@ export function mapEspnStatus(state?: string): GameStatus {
   return "unknown";
 }
 
-export function normalizeEspnScoreboard(payload: EspnScoreboard, receivedTimestamp: string, processedTimestamp = new Date().toISOString()): CfbGame[] {
+export function normalizeEspnFootballScoreboard(
+  payload: EspnScoreboard,
+  receivedTimestamp: string,
+  flavor: FootballFlavor,
+  processedTimestamp = new Date().toISOString(),
+): FootballGame[] {
   return (payload.events ?? []).flatMap((event) => {
     const competition = event.competitions?.[0];
     const competitors = competition?.competitors ?? [];
@@ -28,46 +35,66 @@ export function normalizeEspnScoreboard(payload: EspnScoreboard, receivedTimesta
     const sourceTimestamp = event.date ?? kickoff;
     const state = competition?.status?.type;
     const possession = competition?.situation?.possession;
-    return [{
-      runnerEventId: buildRunnerEventId({ sport: "CFB", startsAt: kickoff, awayTeam, homeTeam, awayCode: away?.team?.abbreviation, homeCode: home?.team?.abbreviation }),
+    const base = {
+      runnerEventId: buildRunnerEventId({ sport: flavor.sport, startsAt: kickoff, awayTeam, homeTeam, awayCode: away?.team?.abbreviation, homeCode: home?.team?.abbreviation }),
       providerEventId: event.id,
-      sport: "CFB",
-      league: "NCAAF",
       awayTeam,
       homeTeam,
       awayAbbreviation: away?.team?.abbreviation,
       homeAbbreviation: home?.team?.abbreviation,
-      awayRank: validRank(away?.curatedRank?.current),
-      homeRank: validRank(home?.curatedRank?.current),
+      awayRank: flavor.sport === "CFB" ? validRank(away?.curatedRank?.current) : undefined,
+      homeRank: flavor.sport === "CFB" ? validRank(home?.curatedRank?.current) : undefined,
       kickoff,
       venue: competition?.venue?.fullName,
       status: mapEspnStatus(state?.state),
       statusDetail: state?.detail ?? state?.description,
       period: competition?.status?.period,
       clock: competition?.status?.displayClock,
-      possession: possession === away?.team?.displayName || possession === away?.team?.abbreviation ? "AWAY" : possession === home?.team?.displayName || possession === home?.team?.abbreviation ? "HOME" : undefined,
+      possession: possession === away?.team?.displayName || possession === away?.team?.abbreviation ? "AWAY" as const : possession === home?.team?.displayName || possession === home?.team?.abbreviation ? "HOME" as const : undefined,
       awayScore: parseScore(away?.score),
       homeScore: parseScore(home?.score),
-      source: "espn",
+      source: "espn" as const,
       sourceTimestamp,
       receivedTimestamp,
       processedTimestamp,
       raw: event,
-    }];
+    };
+    return flavor.sport === "NFL"
+      ? [{ ...base, sport: "NFL" as const, league: "NFL" as const }]
+      : [{ ...base, sport: "CFB" as const, league: "NCAAF" as const }];
   });
+}
+
+export function normalizeEspnScoreboard(payload: EspnScoreboard, receivedTimestamp: string, processedTimestamp = new Date().toISOString()): CfbGame[] {
+  return normalizeEspnFootballScoreboard(payload, receivedTimestamp, { sport: "CFB", league: "NCAAF" }, processedTimestamp) as CfbGame[];
+}
+
+export function normalizeEspnNflScoreboard(payload: EspnScoreboard, receivedTimestamp: string, processedTimestamp = new Date().toISOString()): NflGame[] {
+  return normalizeEspnFootballScoreboard(payload, receivedTimestamp, { sport: "NFL", league: "NFL" }, processedTimestamp) as NflGame[];
 }
 
 function validRank(rank?: number): number | undefined { return rank !== undefined && rank > 0 && rank < 26 ? rank : undefined; }
 function parseScore(score?: string): number | undefined { const parsed = Number(score); return Number.isFinite(parsed) ? parsed : undefined; }
 
-export class EspnCfbScheduleClient {
-  private readonly baseUrl = process.env.ESPN_SCOREBOARD_URL ?? "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard";
+abstract class EspnFootballScheduleClient<T extends FootballGame> {
+  protected abstract readonly baseUrl: string;
+  protected abstract normalize(payload: EspnScoreboard, receivedTimestamp: string): T[];
 
-  async fetch(date = new Date().toISOString().slice(0, 10)): Promise<CfbGame[]> {
+  async fetch(date = new Date().toISOString().slice(0, 10)): Promise<T[]> {
     const url = new URL(this.baseUrl);
     url.searchParams.set("dates", date.replaceAll("-", ""));
     url.searchParams.set("limit", "500");
     const result = await fetchJson<EspnScoreboard>(url);
-    return normalizeEspnScoreboard(result.data, result.receivedAt);
+    return this.normalize(result.data, result.receivedAt);
   }
+}
+
+export class EspnCfbScheduleClient extends EspnFootballScheduleClient<CfbGame> {
+  protected readonly baseUrl = process.env.ESPN_CFB_SCOREBOARD_URL ?? process.env.ESPN_SCOREBOARD_URL ?? "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard";
+  protected normalize(payload: EspnScoreboard, receivedTimestamp: string): CfbGame[] { return normalizeEspnScoreboard(payload, receivedTimestamp); }
+}
+
+export class EspnNflScheduleClient extends EspnFootballScheduleClient<NflGame> {
+  protected readonly baseUrl = process.env.ESPN_NFL_SCOREBOARD_URL ?? "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+  protected normalize(payload: EspnScoreboard, receivedTimestamp: string): NflGame[] { return normalizeEspnNflScoreboard(payload, receivedTimestamp); }
 }
