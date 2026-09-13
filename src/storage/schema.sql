@@ -10,6 +10,17 @@ create table if not exists games (
   updated_at text not null default (datetime('now'))
 );
 
+create table if not exists game_state_snapshots (
+  id text primary key,
+  runner_event_id text not null,
+  provider text not null,
+  provider_event_id text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  payload_json text not null
+);
+
 create table if not exists provider_mappings (
   id integer primary key autoincrement,
   runner_event_id text not null,
@@ -194,6 +205,7 @@ create table if not exists totals_window_transitions (id integer primary key aut
 create table if not exists totals_set_points (id text primary key, runner_event_id text not null, set_point_type text not null, status text not null default 'PENDING', processed_timestamp text not null, payload_json text not null);
 
 create index if not exists market_prices_market_time_idx on market_prices(market_id, processed_timestamp desc);
+create index if not exists game_state_snapshots_event_time_idx on game_state_snapshots(runner_event_id, processed_timestamp desc);
 create index if not exists market_events_market_time_idx on market_events(market_id, processed_timestamp desc);
 create index if not exists markets_provider_status_idx on markets(provider, status);
 create index if not exists game_flow_observations_event_time_idx on game_flow_observations(runner_event_id, observed_at desc);

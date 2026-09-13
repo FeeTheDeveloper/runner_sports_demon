@@ -14,7 +14,9 @@ export function teamCode(name: string): string {
   return last.slice(0, 3).toUpperCase();
 }
 
-export function buildRunnerEventId(input: { sport: string; startsAt: string; awayTeam: string; homeTeam: string }): string {
+export function buildRunnerEventId(input: { sport: string; startsAt: string; awayTeam: string; homeTeam: string; awayCode?: string; homeCode?: string }): string {
   const date = new Date(input.startsAt).toISOString().slice(0, 10);
-  return `RUNNER:${input.sport.toUpperCase()}:${date}:${teamCode(input.awayTeam)}:${teamCode(input.homeTeam)}`;
+  return `RUNNER:${input.sport.toUpperCase()}:${date}:${input.awayCode ? normalizeCode(input.awayCode) : teamCode(input.awayTeam)}:${input.homeCode ? normalizeCode(input.homeCode) : teamCode(input.homeTeam)}`;
 }
+
+function normalizeCode(value: string): string { return value.normalize("NFKD").replace(/[^a-zA-Z0-9]+/g, "_").toUpperCase(); }

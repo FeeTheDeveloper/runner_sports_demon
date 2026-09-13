@@ -29,6 +29,17 @@ export function renderWebDashboard(): string {
     .health { display: flex; flex-wrap: wrap; gap: 8px; }
     .provider { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font: 12px ui-monospace, monospace; }
     .provider b { color: var(--ink); }
+    nav { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 34px; border-bottom: 1px solid var(--line); }
+    nav button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 12px; color: var(--muted); background: transparent; font: 11px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    nav button:first-child { border-bottom-color: var(--lime); color: var(--lime); }
+    .games { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .game { padding: 18px; border: 1px solid var(--line); background: linear-gradient(135deg, #17272b, #111a1f); }
+    .game-top, .game-score { display: flex; justify-content: space-between; gap: 14px; }
+    .game-top { color: var(--muted); font: 11px ui-monospace, monospace; text-transform: uppercase; }
+    .game h3 { margin: 20px 0 12px; font: 600 1.35rem/1.1 Georgia, serif; }
+    .game-score { align-items: end; margin-bottom: 18px; color: var(--lime); font: 600 2rem/1 Georgia, serif; }
+    .game-score span { color: var(--muted); font: 12px ui-monospace, monospace; }
+    .game-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: 12px; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 760px; }
     th, td { padding: 14px 20px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
@@ -43,9 +54,14 @@ export function renderWebDashboard(): string {
 <body>
   <main>
     <header>
-      <div><div class="eyebrow">Local market intelligence</div><h1>Runner Scout</h1><div class="subtle">Live prediction-market monitor</div></div>
+      <div><div class="eyebrow">Local sports intelligence</div><h1>Runner Live Desk</h1><div class="subtle">College football state, markets, and signals</div></div>
       <div><div class="status"><span id="status-dot" class="dot off"></span><span id="status-text">Connecting</span></div><button id="refresh" type="button">Refresh data</button></div>
     </header>
+    <nav aria-label="Runner desk sections"><button type="button">Live desk</button><button type="button">Games</button><button type="button">Markets</button><button type="button">Totals</button><button type="button">Props</button><button type="button">Alerts</button><button type="button">Models</button><button type="button">Replay</button><button type="button">Providers</button></nav>
+    <section class="panel">
+      <div class="panel-head"><h2>Today's CFB slate</h2><span class="subtle" id="games-note">Authoritative ESPN feed</span></div>
+      <div class="games" id="games" style="padding: 14px 20px"><div class="empty">Loading today's games...</div></div>
+    </section>
     <section class="metrics" aria-label="Market summary">
       <div class="metric"><span class="subtle">Live markets</span><strong id="market-count">--</strong></div>
       <div class="metric"><span class="subtle">Providers online</span><strong id="provider-count">--</strong></div>
@@ -68,10 +84,12 @@ export function renderWebDashboard(): string {
     async function load() {
       const dot = document.querySelector('#status-dot');
       try {
-        const [healthResponse, marketsResponse] = await Promise.all([fetch('/health'), fetch('/markets/live')]);
+        const [healthResponse, marketsResponse, gamesResponse] = await Promise.all([fetch('/health'), fetch('/markets/live'), fetch('/schedule/today')]);
         if (!healthResponse.ok || !marketsResponse.ok) throw new Error('API unavailable');
         const health = await healthResponse.json();
         const markets = (await marketsResponse.json()).data || [];
+        const gamesPayload = await gamesResponse.json();
+        const games = gamesResponse.ok ? (gamesPayload.data || []) : [];
         const providers = [...new Set(markets.map(m => m.provider))];
         const topLiquidity = Math.max(0, ...markets.map(m => m.liquidity || 0));
         document.querySelector('#market-count').textContent = markets.length.toLocaleString();
@@ -81,6 +99,8 @@ export function renderWebDashboard(): string {
         document.querySelector('#status-text').textContent = 'Live';
         dot.classList.remove('off');
         document.querySelector('#market-note').textContent = markets.length + ' markets in local cache';
+        document.querySelector('#games-note').textContent = gamesResponse.ok ? games.length + ' games found' : 'ESPN feed unavailable';
+        document.querySelector('#games').innerHTML = games.length ? games.map(game => '<article class="game"><div class="game-top"><span>' + game.status.replace('_', ' ') + '</span><span>' + (game.statusDetail || new Date(game.kickoff).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</span></div><h3>' + (game.awayRank ? '#' + game.awayRank + ' ' : '') + game.awayTeam + ' <span class="subtle">@</span> ' + (game.homeRank ? '#' + game.homeRank + ' ' : '') + game.homeTeam + '</h3><div class="game-score"><span>Score</span><b>' + (game.awayScore ?? '-') + ' — ' + (game.homeScore ?? '-') + '</b></div><div class="game-meta"><span>' + (game.venue || 'Venue pending') + '</span><span>' + game.runnerEventId + '</span></div></article>').join('') : '<div class="empty">' + (gamesResponse.ok ? 'No CFB games returned for today.' : 'Schedule unavailable. ESPN did not return authoritative game state.') + '</div>';
         document.querySelector('#health').innerHTML = providers.length ? providers.map(provider => '<div class="provider"><span class="dot"></span><b>' + provider + '</b><span>available</span></div>').join('') : '<span class="subtle">No provider data yet</span>';
         document.querySelector('#markets').innerHTML = markets.length ? markets.map(m => '<tr><td>' + (m.provider || '-') + '</td><td class="title" title="' + (m.title || '') + '">' + (m.title || '-') + '</td><td class="price">' + pct(m.yesPrice) + '</td><td>' + pct(m.bid) + ' / ' + pct(m.ask) + '</td><td>' + money(m.liquidity) + '</td><td>' + money(m.volume) + '</td><td>' + (m.sport || '-') + '</td></tr>').join('') : '<tr><td class="empty" colspan="7">No live markets in the cache.</td></tr>';
       } catch (error) {

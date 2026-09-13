@@ -4,6 +4,7 @@ import { dirname, join, resolve } from "node:path";
 import type { GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsMarketSnapshot, TotalsProjection } from "../totals/types.js";
+import type { CfbGame } from "../games/types.js";
 
 function sqlString(value: unknown): string {
   if (value === undefined || value === null) return "null";
@@ -78,6 +79,15 @@ export class SqliteStore {
       values(${sqlString(observation.id)},${sqlString(observation.runnerEventId)},${sqlString(observation.source)},${sqlString(observation.observedAt)},${sqlString(observation.receivedAt)},${sqlNumber(observation.confidence)},${sqlString(JSON.stringify(observation))});
       insert or replace into game_flow_snapshots(runner_event_id,updated_at,payload_json)
       values(${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.updatedAt)},${sqlString(JSON.stringify(snapshot))});`);
+  }
+
+  persistGames(games: CfbGame[]) {
+    const now = new Date().toISOString();
+    this.transaction(games.map((game) => `insert into games(id,sport,league,home_team,away_team,starts_at,status,updated_at)
+      values(${sqlString(game.runnerEventId)},${sqlString(game.sport)},${sqlString(game.league)},${sqlString(game.homeTeam)},${sqlString(game.awayTeam)},${sqlString(game.kickoff)},${sqlString(game.status)},${sqlString(now)})
+      on conflict(id) do update set home_team=excluded.home_team,away_team=excluded.away_team,starts_at=excluded.starts_at,status=excluded.status,updated_at=excluded.updated_at;
+      insert or replace into game_state_snapshots(id,runner_event_id,provider,provider_event_id,source_timestamp,received_timestamp,processed_timestamp,payload_json)
+      values(${sqlString(stableHash(game))},${sqlString(game.runnerEventId)},${sqlString(game.source)},${sqlString(game.providerEventId)},${sqlString(game.sourceTimestamp)},${sqlString(game.receivedTimestamp)},${sqlString(game.processedTimestamp)},${sqlString(JSON.stringify(game))});`).join("\n"));
   }
 
   persistTotals(flow: TotalsFlowState, projections: TotalsProjection[], markets: TotalsMarketSnapshot[], windows: TotalsDecisionWindow[]) {
