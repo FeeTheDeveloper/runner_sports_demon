@@ -16,14 +16,17 @@
     {"label":"Runner: Contracts","type":"npm","script":"contracts:validate","problemMatcher":[]},
     {"label":"Runner: System Validate","type":"npm","script":"system:validate","problemMatcher":[]},
     {"label":"Runner: Start Intelligence Stack","dependsOrder":"parallel","dependsOn":["Runner: Start"],"problemMatcher":[]},
-    {"label":"Verse: Setup","type":"shell","command":"npm install","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
-    {"label":"Verse: Validate","type":"shell","command":"npm test","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
-    {"label":"Verse: Build Features","type":"shell","command":"npm run build:features","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
-    {"label":"Verse: Export Demon Artifacts","type":"shell","command":"npm run export:demon","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: R Package Check","type":"shell","command":"Rscript -e \"if (!requireNamespace('devtools', quietly=TRUE)) stop('devtools is required'); devtools::check()\"","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Update Snap Counts","type":"shell","command":"Rscript auto/update_snap_counts.R","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Update Advanced Stats","type":"shell","command":"Rscript auto/update_adv_stats.R","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Acquire NFL 2025 PBP","type":"shell","command":"py ..\\runner_sports_demon\\scripts\\ingest_nflverse_pbp.py --start 2025 --end 2025 --root data","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Build NFL 2025 Warehouse","type":"shell","command":"py dev/build_runner_nfl_history.py --input data/raw/nfl/play_by_play/season=2025/play_by_play_2025.parquet --warehouse warehouse/runner_nfl_history.duckdb --season 2025","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Verse: Export Demon Artifacts","type":"shell","command":"py dev/export_runner_demon.py --warehouse warehouse/runner_nfl_history.duckdb --output exports/runner_demon --season 2025","options":{"cwd":"${workspaceFolder:rsaa_verse}"},"problemMatcher":[]},
+    {"label":"Demon: Validate Verse Export","type":"npm","script":"verse:validate-export","problemMatcher":[]},
     {"label":"Site: Install","type":"shell","command":"npm install","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
     {"label":"Site: Build","type":"shell","command":"npm run build","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
-    {"label":"Site: Test","type":"shell","command":"npm test","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
+    {"label":"Site: Lint","type":"shell","command":"npm run lint","options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
     {"label":"Site: Dev","type":"shell","command":"npm run dev","isBackground":true,"options":{"cwd":"${workspaceFolder:runner_sports-site}"},"problemMatcher":[]},
-    {"label":"Runner: Validate Full Stack","dependsOrder":"sequence","dependsOn":["Verse: Validate","Runner: Contracts","Runner: Verify","Site: Build","Runner: System Validate"],"problemMatcher":[]}
+    {"label":"Runner: Validate Full Stack","dependsOrder":"sequence","dependsOn":["Runner: Contracts","Demon: Validate Verse Export","Runner: Verify","Site: Build","Runner: System Validate"],"problemMatcher":[]}
   ]
 }

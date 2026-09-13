@@ -13,13 +13,13 @@ Existing football totals heuristics; model registry integration pending.
 ESPN CFB/NFL scoreboard; Kalshi; optional Polymarket; credential-gated Odds API NFL markets.
 
 ## DATA HEALTH
-Schedule routes verified. Live PBP/drive ingestion and sportsbook credentials remain incomplete.
+2025 nflverse PBP acquired and normalized in Verse; 285 games, 6045 drives, 2312 period rows, and 48767 state samples exported with checksums. Live PBP/drive ingestion and sportsbook credentials remain incomplete.
 
 ## CURRENT BUILD
 Demon is the live intelligence system of record. RSAA Verse owns historical data/features. Runner Site owns presentation.
 
 ## OPEN BLOCKERS
-No validated Verse export consumed by Demon; no live NFL PBP/drive adapter; Odds API and authenticated Kalshi credentials depend on local environment.
+Demon historical adapter has not loaded the validated export; no live NFL PBP/drive adapter; Odds API and authenticated Kalshi credentials depend on local environment; R tooling is unavailable locally.
 
 ## ACTIVE HANDOFFS
 See `.runner/handoffs/`.
@@ -34,4 +34,4 @@ Existing model versions remain documented in Demon model notes.
 No cross-repository feature export accepted yet.
 
 ## NEXT ACTIONS
-Validate Verse 2025 NFL export, complete Demon live NFL state, connect model artifacts, then validate Site consumption.
+Validate and load the Verse 2025 NFL export, complete Demon live NFL state, connect model artifacts, then validate Site consumption.
