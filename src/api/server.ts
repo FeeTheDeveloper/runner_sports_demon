@@ -1,11 +1,67 @@
 import { createServer } from "node:http";
-import type { IncomingMessage } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
+import { timingSafeEqual } from "node:crypto";
 import { MarketStateCache } from "../state/market-state/cache.js";
 import { GameFlowEngine } from "../game-flow/engine.js";
 import { SqliteStore } from "../storage/sqlite.js";
 import { TotalsRuntime } from "../totals/runtime.js";
 import { renderWebDashboard } from "../dashboard/web.js";
 import { CfbScheduleService, NflScheduleService } from "../games/discovery/service.js";
+import { optionalStringEnv } from "../utils/env.js";
+
+// Compares the provided bearer token against the configured one in constant time,
+// so response timing cannot be used to guess the correct token byte-by-byte.
+function safeTokenMatch(provided: string, expected: string): boolean {
+  const providedBuf = Buffer.from(provided);
+  const expectedBuf = Buffer.from(expected);
+  if (providedBuf.length !== expectedBuf.length) return false;
+  return timingSafeEqual(providedBuf, expectedBuf);
+}
+
+// Fail-closed bearer-token check for mutating endpoints. Writes an error response and
+// returns false when the caller should not proceed; returns true when the request is authorized.
+// If RUNNER_API_BEARER_TOKEN is unset, this is a deploy misconfiguration, not an open endpoint:
+// every mutating request is rejected with 503 rather than silently allowed through.
+function requireBearerAuth(request: IncomingMessage, response: ServerResponse): boolean {
+  const expectedToken = optionalStringEnv("RUNNER_API_BEARER_TOKEN");
+  if (!expectedToken) {
+    response.statusCode = 503;
+    response.end(JSON.stringify({ error: "auth_not_configured" }));
+    return false;
+  }
+  const header = request.headers.authorization;
+  const match = typeof header === "string" ? header.match(/^Bearer\s+(.+)$/i) : null;
+  const provided = match?.[1];
+  if (!provided || !safeTokenMatch(provided, expectedToken)) {
+    response.statusCode = 401;
+    response.end(JSON.stringify({ error: "unauthorized" }));
+    return false;
+  }
+  return true;
+}
+
+// CORS is opt-in and configurable via RUNNER_API_ALLOWED_ORIGINS (comma-separated origins,
+// or a literal "*" entry to explicitly allow any origin). No env var set => no CORS header at
+// all, rather than the previous unconditional Access-Control-Allow-Origin: *.
+function applyCors(request: IncomingMessage, response: ServerResponse): void {
+  const allowedOrigins = (optionalStringEnv("RUNNER_API_ALLOWED_ORIGINS") ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+  if (allowedOrigins.length === 0) return;
+  const requestOrigin = request.headers.origin;
+  let allowOrigin: string | undefined;
+  if (allowedOrigins.includes("*")) {
+    allowOrigin = "*";
+  } else if (typeof requestOrigin === "string" && allowedOrigins.includes(requestOrigin)) {
+    allowOrigin = requestOrigin;
+    response.setHeader("vary", "Origin");
+  }
+  if (!allowOrigin) return;
+  response.setHeader("access-control-allow-origin", allowOrigin);
+  response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
+  response.setHeader("access-control-allow-headers", "Content-Type, Authorization");
+}
 
 export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFlowEngine(), store?: SqliteStore) {
   const totals = new TotalsRuntime(store);
@@ -13,7 +69,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
   const nflSchedule = new NflScheduleService();
   const server = createServer(async (request, response) => {
     response.setHeader("content-type", "application/json");
-    response.setHeader("access-control-allow-origin", "*");
+    applyCors(request, response);
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
     const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
     const path = requestUrl.pathname;
@@ -40,6 +96,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
       return;
     }
     if (request.method === "POST" && path === "/observations") {
+      if (!requireBearerAuth(request, response)) return;
       try {
         const observation = JSON.parse(await readBody(request));
         const snapshot = flow.ingest(observation);
@@ -53,6 +110,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
       return;
     }
     if (request.method === "POST" && path === "/totals/evaluate") {
+      if (!requireBearerAuth(request, response)) return;
       try {
         const body = JSON.parse(await readBody(request));
         const result = totals.evaluate(body.input, body.markets ?? []);
@@ -84,7 +142,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
         response.end(JSON.stringify({ data })); return;
       }
       if (view === "markets") { response.end(JSON.stringify({ data: cache.all().filter((market) => market.runnerEventId === runnerEventId) })); return; }
-      if (view === "props") { response.end(JSON.stringify({ data: [] })); return; }
+      if (view === "props") { response.end(JSON.stringify({ data: [], implemented: false })); return; }
       if (!game) { response.statusCode = 404; response.end(JSON.stringify({ error: "game_not_found" })); return; }
       response.end(JSON.stringify({ data: game })); return;
     }
@@ -92,7 +150,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     else if (path === "/markets/live") response.end(JSON.stringify({ data: cache.all() }));
     else if (path === "/totals/live") response.end(JSON.stringify({ data: totals.all().length ? totals.all() : flow.allSnapshots().map((snapshot) => ({ runnerEventId: snapshot.runnerEventId, timestamp: snapshot.totals.timestamp, totals: snapshot.totals, signals: snapshot.totalsSignals })) }));
     else if (path === "/totals/alerts") response.end(JSON.stringify({ data: totals.alerts() }));
-    else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [] }));
+    else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [], implemented: false }));
     else { response.statusCode = 404; response.end(JSON.stringify({ error: "not_found" })); }
   });
   server.listen(port, () => console.log(`Runner Scout API listening on http://localhost:${port}`));

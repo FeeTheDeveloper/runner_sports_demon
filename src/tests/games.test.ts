@@ -47,6 +47,8 @@ assert.equal(nflGames[0].sport, "NFL");
 assert.equal(nflGames[0].league, "NFL");
 assert.equal(nflGames[0].awayRank, undefined);
 assert.equal(nflGames[0].status, "scheduled");
+assert.equal(nflGames[0].awayScore, undefined);
+assert.equal(nflGames[0].homeScore, undefined);
 assert.equal(mapEspnStatus("post"), "final");
 assert.equal(mapEspnStatus("pre"), "scheduled");
 assert.equal(mapEspnStatus("unknown"), "unknown");

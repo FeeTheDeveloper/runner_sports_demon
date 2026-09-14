@@ -51,8 +51,8 @@ export function normalizeEspnFootballScoreboard(
       period: competition?.status?.period,
       clock: competition?.status?.displayClock,
       possession: possession === away?.team?.displayName || possession === away?.team?.abbreviation ? "AWAY" as const : possession === home?.team?.displayName || possession === home?.team?.abbreviation ? "HOME" as const : undefined,
-      awayScore: parseScore(away?.score),
-      homeScore: parseScore(home?.score),
+      awayScore: scoreForStatus(mapEspnStatus(state?.state), away?.score),
+      homeScore: scoreForStatus(mapEspnStatus(state?.state), home?.score),
       source: "espn" as const,
       sourceTimestamp,
       receivedTimestamp,
@@ -75,6 +75,7 @@ export function normalizeEspnNflScoreboard(payload: EspnScoreboard, receivedTime
 
 function validRank(rank?: number): number | undefined { return rank !== undefined && rank > 0 && rank < 26 ? rank : undefined; }
 function parseScore(score?: string): number | undefined { const parsed = Number(score); return Number.isFinite(parsed) ? parsed : undefined; }
+function scoreForStatus(status: GameStatus, score?: string): number | undefined { return status === "scheduled" ? undefined : parseScore(score); }
 
 abstract class EspnFootballScheduleClient<T extends FootballGame> {
   protected abstract readonly baseUrl: string;
