@@ -28,7 +28,7 @@ export function validateBaseline(input: BaselineInput): void {
   if (typeof input.modelName !== "string" || typeof input.modelVersion !== "string" || typeof input.selection !== "string" || !input.modelName.trim() || !input.modelVersion.trim() || !input.selection.trim()) throw new Error("modelName, modelVersion, and selection are required");
   if (input.modelName === "baseline_market_implied_v0" || /market[_ -]?implied/i.test(input.modelName)) throw new Error("pregame baselines cannot use a market-implied model");
   if (!Array.isArray(input.inputs) || input.inputs.length === 0 || input.inputs.some((value) => typeof value !== "string" || !value.trim())) throw new Error("at least one model input is required");
-  if (input.inputs.some((value) => /(sportsbook|market)[_ -]?(price|odds)|odds[_ -]?consensus/i.test(value))) throw new Error("pregame baseline inputs must be market-independent");
+  if (input.inputs.some((value) => /(sportsbook|prediction[_ -]?market|market)[_ -]?(price|odds|implied|probability|consensus)|odds[_ -]?consensus/i.test(value))) throw new Error("pregame baseline inputs must be market-independent");
   if (!Number.isFinite(input.confidence) || input.confidence < 0 || input.confidence > 1) throw new Error("confidence must be between 0 and 1");
   if (!Number.isFinite(input.dataQuality) || input.dataQuality < 0 || input.dataQuality > 1) throw new Error("dataQuality must be between 0 and 1");
   const sourceTime = new Date(input.sourceTimestamp);
