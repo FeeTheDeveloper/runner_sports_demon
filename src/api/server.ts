@@ -26,8 +26,9 @@ function requireBearerAuth(request: IncomingMessage, response: ServerResponse): 
     return false;
   }
   const header = request.headers.authorization;
-  const match = typeof header === "string" ? header.match(/^Bearer\s+(.+)$/i) : null;
-  const provided = match?.[1];
+  const provided = typeof header === "string" && header.toLowerCase().startsWith("bearer ")
+    ? header.slice(7).trim()
+    : undefined;
   if (!provided || !safeTokenMatch(provided, expectedToken)) {
     response.statusCode = 401;
     response.end(JSON.stringify({ error: "unauthorized" }));
