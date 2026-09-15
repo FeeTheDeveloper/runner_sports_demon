@@ -241,22 +241,144 @@ export interface GameFlowSnapshot {
   totalsSignals: TotalsSignalType[];
 }
 
+export type ProviderHealthStatus = "CONNECTED" | "DISCONNECTED" | "DEGRADED" | "STALE" | "RECONNECTING" | "DISABLED";
+
 export interface ProviderHealth {
   provider: Provider;
   connected: boolean;
+  status?: ProviderHealthStatus;
   lastMessageAt?: string;
   lastError?: string;
   reconnectAttempts: number;
   eventCount: number;
   latencyMs?: number;
+  rateLimitRemaining?: number;
+  rateLimitUsed?: number;
+  nextRetryAt?: string;
 }
 
 export interface RawProviderEvent {
   provider: Provider;
+  eventType?: string;
+  providerEventId?: string;
   receivedTimestamp: string;
   sourceTimestamp: string;
   payload: unknown;
   latencyMs?: number;
+}
+
+export type GameStatusState = "SCHEDULED" | "IN_PROGRESS" | "FINAL" | "POSTPONED" | "CANCELED" | "UNKNOWN";
+
+export interface CanonicalGameTeam {
+  providerId?: string;
+  name: string;
+  shortName?: string;
+  abbreviation?: string;
+  rank?: number;
+  score?: number;
+  winner?: boolean;
+  logo?: string;
+}
+
+export interface CanonicalGameState {
+  runnerEventId: string;
+  sport: "CFB";
+  league: string;
+  provider: "espn";
+  providerEventId: string;
+  startTime: string;
+  status: GameStatusState;
+  statusDetail?: string;
+  completed?: boolean;
+  home: CanonicalGameTeam;
+  away: CanonicalGameTeam;
+  period?: number;
+  clock?: string;
+  clockSecondsRemaining?: number;
+  possession?: "HOME" | "AWAY" | "UNKNOWN";
+  down?: number;
+  distance?: number;
+  yardLine?: number;
+  situationText?: string;
+  venue?: string;
+  broadcasts?: string[];
+  stats?: { home?: Record<string, string | number>; away?: Record<string, string | number> };
+  drives?: Array<{ id?: string; team?: "HOME" | "AWAY"; description?: string; result?: string; start?: string; end?: string; plays?: number }>;
+  plays?: Array<{ id?: string; sequence?: number; type?: string; text?: string; period?: number; clock?: string; team?: "HOME" | "AWAY"; scoringPlay?: boolean; scoreValue?: number }>;
+  sourceTimestamp: string;
+  sourceTimestampEstimated: boolean;
+  receivedTimestamp: string;
+  processedTimestamp: string;
+}
+
+export type SportsMarketKind = "MONEYLINE" | "SPREAD" | "TOTAL" | "TEAM_TOTAL" | "PROP" | "DERIVATIVE";
+
+export interface SportsMarketSnapshot {
+  id: string;
+  provider: "odds_api";
+  providerEventId: string;
+  runnerEventId?: string;
+  sport: "CFB";
+  startTime?: string;
+  homeTeam?: string;
+  awayTeam?: string;
+  bookmakerKey: string;
+  bookmakerName: string;
+  marketKey: string;
+  marketKind: SportsMarketKind;
+  selection: string;
+  teamSide?: "HOME" | "AWAY";
+  participant?: string;
+  line?: number;
+  americanPrice?: number;
+  executable: boolean;
+  status: string;
+  sourceTimestamp: string;
+  sourceTimestampEstimated: boolean;
+  receivedTimestamp: string;
+  processedTimestamp: string;
+  raw: unknown;
+}
+
+export type BaselineTarget = "MONEYLINE" | "SPREAD" | "TOTAL" | "TEAM_TOTAL";
+export interface RunnerBaseline {
+  id: string;
+  runnerEventId: string;
+  phase: "PRE_GAME" | "CURRENT";
+  target: BaselineTarget;
+  selection: string;
+  modelName: string;
+  modelVersion: string;
+  sourceType: "RUNNER_MODEL" | "EXTERNAL_MODEL";
+  fairProbability?: number;
+  fairLine?: number;
+  confidence: number;
+  dataQuality: number;
+  inputs: string[];
+  sourceTimestamp: string;
+  receivedTimestamp: string;
+  processedTimestamp: string;
+}
+
+export interface MarketModelComparison {
+  runnerEventId: string;
+  baselineId?: string;
+  marketSnapshotId?: string;
+  target?: BaselineTarget;
+  selection?: string;
+  available: boolean;
+  fairProbability?: number;
+  marketProbability?: number;
+  probabilityEdge?: number;
+  fairLine?: number;
+  marketLine?: number;
+  lineEdge?: number;
+  americanPrice?: number;
+  confidence?: number;
+  dataQuality?: number;
+  executionAssessment: "NOT_EVALUATED";
+  suppressionReasons: string[];
+  processedTimestamp: string;
 }
 
 export interface NormalizedMarket {

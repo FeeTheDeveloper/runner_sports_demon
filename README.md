@@ -20,14 +20,12 @@ This repository remains local-first. SQLite is the authoritative engine store, w
 
 ## Operational now
 
-- Kalshi REST market discovery with optional auth signing.
-- Polymarket Gamma sports market discovery.
-- WebSocket client scaffolding for Kalshi and Polymarket market channels.
-- Normalized market schema with source/received/processed timestamps.
-- SQLite current-state plus append-only market event and price persistence.
-- Provider health tracking.
-- Terminal dashboard sorted by liquidity/volume.
-- Minimal local API for health and live markets.
+- Kalshi and optional Polymarket market discovery plus WebSocket client scaffolding.
+- ESPN CFB scoreboard discovery and live summary normalization.
+- The Odds API v4 CFB moneyline/spread/total and returned-derivative normalization.
+- Canonical game ids, provider mappings, current caches, and append-only SQLite history.
+- Immutable market-independent Runner baseline intake and guarded model-vs-market comparisons.
+- Provider health, independent polling/backoff, terminal monitoring, local API, and RUNNER LIVE DESK dashboard.
 
 ## Quick start
 
@@ -54,4 +52,16 @@ npm run scout -- start --api
 
 ## Current stop point
 
-This repository intentionally stops after proving market ingestion and local persistence. Prediction modeling, live game-state adapters, lag detection, alert routing, replay execution, and backtesting should be built next on top of the persisted event stream.
+The P0 live-data and baseline/comparison seams are implemented. A calibrated team-strength or live win-probability model, automated alert promotion, replay orchestration, and statistical backtesting remain future work. No automatic wagering or trading is enabled.
+
+## Live Desk P0
+
+Run the API/dashboard and ingestion workers:
+
+```bash
+npm run scout -- start --api
+```
+
+Open `http://localhost:8787/`. CFB schedule filters support `date=YYYY-MM-DD`, `sport=cfb|ncaaf`, and `ranked=true|false`. Canonical game ids must be URL encoded when embedded in client-generated paths. Submit a validated, market-independent baseline with `POST /baselines`; inspect it and guarded sportsbook comparisons at `/games/:id/baselines` and `/games/:id/comparisons`.
+
+The Odds API worker requires `ODDS_API_KEY`. Missing credentials are surfaced as `DISABLED` provider health and no sportsbook data is fabricated.

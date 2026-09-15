@@ -43,3 +43,22 @@ Demon
 ## Staleness rules
 
 Provider health is stored in SQLite. Future signal generation must lower confidence or suppress signals when a provider is disconnected, stale, or reporting excessive latency.
+
+
+## ESPN college football (implemented)
+
+- Scoreboard discovery: `GET https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?dates=YYYYMMDD&limit=1000`
+- Live detail: `GET https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={ESPN_EVENT_ID}`
+- Scoreboard state is normalized into canonical CFB games; live summary responses enrich available stats and plays.
+- Ranked filtering is performed against provider-supplied top-25 `curatedRank` values. Missing ranks remain unknown.
+- ESPN does not consistently provide a game-state update timestamp. When absent, Runner records receipt time as `sourceTimestamp` and sets `sourceTimestampEstimated=true`.
+- Default polling is 10 seconds with overlap prevention, cache protection for request-driven schedule discovery, and exponential error backoff.
+
+## The Odds API college football (implemented)
+
+- Endpoint: `GET https://api.the-odds-api.com/v4/sports/americanfootball_ncaaf/odds`
+- Authentication uses only `ODDS_API_KEY` from the runtime environment.
+- Requested markets default to documented `h2h,spreads,totals`; `ODDS_API_MARKETS` may request other provider-supported market keys. Any returned key is retained and classified without inventing a separate endpoint.
+- Bookmaker outcomes are normalized into append-only `SportsMarketSnapshot` records with American price, line when supplied, event mapping, and source/received/processed timestamps.
+- `x-requests-remaining` and `x-requests-used` response headers are exposed in provider health. Zero remaining requests imposes a configurable one-hour default quota backoff.
+- The provider is reported `DISABLED`, not healthy, when `ODDS_API_KEY` is absent. Default polling is 20 seconds and cannot be configured below 15 seconds.

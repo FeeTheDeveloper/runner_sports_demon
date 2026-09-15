@@ -7,17 +7,23 @@ import { SqliteStore } from "./storage/sqlite.js";
 import { startIngestion } from "./ingestion.js";
 import { startApi } from "./api/server.js";
 import { GameFlowEngine } from "./game-flow/engine.js";
+import { LiveDataRuntime } from "./live-data/runtime.js";
 
 loadDotEnv();
 const command = process.argv[2] ?? "start";
 const cache = new MarketStateCache();
 const store = new SqliteStore();
 const flow = new GameFlowEngine();
+const liveData = new LiveDataRuntime(store);
 
 if (command === "start") {
   const api = process.argv.includes("--api");
-  if (api) startApi(cache, intArg("--port", 8787), flow, store);
-  await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once") });
+  const once = process.argv.includes("--once");
+  const connectors = createMarketConnectors();
+  store.init();
+  if (api) startApi(cache, intArg("--port", 8787), flow, store, liveData, () => connectors.map((connector) => connector.health()));
+  await liveData.start({ once });
+  await startIngestion(connectors, cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once });
 } else if (command === "init-db") {
   store.init();
   console.log(`Initialized ${store.path}`);

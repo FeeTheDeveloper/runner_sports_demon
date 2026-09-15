@@ -1,0 +1,32 @@
+import assert from "node:assert/strict";
+import { rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { SqliteStore } from "../storage/sqlite.js";
+import { createBaseline } from "../models/pregame/baseline.js";
+import { normalizeEspnGame } from "../normalization/games/espn.js";
+import { normalizeOddsApiEvent } from "../normalization/markets/oddsApi.js";
+import { matchGameRoute, parseScheduleQuery } from "../api/server.js";
+const path = join(tmpdir(), `runner-p0-${process.pid}-${Date.now()}.db`);
+const store = new SqliteStore(path); store.init();
+const event = { id: "e1", date: "2026-09-12T19:30:00Z", status: { type: { state: "pre" } }, competitions: [{ competitors: [
+  { homeAway: "home", team: { id: "1", displayName: "USC Trojans", abbreviation: "USC" } }, { homeAway: "away", team: { id: "2", displayName: "LSU Tigers", abbreviation: "LSU" } }
+] }] };
+const game = normalizeEspnGame(event, { receivedTimestamp: "2026-09-12T18:00:00Z" });
+store.persistGames([game]); store.persistGames([{ ...game, receivedTimestamp: "2026-09-12T18:00:05Z", processedTimestamp: "2026-09-12T18:00:05Z" }]);
+assert.equal(store.count("game_state_snapshots"), 1, "unchanged normalized states must deduplicate");
+assert.equal(store.count("provider_mappings"), 1, "ESPN provider mapping must persist");
+const oddsEvent = { id: "o1", home_team: game.home.name, away_team: game.away.name, bookmakers: [{ key: "book", markets: [{ key: "totals", outcomes: [{ name: "Over", price: -110, point: 50.5 }] }] }] };
+const markets = normalizeOddsApiEvent(oddsEvent, { receivedTimestamp: "2026-09-12T18:00:00Z" }, game.runnerEventId);
+store.persistSportsMarkets(markets); store.persistSportsMarkets(markets);
+assert.equal(store.count("sports_market_snapshots"), 1, "identical sportsbook snapshots must deduplicate");
+store.persistSportsMarkets([{ ...markets[0], americanPrice: -105 }]);
+assert.equal(store.count("sports_market_snapshots"), 2, "changed sportsbook prices must append");
+assert.equal(store.count("provider_mappings"), 2, "Odds API provider mapping must persist");
+const baseline = createBaseline({ runnerEventId: game.runnerEventId, target: "TOTAL", selection: "OVER", modelName: "external-cfb-total", modelVersion: "1", sourceType: "EXTERNAL_MODEL", fairLine: 53, confidence: .6, dataQuality: .7, inputs: ["team-efficiency"], sourceTimestamp: "2026-09-12T17:00:00Z" });
+store.persistBaseline(baseline); store.persistBaseline(baseline); assert.equal(store.baselines(game.runnerEventId).length, 1); assert.throws(() => store.persistBaseline({ ...baseline, fairLine: 99 }), /immutable/);
+assert.equal(matchGameRoute(`/games/${encodeURIComponent(game.runnerEventId)}/markets`)?.id, game.runnerEventId);
+assert.deepEqual(parseScheduleQuery(new URL("http://x/schedule/cfb?date=20260912&ranked=true&sport=ncaaf")), { date: "2026-09-12", sport: "CFB", ranked: true });
+assert.throws(() => parseScheduleQuery(new URL("http://x/schedule/cfb?sport=nfl")), /only CFB/);
+rmSync(path, { force: true });
+console.log("persistence, append-only, and API helper tests passed");
