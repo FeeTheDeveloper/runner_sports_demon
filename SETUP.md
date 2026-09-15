@@ -56,8 +56,13 @@ npm run scout -- start --api --port 8787
 
 Then open:
 
+- `GET http://localhost:8787/` for the Runner Scout dashboard
 - `GET http://localhost:8787/health`
+- `GET http://localhost:8787/schedule/cfb?date=YYYY-MM-DD`
+- `GET http://localhost:8787/schedule/ranked?date=YYYY-MM-DD`
 - `GET http://localhost:8787/markets/live`
+
+The CFB schedule routes use ESPN's machine-readable scoreboard feed when available. Provider-supplied rankings are preserved; missing rankings are not inferred. ESPN can be overridden for tests or approved infrastructure with `ESPN_SCOREBOARD_URL`.
 
 ## Export / import data
 

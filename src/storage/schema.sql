@@ -10,6 +10,17 @@ create table if not exists games (
   updated_at text not null default (datetime('now'))
 );
 
+create table if not exists game_state_snapshots (
+  id text primary key,
+  runner_event_id text not null,
+  provider text not null,
+  provider_event_id text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  payload_json text not null
+);
+
 create table if not exists provider_mappings (
   id integer primary key autoincrement,
   runner_event_id text not null,
@@ -197,14 +208,75 @@ create table if not exists totals_decision_windows (id text primary key, runner_
 create table if not exists totals_window_transitions (id integer primary key autoincrement, window_id text not null references totals_decision_windows(id), from_status text, to_status text not null, processed_timestamp text not null, payload_json text not null);
 create table if not exists totals_set_points (id text primary key, runner_event_id text not null, set_point_type text not null, status text not null default 'PENDING', processed_timestamp text not null, payload_json text not null);
 
+create table if not exists sportsbook_market_snapshots (
+  id text primary key,
+  runner_event_id text not null,
+  provider text not null,
+  sportsbook text not null,
+  market_id text not null,
+  market_type text not null,
+  selection text not null,
+  team_id text,
+  player_id text,
+  line real,
+  american_odds integer,
+  raw_implied_probability real,
+  fair_probability real,
+  market_overround real,
+  book_hold real,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  period integer,
+  clock text,
+  home_score integer,
+  away_score integer,
+  status text not null,
+  data_quality text not null check(data_quality in ('M0','M1','M2','M3','M4','M5')),
+  change_hash text not null,
+  payload_json text not null,
+  unique(runner_event_id, sportsbook, market_id, selection, change_hash)
+);
+
+create table if not exists adversity_events (
+  id text primary key,
+  runner_event_id text not null,
+  sport text not null,
+  event_type text not null,
+  polarity text not null,
+  affected_team text,
+  affected_player_id text,
+  affected_player_name text,
+  severity real not null check(severity between 0 and 1),
+  description text,
+  source text not null,
+  source_timestamp text not null,
+  received_timestamp text not null,
+  processed_timestamp text not null,
+  confidence real not null check(confidence between 0 and 1),
+  causality text not null check(causality in ('SUPPORTED','UNKNOWN','CONTESTED')),
+  payload_json text not null
+);
+
+create table if not exists event_market_alignments (
+  id text primary key,
+  adversity_event_id text not null references adversity_events(id),
+  runner_event_id text not null,
+  market_id text not null,
+  impact_class text not null check(impact_class in ('DIRECT','INDIRECT','UNKNOWN')),
+  mapping_method text not null check(mapping_method in ('CANONICAL_EVENT','MARKET_FAMILY','MANUAL')),
+  confidence real not null check(confidence between 0 and 1),
+  causality text not null check(causality in ('SUPPORTED','UNKNOWN','CONTESTED')),
+  created_at text not null
+);
+
 create index if not exists market_prices_market_time_idx on market_prices(market_id, processed_timestamp desc);
+create index if not exists game_state_snapshots_event_time_idx on game_state_snapshots(runner_event_id, processed_timestamp desc);
 create index if not exists market_events_market_time_idx on market_events(market_id, processed_timestamp desc);
 create index if not exists markets_provider_status_idx on markets(provider, status);
 create index if not exists game_flow_observations_event_time_idx on game_flow_observations(runner_event_id, observed_at desc);
 create index if not exists totals_windows_event_status_idx on totals_decision_windows(runner_event_id, status);
 create index if not exists totals_projections_event_time_idx on totals_projections(runner_event_id, processed_timestamp desc);
-
-
 create table if not exists raw_provider_events (
   id integer primary key autoincrement,
   provider text not null,
@@ -281,3 +353,7 @@ create index if not exists raw_provider_events_time_idx on raw_provider_events(p
 create index if not exists game_state_snapshots_event_time_idx on game_state_snapshots(runner_event_id, processed_timestamp desc);
 create index if not exists sports_market_event_time_idx on sports_market_snapshots(runner_event_id, processed_timestamp desc);
 create index if not exists runner_baselines_event_time_idx on runner_baselines(runner_event_id, processed_timestamp desc);
+create index if not exists sportsbook_snapshots_event_time_idx on sportsbook_market_snapshots(runner_event_id, source_timestamp desc);
+create index if not exists sportsbook_snapshots_market_time_idx on sportsbook_market_snapshots(market_id, source_timestamp desc);
+create index if not exists adversity_events_event_time_idx on adversity_events(runner_event_id, source_timestamp desc);
+create index if not exists event_market_alignments_event_idx on event_market_alignments(runner_event_id, created_at desc);

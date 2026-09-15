@@ -1,0 +1,11 @@
+{
+  "folders": [
+    { "name": "runner_sports_demon", "path": "." },
+    { "name": "rsaa_verse", "path": "../rsaa_verse" },
+    { "name": "runner_sports-site", "path": "../runner_sports-site" }
+  ],
+  "settings": {
+    "files.exclude": { "**/.runner-scout.db*": true, "**/dist": true, "**/node_modules": true },
+    "search.exclude": { "**/node_modules": true, "**/dist": true }
+  }
+}

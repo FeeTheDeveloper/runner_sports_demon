@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
-import type { IncomingMessage } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
+import { timingSafeEqual } from "node:crypto";
 import { MarketStateCache } from "../state/market-state/cache.js";
 import { GameFlowEngine } from "../game-flow/engine.js";
 import { SqliteStore } from "../storage/sqlite.js";
@@ -8,6 +9,51 @@ import { renderWebDashboard } from "../dashboard/web.js";
 import { LiveDataRuntime, normalizeScheduleDate, validateSport } from "../live-data/runtime.js";
 import { createBaseline } from "../models/pregame/baseline.js";
 import type { ProviderHealth } from "../types.js";
+import { optionalStringEnv } from "../utils/env.js";
+
+function safeTokenMatch(provided: string, expected: string): boolean {
+  const providedBuf = Buffer.from(provided);
+  const expectedBuf = Buffer.from(expected);
+  if (providedBuf.length !== expectedBuf.length) return false;
+  return timingSafeEqual(providedBuf, expectedBuf);
+}
+
+function requireBearerAuth(request: IncomingMessage, response: ServerResponse): boolean {
+  const expectedToken = optionalStringEnv("RUNNER_API_BEARER_TOKEN");
+  if (!expectedToken) {
+    response.statusCode = 503;
+    response.end(JSON.stringify({ error: "auth_not_configured" }));
+    return false;
+  }
+  const header = request.headers.authorization;
+  const match = typeof header === "string" ? header.match(/^Bearer\s+(.+)$/i) : null;
+  const provided = match?.[1];
+  if (!provided || !safeTokenMatch(provided, expectedToken)) {
+    response.statusCode = 401;
+    response.end(JSON.stringify({ error: "unauthorized" }));
+    return false;
+  }
+  return true;
+}
+
+function applyCors(request: IncomingMessage, response: ServerResponse): void {
+  const allowedOrigins = (optionalStringEnv("RUNNER_API_ALLOWED_ORIGINS") ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+  if (allowedOrigins.length === 0) return;
+  const requestOrigin = request.headers.origin;
+  let allowOrigin: string | undefined;
+  if (allowedOrigins.includes("*")) allowOrigin = "*";
+  else if (typeof requestOrigin === "string" && allowedOrigins.includes(requestOrigin)) {
+    allowOrigin = requestOrigin;
+    response.setHeader("vary", "Origin");
+  }
+  if (!allowOrigin) return;
+  response.setHeader("access-control-allow-origin", allowOrigin);
+  response.setHeader("access-control-allow-methods", "GET, POST, OPTIONS");
+  response.setHeader("access-control-allow-headers", "Content-Type, Authorization");
+}
 
 export interface ScheduleQuery { date: string; sport: "CFB"; ranked?: boolean; }
 export function parseScheduleQuery(url: URL, rankedDefault?: boolean): ScheduleQuery {
@@ -33,7 +79,7 @@ export function startApi(
   const totals = new TotalsRuntime(store);
   const server = createServer(async (request, response) => {
     response.setHeader("content-type", "application/json");
-    response.setHeader("access-control-allow-origin", "*");
+    applyCors(request, response);
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
     const url = new URL(request.url ?? "/", "http://runner.local");
     const path = url.pathname;
@@ -43,18 +89,21 @@ export function startApi(
         response.end(renderWebDashboard()); return;
       }
       if (request.method === "POST" && path === "/observations") {
+        if (!requireBearerAuth(request, response)) return;
         const observation = JSON.parse(await readBody(request));
         const snapshot = flow.ingest(observation);
         store?.persistGameFlow(observation, snapshot);
         response.statusCode = 201; response.end(JSON.stringify({ data: snapshot })); return;
       }
       if (request.method === "POST" && path === "/baselines") {
+        if (!requireBearerAuth(request, response)) return;
         if (!store) return serviceUnavailable(response, "baseline_store_unavailable");
         const baseline = createBaseline(JSON.parse(await readBody(request)));
         store.persistBaseline(baseline);
         response.statusCode = 201; response.end(JSON.stringify({ data: baseline })); return;
       }
       if (request.method === "POST" && path === "/totals/evaluate") {
+        if (!requireBearerAuth(request, response)) return;
         const body = JSON.parse(await readBody(request));
         const result = totals.evaluate(body.input, body.markets ?? []);
         response.statusCode = 201; response.end(JSON.stringify({ data: result })); return;

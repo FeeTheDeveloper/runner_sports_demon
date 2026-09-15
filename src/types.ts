@@ -8,6 +8,87 @@ export type ObservationSource =
   | "RUNNER_AI"
   | "VERIFIED_NEWS";
 
+export type AdversityEventType =
+  | "PLAYER_INJURY"
+  | "PLAYER_EJECTION"
+  | "TURNOVER"
+  | "FAILED_FOURTH_DOWN"
+  | "MISSED_FIELD_GOAL"
+  | "SACK"
+  | "EXPLOSIVE_PLAY_ALLOWED"
+  | "TOUCHDOWN_ALLOWED"
+  | "PENALTY"
+  | "WEATHER_CHANGE"
+  | "QB_SUBSTITUTION"
+  | "TWO_SCORE_DEFICIT"
+  | "RED_ZONE_FAILURE"
+  | "COACH_DECISION"
+  | "OTHER";
+
+export type EventPolarity = "ADVERSE" | "POSITIVE" | "NEUTRAL" | "UNKNOWN";
+export type CausalityStatus = "SUPPORTED" | "UNKNOWN" | "CONTESTED";
+export type MarketDataQuality = "M0" | "M1" | "M2" | "M3" | "M4" | "M5";
+
+export interface AdversityEvent {
+  id: string;
+  runnerEventId: string;
+  sport: "NFL";
+  eventType: AdversityEventType;
+  polarity: EventPolarity;
+  affectedTeam?: string;
+  affectedPlayerId?: string;
+  affectedPlayerName?: string;
+  severity: number;
+  description?: string;
+  source: ObservationSource;
+  sourceTimestamp: string;
+  receivedTimestamp: string;
+  processedTimestamp: string;
+  confidence: number;
+  causality: CausalityStatus;
+  raw: unknown;
+}
+
+export interface SportsbookMarketSnapshot {
+  id: string;
+  runnerEventId: string;
+  provider: "odds_api";
+  sportsbook: string;
+  marketId: string;
+  marketType: "MONEYLINE" | "SPREAD" | "TOTAL" | "TEAM_TOTAL" | "PROP";
+  selection: string;
+  teamId?: string;
+  playerId?: string;
+  line?: number;
+  americanOdds?: number;
+  rawImpliedProbability?: number;
+  fairProbability?: number;
+  marketOverround?: number;
+  bookHold?: number;
+  sourceTimestamp: string;
+  receivedTimestamp: string;
+  processedTimestamp: string;
+  period?: number;
+  clock?: string;
+  homeScore?: number;
+  awayScore?: number;
+  status: string;
+  dataQuality: MarketDataQuality;
+  raw: unknown;
+}
+
+export interface EventMarketAlignment {
+  id: string;
+  adversityEventId: string;
+  runnerEventId: string;
+  marketId: string;
+  impactClass: "DIRECT" | "INDIRECT" | "UNKNOWN";
+  mappingMethod: "CANONICAL_EVENT" | "MARKET_FAMILY" | "MANUAL";
+  confidence: number;
+  causality: CausalityStatus;
+  createdAt: string;
+}
+
 export type GameRegime =
   | "BALANCED"
   | "FAVORITE_CONTROL"
@@ -302,7 +383,7 @@ export interface MarketModelComparison {
 
 export interface NormalizedMarket {
   id: string;
-  provider: "kalshi" | "polymarket";
+  provider: "kalshi" | "polymarket" | "odds_api";
   externalId: string;
   eventId?: string;
   runnerEventId?: string;

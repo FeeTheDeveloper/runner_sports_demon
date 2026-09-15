@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { CanonicalGameState, GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth, RawProviderEvent, RunnerBaseline, SportsMarketSnapshot } from "../types.js";
+import type { AdversityEvent, CanonicalGameState, EventMarketAlignment, GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth, RawProviderEvent, RunnerBaseline, SportsMarketSnapshot, SportsbookMarketSnapshot } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsMarketSnapshot, TotalsProjection } from "../totals/types.js";
 
@@ -43,6 +43,7 @@ export const EXPORT_TABLES = [
   "game_flow_snapshots",
   "totals_flow_snapshots", "totals_projections", "totals_market_snapshots", "totals_trend_scores",
   "totals_signals", "totals_decision_windows", "totals_window_transitions", "totals_set_points",
+  "sportsbook_market_snapshots", "adversity_events", "event_market_alignments",
 ] as const;
 
 export class SqliteStore {
@@ -58,6 +59,9 @@ export class SqliteStore {
     const builtSchema = new URL("./schema.sql", import.meta.url);
     const sourceSchema = resolve(process.cwd(), "src/storage/schema.sql");
     this.exec(readFileSync(existsSync(builtSchema) ? builtSchema : sourceSchema, "utf8"));
+    this.ensureColumn("raw_provider_events", "change_hash", "text");
+    this.ensureColumn("game_state_snapshots", "change_hash", "text");
+    this.ensureColumn("sports_market_snapshots", "change_hash", "text");
     this.ensureColumn("provider_health", "status", "text");
     this.ensureColumn("provider_health", "rate_limit_remaining", "real");
     this.ensureColumn("provider_health", "rate_limit_used", "real");
@@ -86,11 +90,12 @@ export class SqliteStore {
     const statements: string[] = [];
     for (const game of games) {
       const changeHash = stableHash({ ...game, sourceTimestamp: undefined, receivedTimestamp: undefined, processedTimestamp: undefined });
+      const snapshotId = stableHash({ runnerEventId: game.runnerEventId, provider: game.provider, providerEventId: game.providerEventId, changeHash });
       statements.push(`insert into games(id,sport,league,home_team,away_team,starts_at,status,updated_at)
         values(${sqlString(game.runnerEventId)},${sqlString(game.sport)},${sqlString(game.league)},${sqlString(game.home.name)},${sqlString(game.away.name)},${sqlString(game.startTime)},${sqlString(game.status)},${sqlString(game.processedTimestamp)})
         on conflict(id) do update set sport=excluded.sport,league=excluded.league,home_team=excluded.home_team,away_team=excluded.away_team,starts_at=excluded.starts_at,status=excluded.status,updated_at=excluded.updated_at;
-        insert or ignore into game_state_snapshots(runner_event_id,provider,provider_event_id,payload_json,source_timestamp,received_timestamp,processed_timestamp,change_hash)
-        values(${sqlString(game.runnerEventId)},${sqlString(game.provider)},${sqlString(game.providerEventId)},${sqlString(JSON.stringify(game))},${sqlString(game.sourceTimestamp)},${sqlString(game.receivedTimestamp)},${sqlString(game.processedTimestamp)},${sqlString(changeHash)});
+        insert or ignore into game_state_snapshots(id,runner_event_id,provider,provider_event_id,payload_json,source_timestamp,received_timestamp,processed_timestamp,change_hash)
+        values(${sqlString(snapshotId)},${sqlString(game.runnerEventId)},${sqlString(game.provider)},${sqlString(game.providerEventId)},${sqlString(JSON.stringify(game))},${sqlString(game.sourceTimestamp)},${sqlString(game.receivedTimestamp)},${sqlString(game.processedTimestamp)},${sqlString(changeHash)});
         insert into provider_mappings(runner_event_id,provider,provider_event_id,mapping_method,confidence,verified)
         values(${sqlString(game.runnerEventId)},${sqlString(game.provider)},${sqlString(game.providerEventId)},'exact',1,1)
         on conflict do nothing;`);
@@ -143,6 +148,53 @@ export class SqliteStore {
       return `insert or ignore into raw_provider_events(provider,event_type,provider_event_id,payload_json,source_timestamp,received_timestamp,processed_timestamp,change_hash)
         values(${sqlString(event.provider)},${sqlString(eventType)},${sqlString(providerEventId)},${sqlString(JSON.stringify(event.payload))},${sqlString(event.sourceTimestamp)},${sqlString(event.receivedTimestamp)},${sqlString(new Date().toISOString())},${sqlString(changeHash)});`;
     });
+  }
+
+  persistSportsbookSnapshots(snapshots: SportsbookMarketSnapshot[]) {
+    this.transaction(snapshots.map((snapshot) => {
+      const changeHash = stableHash({
+        line: snapshot.line,
+        americanOdds: snapshot.americanOdds,
+        rawImpliedProbability: snapshot.rawImpliedProbability,
+        fairProbability: snapshot.fairProbability,
+        marketOverround: snapshot.marketOverround,
+        status: snapshot.status,
+      });
+      return `insert or ignore into sportsbook_market_snapshots(
+        id,runner_event_id,provider,sportsbook,market_id,market_type,selection,team_id,player_id,line,american_odds,
+        raw_implied_probability,fair_probability,market_overround,book_hold,source_timestamp,received_timestamp,
+        processed_timestamp,period,clock,home_score,away_score,status,data_quality,change_hash,payload_json
+      ) values(
+        ${sqlString(stableHash({ snapshot, changeHash }))},${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.provider)},
+        ${sqlString(snapshot.sportsbook)},${sqlString(snapshot.marketId)},${sqlString(snapshot.marketType)},${sqlString(snapshot.selection)},
+        ${sqlString(snapshot.teamId)},${sqlString(snapshot.playerId)},${sqlNumber(snapshot.line)},${sqlNumber(snapshot.americanOdds)},
+        ${sqlNumber(snapshot.rawImpliedProbability)},${sqlNumber(snapshot.fairProbability)},${sqlNumber(snapshot.marketOverround)},${sqlNumber(snapshot.bookHold)},
+        ${sqlString(snapshot.sourceTimestamp)},${sqlString(snapshot.receivedTimestamp)},${sqlString(snapshot.processedTimestamp)},
+        ${sqlNumber(snapshot.period)},${sqlString(snapshot.clock)},${sqlNumber(snapshot.homeScore)},${sqlNumber(snapshot.awayScore)},
+        ${sqlString(snapshot.status)},${sqlString(snapshot.dataQuality)},${sqlString(changeHash)},${sqlString(JSON.stringify(snapshot.raw))}
+      );`;
+    }).join("\n"));
+  }
+
+  persistAdversityEvent(event: AdversityEvent) {
+    this.transaction(`insert or ignore into adversity_events(
+      id,runner_event_id,sport,event_type,polarity,affected_team,affected_player_id,affected_player_name,severity,description,
+      source,source_timestamp,received_timestamp,processed_timestamp,confidence,causality,payload_json
+    ) values(
+      ${sqlString(event.id)},${sqlString(event.runnerEventId)},${sqlString(event.sport)},${sqlString(event.eventType)},${sqlString(event.polarity)},
+      ${sqlString(event.affectedTeam)},${sqlString(event.affectedPlayerId)},${sqlString(event.affectedPlayerName)},${sqlNumber(event.severity)},${sqlString(event.description)},
+      ${sqlString(event.source)},${sqlString(event.sourceTimestamp)},${sqlString(event.receivedTimestamp)},${sqlString(event.processedTimestamp)},
+      ${sqlNumber(event.confidence)},${sqlString(event.causality)},${sqlString(JSON.stringify(event.raw))}
+    );`);
+  }
+
+  persistEventMarketAlignment(alignment: EventMarketAlignment) {
+    this.transaction(`insert or ignore into event_market_alignments(
+      id,adversity_event_id,runner_event_id,market_id,impact_class,mapping_method,confidence,causality,created_at
+    ) values(
+      ${sqlString(alignment.id)},${sqlString(alignment.adversityEventId)},${sqlString(alignment.runnerEventId)},${sqlString(alignment.marketId)},
+      ${sqlString(alignment.impactClass)},${sqlString(alignment.mappingMethod)},${sqlNumber(alignment.confidence)},${sqlString(alignment.causality)},${sqlString(alignment.createdAt)}
+    );`);
   }
 
   persistGameFlow(observation: GameFlowObservation, snapshot: GameFlowSnapshot) {
