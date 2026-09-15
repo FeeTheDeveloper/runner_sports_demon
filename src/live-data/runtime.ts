@@ -25,7 +25,7 @@ export class LiveDataRuntime {
     const date = normalizeScheduleDate(filter.date);
     const cacheMs = intEnv("RUNNER_ESPN_SCHEDULE_CACHE_MS", 60_000);
     const fetchedAt = this.scheduleFetchedAt.get(date) ?? 0;
-    if (force || Date.now() - fetchedAt >= cacheMs || this.games.schedule({ date }).length === 0) {
+    if (force || Date.now() - fetchedAt >= cacheMs) {
       let request = this.scheduleRequests.get(date);
       if (!request) {
         request = this.fetchAndStoreSchedule(date).finally(() => this.scheduleRequests.delete(date));
