@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
-import type { GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth } from "../types.js";
+import type { AdversityEvent, EventMarketAlignment, GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth, SportsbookMarketSnapshot } from "../types.js";
 import { stableHash } from "../utils/hash.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsMarketSnapshot, TotalsProjection } from "../totals/types.js";
 import type { FootballGame } from "../games/types.js";
@@ -40,6 +40,7 @@ export const EXPORT_TABLES = [
   "game_flow_snapshots",
   "totals_flow_snapshots", "totals_projections", "totals_market_snapshots", "totals_trend_scores",
   "totals_signals", "totals_decision_windows", "totals_window_transitions", "totals_set_points",
+  "sportsbook_market_snapshots", "adversity_events", "event_market_alignments",
 ] as const;
 
 export class SqliteStore {
@@ -72,6 +73,53 @@ export class SqliteStore {
     this.transaction(health.map((h) => `insert into provider_health(provider, connected, last_message_at, last_error, reconnect_attempts, event_count, latency_ms, updated_at)
       values(${sqlString(h.provider)}, ${h.connected ? 1 : 0}, ${sqlString(h.lastMessageAt)}, ${sqlString(h.lastError)}, ${h.reconnectAttempts}, ${h.eventCount}, ${sqlNumber(h.latencyMs)}, ${sqlString(now)})
       on conflict(provider) do update set connected=excluded.connected,last_message_at=excluded.last_message_at,last_error=excluded.last_error,reconnect_attempts=excluded.reconnect_attempts,event_count=excluded.event_count,latency_ms=excluded.latency_ms,updated_at=excluded.updated_at;`).join("\n"));
+  }
+
+  persistSportsbookSnapshots(snapshots: SportsbookMarketSnapshot[]) {
+    this.transaction(snapshots.map((snapshot) => {
+      const changeHash = stableHash({
+        line: snapshot.line,
+        americanOdds: snapshot.americanOdds,
+        rawImpliedProbability: snapshot.rawImpliedProbability,
+        fairProbability: snapshot.fairProbability,
+        marketOverround: snapshot.marketOverround,
+        status: snapshot.status,
+      });
+      return `insert or ignore into sportsbook_market_snapshots(
+        id,runner_event_id,provider,sportsbook,market_id,market_type,selection,team_id,player_id,line,american_odds,
+        raw_implied_probability,fair_probability,market_overround,book_hold,source_timestamp,received_timestamp,
+        processed_timestamp,period,clock,home_score,away_score,status,data_quality,change_hash,payload_json
+      ) values(
+        ${sqlString(stableHash({ snapshot, changeHash }))},${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.provider)},
+        ${sqlString(snapshot.sportsbook)},${sqlString(snapshot.marketId)},${sqlString(snapshot.marketType)},${sqlString(snapshot.selection)},
+        ${sqlString(snapshot.teamId)},${sqlString(snapshot.playerId)},${sqlNumber(snapshot.line)},${sqlNumber(snapshot.americanOdds)},
+        ${sqlNumber(snapshot.rawImpliedProbability)},${sqlNumber(snapshot.fairProbability)},${sqlNumber(snapshot.marketOverround)},${sqlNumber(snapshot.bookHold)},
+        ${sqlString(snapshot.sourceTimestamp)},${sqlString(snapshot.receivedTimestamp)},${sqlString(snapshot.processedTimestamp)},
+        ${sqlNumber(snapshot.period)},${sqlString(snapshot.clock)},${sqlNumber(snapshot.homeScore)},${sqlNumber(snapshot.awayScore)},
+        ${sqlString(snapshot.status)},${sqlString(snapshot.dataQuality)},${sqlString(changeHash)},${sqlString(JSON.stringify(snapshot.raw))}
+      );`;
+    }).join("\n"));
+  }
+
+  persistAdversityEvent(event: AdversityEvent) {
+    this.transaction(`insert or ignore into adversity_events(
+      id,runner_event_id,sport,event_type,polarity,affected_team,affected_player_id,affected_player_name,severity,description,
+      source,source_timestamp,received_timestamp,processed_timestamp,confidence,causality,payload_json
+    ) values(
+      ${sqlString(event.id)},${sqlString(event.runnerEventId)},${sqlString(event.sport)},${sqlString(event.eventType)},${sqlString(event.polarity)},
+      ${sqlString(event.affectedTeam)},${sqlString(event.affectedPlayerId)},${sqlString(event.affectedPlayerName)},${sqlNumber(event.severity)},${sqlString(event.description)},
+      ${sqlString(event.source)},${sqlString(event.sourceTimestamp)},${sqlString(event.receivedTimestamp)},${sqlString(event.processedTimestamp)},
+      ${sqlNumber(event.confidence)},${sqlString(event.causality)},${sqlString(JSON.stringify(event.raw))}
+    );`);
+  }
+
+  persistEventMarketAlignment(alignment: EventMarketAlignment) {
+    this.transaction(`insert or ignore into event_market_alignments(
+      id,adversity_event_id,runner_event_id,market_id,impact_class,mapping_method,confidence,causality,created_at
+    ) values(
+      ${sqlString(alignment.id)},${sqlString(alignment.adversityEventId)},${sqlString(alignment.runnerEventId)},${sqlString(alignment.marketId)},
+      ${sqlString(alignment.impactClass)},${sqlString(alignment.mappingMethod)},${sqlNumber(alignment.confidence)},${sqlString(alignment.causality)},${sqlString(alignment.createdAt)}
+    );`);
   }
 
   persistGameFlow(observation: GameFlowObservation, snapshot: GameFlowSnapshot) {
