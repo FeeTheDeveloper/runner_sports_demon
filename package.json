@@ -16,6 +16,7 @@
     "contracts:validate": "node scripts/validate-runner-contracts.mjs",
     "system:validate": "node scripts/validate-runner-repositories.mjs",
     "verse:validate-export": "node scripts/validate-verse-export.mjs",
+    "verse:load-history": "node scripts/load-verse-history.mjs",
     "runner:command": "node scripts/runner-command.mjs"
   },
   "repository": {

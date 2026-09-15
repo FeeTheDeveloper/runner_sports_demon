@@ -11,3 +11,9 @@ The A3 lane is NFL-first and sportsbook-first. `sportsbook_market_snapshots` sto
 `adversity_events` stores timestamped manual or observer-supplied events. `event_market_alignments` stores deterministic event-to-market links and preserves impact class, mapping confidence, and causality status. Temporal proximity alone does not establish causality; `UNKNOWN` is a valid state.
 
 Initial sportsbook history is polling-based and must be graded honestly using the M0-M5 market-history resolution scale. The current implementation does not claim tick-level M4/M5 coverage, and derived response metrics must reference immutable source rows rather than overwrite them.
+
+## Verse historical baselines
+
+`historical_seasons`, `historical_team_profiles`, `historical_games`, `historical_market_history`, `historical_drives`, `historical_periods`, and `historical_game_state_samples` hold nflverse-derived NFL history sourced from `rsaa_verse` exports (`dev/export_runner_demon.py`), not live provider data. Each row is scoped to a `season`; `historical_seasons` is the load ledger (source export path, feature version, load timestamp, validation status).
+
+Loading is explicit and idempotent: `npm run verse:load-history -- <season> [season...]` re-validates the Verse export's manifest/checksums (`scripts/validate-verse-export.mjs`), converts the relevant parquet artifacts to CSV via `scripts/verse_history_to_csv.py` (DuckDB), and replaces that season's rows via `scripts/load-verse-history.mjs`. Nothing here is fabricated or interpolated — a missing season simply means it has not been loaded yet.

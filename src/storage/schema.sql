@@ -277,3 +277,105 @@ create index if not exists sportsbook_snapshots_event_time_idx on sportsbook_mar
 create index if not exists sportsbook_snapshots_market_time_idx on sportsbook_market_snapshots(market_id, source_timestamp desc);
 create index if not exists adversity_events_event_time_idx on adversity_events(runner_event_id, source_timestamp desc);
 create index if not exists event_market_alignments_event_idx on event_market_alignments(runner_event_id, created_at desc);
+
+-- Verse historical baselines (rsaa_verse nflverse-derived exports; see scripts/load-verse-history.mjs).
+-- One row per season per source table; reloading a season replaces its rows (idempotent).
+create table if not exists historical_seasons (
+  season integer primary key,
+  source_export text not null,
+  feature_version text not null,
+  loaded_at text not null,
+  validation_status text not null
+);
+
+create table if not exists historical_team_profiles (
+  season integer not null,
+  team text not null,
+  drives real,
+  avg_drive_yards real,
+  avg_drive_plays real,
+  avg_drive_epa real,
+  primary key (season, team)
+);
+
+create table if not exists historical_games (
+  game_id text primary key,
+  season integer not null,
+  game_date text,
+  home_team text,
+  away_team text,
+  home_score real,
+  away_score real,
+  closing_total real,
+  closing_spread real,
+  venue text,
+  play_count integer,
+  seconds_remaining_at_end integer
+);
+
+create table if not exists historical_market_history (
+  game_id text primary key,
+  season integer not null,
+  closing_total real,
+  closing_spread real
+);
+
+create table if not exists historical_drives (
+  season integer not null,
+  game_id text not null,
+  drive_id integer not null,
+  offense text,
+  defense text,
+  start_quarter integer,
+  end_quarter integer,
+  plays integer,
+  yards real,
+  first_downs real,
+  penalties real,
+  sacks real,
+  interceptions real,
+  fumbles_lost real,
+  touchdowns real,
+  scoring_events real,
+  epa real,
+  primary key (game_id, drive_id)
+);
+
+create table if not exists historical_periods (
+  season integer not null,
+  game_id text not null,
+  team text not null,
+  quarter integer not null,
+  plays integer,
+  yards real,
+  average_epa real,
+  success_rate real,
+  touchdowns real,
+  interceptions real,
+  fumbles_lost real,
+  primary key (game_id, team, quarter)
+);
+
+create table if not exists historical_game_state_samples (
+  season integer not null,
+  game_id text not null,
+  play_id integer not null,
+  quarter integer,
+  game_seconds_remaining real,
+  score_differential real,
+  possession text,
+  yardline_100 real,
+  down real,
+  ydstogo real,
+  epa real,
+  success integer,
+  yards_gained real,
+  primary key (game_id, play_id)
+);
+
+create index if not exists historical_games_season_idx on historical_games(season);
+create index if not exists historical_drives_season_idx on historical_drives(season);
+create index if not exists historical_periods_season_idx on historical_periods(season);
+create index if not exists historical_game_state_samples_season_idx on historical_game_state_samples(season);
+create index if not exists historical_team_profiles_season_idx on historical_team_profiles(season);
+
