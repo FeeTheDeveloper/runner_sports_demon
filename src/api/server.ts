@@ -6,11 +6,11 @@ import { GameFlowEngine } from "../game-flow/engine.js";
 import { SqliteStore } from "../storage/sqlite.js";
 import { TotalsRuntime } from "../totals/runtime.js";
 import { renderWebDashboard } from "../dashboard/web.js";
-import { CfbScheduleService, NflScheduleService } from "../games/discovery/service.js";
+import { LiveDataRuntime, normalizeScheduleDate, validateSport } from "../live-data/runtime.js";
+import { createBaseline } from "../models/pregame/baseline.js";
+import type { ProviderHealth } from "../types.js";
 import { optionalStringEnv } from "../utils/env.js";
 
-// Compares the provided bearer token against the configured one in constant time,
-// so response timing cannot be used to guess the correct token byte-by-byte.
 function safeTokenMatch(provided: string, expected: string): boolean {
   const providedBuf = Buffer.from(provided);
   const expectedBuf = Buffer.from(expected);
@@ -18,10 +18,6 @@ function safeTokenMatch(provided: string, expected: string): boolean {
   return timingSafeEqual(providedBuf, expectedBuf);
 }
 
-// Fail-closed bearer-token check for mutating endpoints. Writes an error response and
-// returns false when the caller should not proceed; returns true when the request is authorized.
-// If RUNNER_API_BEARER_TOKEN is unset, this is a deploy misconfiguration, not an open endpoint:
-// every mutating request is rejected with 503 rather than silently allowed through.
 function requireBearerAuth(request: IncomingMessage, response: ServerResponse): boolean {
   const expectedToken = optionalStringEnv("RUNNER_API_BEARER_TOKEN");
   if (!expectedToken) {
@@ -30,8 +26,9 @@ function requireBearerAuth(request: IncomingMessage, response: ServerResponse): 
     return false;
   }
   const header = request.headers.authorization;
-  const match = typeof header === "string" ? header.match(/^Bearer\s+(.+)$/i) : null;
-  const provided = match?.[1];
+  const provided = typeof header === "string" && header.toLowerCase().startsWith("bearer ")
+    ? header.slice(7).trim()
+    : undefined;
   if (!provided || !safeTokenMatch(provided, expectedToken)) {
     response.statusCode = 401;
     response.end(JSON.stringify({ error: "unauthorized" }));
@@ -40,9 +37,6 @@ function requireBearerAuth(request: IncomingMessage, response: ServerResponse): 
   return true;
 }
 
-// CORS is opt-in and configurable via RUNNER_API_ALLOWED_ORIGINS (comma-separated origins,
-// or a literal "*" entry to explicitly allow any origin). No env var set => no CORS header at
-// all, rather than the previous unconditional Access-Control-Allow-Origin: *.
 function applyCors(request: IncomingMessage, response: ServerResponse): void {
   const allowedOrigins = (optionalStringEnv("RUNNER_API_ALLOWED_ORIGINS") ?? "")
     .split(",")
@@ -51,9 +45,8 @@ function applyCors(request: IncomingMessage, response: ServerResponse): void {
   if (allowedOrigins.length === 0) return;
   const requestOrigin = request.headers.origin;
   let allowOrigin: string | undefined;
-  if (allowedOrigins.includes("*")) {
-    allowOrigin = "*";
-  } else if (typeof requestOrigin === "string" && allowedOrigins.includes(requestOrigin)) {
+  if (allowedOrigins.includes("*")) allowOrigin = "*";
+  else if (typeof requestOrigin === "string" && allowedOrigins.includes(requestOrigin)) {
     allowOrigin = requestOrigin;
     response.setHeader("vary", "Origin");
   }
@@ -63,100 +56,119 @@ function applyCors(request: IncomingMessage, response: ServerResponse): void {
   response.setHeader("access-control-allow-headers", "Content-Type, Authorization");
 }
 
-export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFlowEngine(), store?: SqliteStore) {
+export interface ScheduleQuery { date: string; sport: "CFB"; ranked?: boolean; }
+export function parseScheduleQuery(url: URL, rankedDefault?: boolean): ScheduleQuery {
+  const sport = url.searchParams.get("sport") ?? "CFB";
+  validateSport(sport);
+  const rankedValue = url.searchParams.get("ranked");
+  let ranked = rankedDefault;
+  if (rankedValue !== null) {
+    if (!["true", "false", "1", "0"].includes(rankedValue.toLowerCase())) throw new Error("ranked must be true or false");
+    ranked = ["true", "1"].includes(rankedValue.toLowerCase());
+  }
+  return { date: normalizeScheduleDate(url.searchParams.get("date") ?? undefined), sport: "CFB", ranked };
+}
+
+export function startApi(
+  cache: MarketStateCache,
+  port = 8787,
+  flow = new GameFlowEngine(),
+  store?: SqliteStore,
+  liveData?: LiveDataRuntime,
+  marketHealth: () => ProviderHealth[] = () => [],
+) {
   const totals = new TotalsRuntime(store);
-  const cfbSchedule = new CfbScheduleService();
-  const nflSchedule = new NflScheduleService();
   const server = createServer(async (request, response) => {
     response.setHeader("content-type", "application/json");
     applyCors(request, response);
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
-    const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
-    const path = requestUrl.pathname;
-    if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
-      response.setHeader("content-type", "text/html; charset=utf-8");
-      response.end(renderWebDashboard());
-      return;
-    }
-    if (request.method === "GET" && ["/schedule/today", "/schedule/cfb", "/schedule/nfl", "/schedule/ranked"].includes(path)) {
-      try {
-        const date = requestUrl.searchParams.get("date") ?? new Date().toISOString().slice(0, 10);
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("date must use YYYY-MM-DD");
-        const requestedSport = path === "/schedule/nfl" || requestUrl.searchParams.get("sport")?.toLowerCase() === "nfl" ? "nfl" : "cfb";
-        const games = requestedSport === "nfl" ? await nflSchedule.schedule(date) : await cfbSchedule.schedule(date);
-        store?.persistGames(games);
-        const data = path === "/schedule/ranked" || requestUrl.searchParams.get("ranked") === "true"
-          ? games.filter((game) => game.awayRank !== undefined || game.homeRank !== undefined)
-          : games;
-        response.end(JSON.stringify({ data }));
-      } catch (error) {
-        response.statusCode = 502;
-        response.end(JSON.stringify({ error: error instanceof Error ? error.message : "schedule_unavailable" }));
+    const url = new URL(request.url ?? "/", "http://runner.local");
+    const path = url.pathname;
+    try {
+      if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
+        response.setHeader("content-type", "text/html; charset=utf-8");
+        response.end(renderWebDashboard()); return;
       }
-      return;
-    }
-    if (request.method === "POST" && path === "/observations") {
-      if (!requireBearerAuth(request, response)) return;
-      try {
+      if (request.method === "POST" && path === "/observations") {
+        if (!requireBearerAuth(request, response)) return;
         const observation = JSON.parse(await readBody(request));
         const snapshot = flow.ingest(observation);
         store?.persistGameFlow(observation, snapshot);
-        response.statusCode = 201;
-        response.end(JSON.stringify({ data: snapshot }));
-      } catch (error) {
-        response.statusCode = 400;
-        response.end(JSON.stringify({ error: error instanceof Error ? error.message : "invalid_observation" }));
+        response.statusCode = 201; response.end(JSON.stringify({ data: snapshot })); return;
       }
-      return;
-    }
-    if (request.method === "POST" && path === "/totals/evaluate") {
-      if (!requireBearerAuth(request, response)) return;
-      try {
+      if (request.method === "POST" && path === "/baselines") {
+        if (!requireBearerAuth(request, response)) return;
+        if (!store) return serviceUnavailable(response, "baseline_store_unavailable");
+        const baseline = createBaseline(JSON.parse(await readBody(request)));
+        store.persistBaseline(baseline);
+        response.statusCode = 201; response.end(JSON.stringify({ data: baseline })); return;
+      }
+      if (request.method === "POST" && path === "/totals/evaluate") {
+        if (!requireBearerAuth(request, response)) return;
         const body = JSON.parse(await readBody(request));
         const result = totals.evaluate(body.input, body.markets ?? []);
-        response.statusCode = 201;
-        response.end(JSON.stringify({ data: result }));
-      } catch (error) {
-        response.statusCode = 400;
-        response.end(JSON.stringify({ error: error instanceof Error ? error.message : "invalid_totals_input" }));
+        response.statusCode = 201; response.end(JSON.stringify({ data: result })); return;
       }
-      return;
-    }
-    const totalsMatch = path.match(/^\/games\/([^/]+)\/totals(?:\/(projections|signals|windows|set-points))?$/);
-    if (totalsMatch) {
-      const evaluation = totals.get(decodeURIComponent(totalsMatch[1]));
-      if (!evaluation) { response.statusCode = 404; response.end(JSON.stringify({ error: "totals_not_found" })); return; }
-      const view = totalsMatch[2];
-      const data = view === "projections" ? evaluation.projections : view === "signals" ? evaluation.windows.flatMap(w=>w.reasons) : view === "windows" ? evaluation.windows : view === "set-points" ? evaluation.windows.map(w=>({ windowId:w.id,nextSetPoint:w.nextSetPoint })) : evaluation;
-      response.end(JSON.stringify({ data })); return;
-    }
-    if (request.method === "GET" && path === "/games/live") { response.end(JSON.stringify({ data: flow.allSnapshots() })); return; }
-    const gameMatch = path.match(/^\/games\/([^/]+)(?:\/(flow|markets|props))?$/);
-    if (request.method === "GET" && gameMatch) {
-      const runnerEventId = decodeURIComponent(gameMatch[1]);
-      const view = gameMatch[2];
-      const game = cfbSchedule.find(runnerEventId) ?? nflSchedule.find(runnerEventId);
-      if (view === "flow") {
-        const data = flow.snapshot(runnerEventId);
-        if (!data) { response.statusCode = 404; response.end(JSON.stringify({ error: "game_flow_not_found" })); return; }
-        response.end(JSON.stringify({ data })); return;
+      if (request.method === "GET" && ["/schedule/today", "/schedule/cfb", "/schedule/ranked"].includes(path)) {
+        if (!liveData) return serviceUnavailable(response, "live_game_runtime_unavailable");
+        const query = parseScheduleQuery(url, path === "/schedule/ranked" ? true : undefined);
+        const games = await liveData.discoverSchedule(query);
+        response.end(JSON.stringify({ data: games, filters: query })); return;
       }
-      if (view === "markets") { response.end(JSON.stringify({ data: cache.all().filter((market) => market.runnerEventId === runnerEventId) })); return; }
-      if (view === "props") { response.end(JSON.stringify({ data: [], implemented: false })); return; }
-      if (!game) { response.statusCode = 404; response.end(JSON.stringify({ error: "game_not_found" })); return; }
-      response.end(JSON.stringify({ data: game })); return;
+      const gameRoute = matchGameRoute(path);
+      if (request.method === "GET" && gameRoute && !(gameRoute.id === "live" && !gameRoute.resource)) {
+        const id = gameRoute.id;
+        if (gameRoute.resource === "totals") {
+          const evaluation = totals.get(id);
+          if (!evaluation) return notFound(response, "totals_not_found");
+          const view = gameRoute.subresource;
+          const data = view === "projections" ? evaluation.projections : view === "signals" ? evaluation.windows.flatMap((window) => window.reasons) : view === "windows" ? evaluation.windows : view === "set-points" ? evaluation.windows.map((window) => ({ windowId: window.id, nextSetPoint: window.nextSetPoint })) : evaluation;
+          response.end(JSON.stringify({ data })); return;
+        }
+        if (gameRoute.resource === "markets") { response.end(JSON.stringify({ data: liveData?.gameMarkets(id) ?? [] })); return; }
+        if (gameRoute.resource === "baselines") { response.end(JSON.stringify({ data: store?.baselines(id) ?? [] })); return; }
+        if (gameRoute.resource === "comparisons") { response.end(JSON.stringify({ data: liveData?.comparisons(id) ?? [{ runnerEventId: id, available: false, executionAssessment: "NOT_EVALUATED", suppressionReasons: ["LIVE_DATA_RUNTIME_UNAVAILABLE"], processedTimestamp: new Date().toISOString() }] })); return; }
+        const game = liveData?.game(id);
+        const observation = flow.snapshot(id);
+        if (!game && !observation) return notFound(response, "game_not_found");
+        response.end(JSON.stringify({ data: game ? { ...game, flow: observation } : observation })); return;
+      }
+      if (path === "/health") {
+        const providers = [...marketHealth(), ...(liveData?.health() ?? [])];
+        response.end(JSON.stringify({ ok: true, updatedAt: new Date().toISOString(), providers }));
+      } else if (path === "/markets/live") response.end(JSON.stringify({ data: cache.all() }));
+      else if (path === "/sportsbooks/live") response.end(JSON.stringify({ data: liveData?.sportsMarkets.all() ?? [] }));
+      else if (path === "/games/live") {
+        const games = liveData?.games.live();
+        if (!games) response.end(JSON.stringify({ data: flow.allSnapshots() }));
+        else {
+          const ids = new Set(games.map((game) => game.runnerEventId));
+          const authoritative = games.map((game) => ({ ...game, flow: flow.snapshot(game.runnerEventId) }));
+          response.end(JSON.stringify({ data: [...authoritative, ...flow.allSnapshots().filter((snapshot) => !ids.has(snapshot.runnerEventId))] }));
+        }
+      } else if (path === "/totals/live") response.end(JSON.stringify({ data: totals.all().length ? totals.all() : flow.allSnapshots().map((snapshot) => ({ runnerEventId: snapshot.runnerEventId, timestamp: snapshot.totals.timestamp, totals: snapshot.totals, signals: snapshot.totalsSignals })) }));
+      else if (path === "/totals/alerts") response.end(JSON.stringify({ data: totals.alerts() }));
+      else if (path === "/edges/live" || path === "/models/comparisons") response.end(JSON.stringify({ data: liveData?.allComparisons() ?? [] }));
+      else if (path === "/signals/live") response.end(JSON.stringify({ data: [] }));
+      else notFound(response, "not_found");
+    } catch (error) {
+      response.statusCode = error instanceof SyntaxError ? 400 : 422;
+      response.end(JSON.stringify({ error: error instanceof Error ? error.message : "request_failed" }));
     }
-    if (path === "/health") response.end(JSON.stringify({ ok: true, updatedAt: new Date().toISOString() }));
-    else if (path === "/markets/live") response.end(JSON.stringify({ data: cache.all() }));
-    else if (path === "/totals/live") response.end(JSON.stringify({ data: totals.all().length ? totals.all() : flow.allSnapshots().map((snapshot) => ({ runnerEventId: snapshot.runnerEventId, timestamp: snapshot.totals.timestamp, totals: snapshot.totals, signals: snapshot.totalsSignals })) }));
-    else if (path === "/totals/alerts") response.end(JSON.stringify({ data: totals.alerts() }));
-    else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [], implemented: false }));
-    else { response.statusCode = 404; response.end(JSON.stringify({ error: "not_found" })); }
   });
   server.listen(port, () => console.log(`Runner Scout API listening on http://localhost:${port}`));
   return server;
 }
 
+type GameRoute = { id: string; resource?: "markets" | "baselines" | "comparisons" | "totals"; subresource?: string };
+export function matchGameRoute(path: string): GameRoute | undefined {
+  const match = path.match(/^\/games\/([^/]+)(?:\/(markets|baselines|comparisons|totals)(?:\/(projections|signals|windows|set-points))?)?$/);
+  if (!match) return undefined;
+  try { return { id: decodeURIComponent(match[1]), resource: match[2] as GameRoute["resource"], subresource: match[3] }; }
+  catch { throw new Error("game id is not valid URL encoding"); }
+}
+function notFound(response: import("node:http").ServerResponse, error: string) { response.statusCode = 404; response.end(JSON.stringify({ error })); }
+function serviceUnavailable(response: import("node:http").ServerResponse, error: string) { response.statusCode = 503; response.end(JSON.stringify({ error })); }
 function readBody(request: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     let body = "";

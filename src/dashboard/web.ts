@@ -1,124 +1,26 @@
 export function renderWebDashboard(): string {
-  return `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Runner Scout</title>
-  <style>
-    :root { color-scheme: dark; --ink: #e9eef2; --muted: #8d9aa4; --line: #26333b; --panel: #111a1f; --panel-2: #172329; --lime: #c8f169; --cyan: #77d6d0; --red: #ff8e7d; }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-width: 320px; color: var(--ink); background: radial-gradient(circle at 90% 0%, #24423d 0, #10191d 34rem, #091013 70rem); font: 15px/1.5 ui-sans-serif, system-ui, sans-serif; }
-    main { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0 56px; }
-    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding-bottom: 34px; }
-    .eyebrow { color: var(--lime); font: 700 11px/1.2 ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; }
-    h1 { margin: 8px 0 0; font: 600 clamp(2.2rem, 5vw, 4.5rem)/.95 Georgia, serif; letter-spacing: -.04em; }
-    .subtle { color: var(--muted); }
-    button { border: 1px solid #52656b; border-radius: 999px; padding: 10px 16px; color: var(--ink); background: #17252a; cursor: pointer; font: inherit; }
-    button:hover { border-color: var(--lime); color: var(--lime); }
-    .status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 14px var(--lime); }
-    .dot.off { background: var(--red); box-shadow: 0 0 14px var(--red); }
-    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-    .metric, .panel { border: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 90%, transparent); }
-    .metric { min-height: 112px; padding: 18px; }
-    .metric strong { display: block; margin-top: 12px; color: var(--lime); font: 600 2rem/1 Georgia, serif; }
-    .panel { overflow: hidden; }
-    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
-    h2 { margin: 0; font-size: 16px; font-weight: 600; }
-    .health { display: flex; flex-wrap: wrap; gap: 8px; }
-    .provider { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); font: 12px ui-monospace, monospace; }
-    .provider b { color: var(--ink); }
-    nav { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 34px; border-bottom: 1px solid var(--line); }
-    nav button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 12px; color: var(--muted); background: transparent; font: 11px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
-    nav button:first-child { border-bottom-color: var(--lime); color: var(--lime); }
-    .games { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-    .game { padding: 18px; border: 1px solid var(--line); background: linear-gradient(135deg, #17272b, #111a1f); }
-    .game-top, .game-score { display: flex; justify-content: space-between; gap: 14px; }
-    .game-top { color: var(--muted); font: 11px ui-monospace, monospace; text-transform: uppercase; }
-    .game h3 { margin: 20px 0 12px; font: 600 1.35rem/1.1 Georgia, serif; }
-    .game-score { align-items: end; margin-bottom: 18px; color: var(--lime); font: 600 2rem/1 Georgia, serif; }
-    .game-score span { color: var(--muted); font: 12px ui-monospace, monospace; }
-    .game-meta { display: flex; flex-wrap: wrap; gap: 7px; color: var(--muted); font-size: 12px; }
-    .sports { display: flex; gap: 8px; margin-bottom: 18px; }
-    .sports button.active { border-color: var(--lime); color: var(--lime); }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 760px; }
-    th, td { padding: 14px 20px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
-    th { color: var(--muted); font: 11px ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
-    td.title { width: 100%; max-width: 520px; overflow: hidden; text-overflow: ellipsis; }
-    td.price { color: var(--cyan); font-weight: 700; }
-    tbody tr:hover { background: #1a292d; }
-    .empty { padding: 42px 20px; color: var(--muted); text-align: center; }
-    @media (max-width: 720px) { main { width: min(100% - 24px, 600px); padding-top: 24px; } header { align-items: start; flex-direction: column; } .metrics { grid-template-columns: repeat(2, 1fr); } .metric { min-height: 94px; } }
-  </style>
-</head>
-<body>
-  <main>
-    <header>
-      <div><div class="eyebrow">Local sports intelligence</div><h1>Runner Live Desk</h1><div class="subtle">College football state, markets, and signals</div></div>
-      <div><div class="status"><span id="status-dot" class="dot off"></span><span id="status-text">Connecting</span></div><button id="refresh" type="button">Refresh data</button></div>
-    </header>
-    <nav aria-label="Runner desk sections"><button type="button">Live desk</button><button type="button">Games</button><button type="button">Markets</button><button type="button">Totals</button><button type="button">Props</button><button type="button">Alerts</button><button type="button">Models</button><button type="button">Replay</button><button type="button">Providers</button></nav>
-    <section class="panel">
-      <div class="panel-head"><h2>Today's slate</h2><span class="subtle" id="games-note">Authoritative ESPN feed</span></div>
-      <div class="sports" style="padding: 14px 20px 0"><button class="active" data-sport="cfb" type="button">NCAAF</button><button data-sport="nfl" type="button">NFL</button><button data-sport="all" type="button">ALL</button></div>
-      <div class="games" id="games" style="padding: 14px 20px"><div class="empty">Loading today's games...</div></div>
-    </section>
-    <section class="metrics" aria-label="Market summary">
-      <div class="metric"><span class="subtle">Live markets</span><strong id="market-count">--</strong></div>
-      <div class="metric"><span class="subtle">Providers online</span><strong id="provider-count">--</strong></div>
-      <div class="metric"><span class="subtle">Top liquidity</span><strong id="liquidity">--</strong></div>
-      <div class="metric"><span class="subtle">Last update</span><strong id="updated">--</strong></div>
-    </section>
-    <section class="panel">
-      <div class="panel-head"><h2>Provider health</h2><span class="subtle" id="market-note">Waiting for live data</span></div>
-      <div class="health" id="health" style="padding: 14px 20px"></div>
-    </section>
-    <section class="panel" style="margin-top: 18px">
-      <div class="panel-head"><h2>Markets by liquidity</h2><span class="subtle">Auto-refreshes every 15 seconds</span></div>
-      <div class="table-wrap"><table><thead><tr><th>Provider</th><th>Market</th><th>Yes</th><th>Bid / Ask</th><th>Liquidity</th><th>Volume</th><th>Sport</th></tr></thead><tbody id="markets"><tr><td class="empty" colspan="7">Loading live markets...</td></tr></tbody></table></div>
-    </section>
-  </main>
-  <script>
-    const money = value => value == null ? '-' : Math.round(value).toLocaleString('en-US');
-    const pct = value => value == null ? '-' : (value * 100).toFixed(1) + '%';
-    const time = value => value ? new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--';
-    let selectedSport = 'cfb';
-    async function load() {
-      const dot = document.querySelector('#status-dot');
-      try {
-        const gameRequests = selectedSport === 'all' ? [fetch('/schedule/today?sport=cfb'), fetch('/schedule/today?sport=nfl')] : [fetch('/schedule/today?sport=' + selectedSport)];
-        const [healthResponse, marketsResponse, ...gameResponses] = await Promise.all([fetch('/health'), fetch('/markets/live'), ...gameRequests]);
-        if (!healthResponse.ok || !marketsResponse.ok) throw new Error('API unavailable');
-        const health = await healthResponse.json();
-        const markets = (await marketsResponse.json()).data || [];
-        const gamePayloads = await Promise.all(gameResponses.map(response => response.json()));
-        const games = gameResponses.every(response => response.ok) ? gamePayloads.flatMap(payload => payload.data || []) : [];
-        const providers = [...new Set(markets.map(m => m.provider))];
-        const topLiquidity = Math.max(0, ...markets.map(m => m.liquidity || 0));
-        document.querySelector('#market-count').textContent = markets.length.toLocaleString();
-        document.querySelector('#provider-count').textContent = providers.length.toLocaleString();
-        document.querySelector('#liquidity').textContent = money(topLiquidity);
-        document.querySelector('#updated').textContent = time(health.updatedAt);
-        document.querySelector('#status-text').textContent = 'Live';
-        dot.classList.remove('off');
-        document.querySelector('#market-note').textContent = markets.length + ' markets in local cache';
-        document.querySelector('#games-note').textContent = gameResponses.every(response => response.ok) ? games.length + ' games found' : 'ESPN feed unavailable';
-        document.querySelector('#games').innerHTML = games.length ? games.map(game => '<article class="game"><div class="game-top"><span>' + game.sport + ' · ' + game.status.replace('_', ' ') + '</span><span>' + (game.statusDetail || new Date(game.kickoff).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</span></div><h3>' + (game.awayRank ? '#' + game.awayRank + ' ' : '') + game.awayTeam + ' <span class="subtle">@</span> ' + (game.homeRank ? '#' + game.homeRank + ' ' : '') + game.homeTeam + '</h3><div class="game-score"><span>Score</span><b>' + (game.awayScore ?? '-') + ' — ' + (game.homeScore ?? '-') + '</b></div><div class="game-meta"><span>' + (game.venue || 'Venue pending') + '</span><span>' + game.runnerEventId + '</span></div></article>').join('') : '<div class="empty">' + (gameResponses.every(response => response.ok) ? 'No games returned for today.' : 'Schedule unavailable. ESPN did not return authoritative game state.') + '</div>';
-        document.querySelector('#health').innerHTML = providers.length ? providers.map(provider => '<div class="provider"><span class="dot"></span><b>' + provider + '</b><span>available</span></div>').join('') : '<span class="subtle">No provider data yet</span>';
-        document.querySelector('#markets').innerHTML = markets.length ? markets.map(m => '<tr><td>' + (m.provider || '-') + '</td><td class="title" title="' + (m.title || '') + '">' + (m.title || '-') + '</td><td class="price">' + pct(m.yesPrice) + '</td><td>' + pct(m.bid) + ' / ' + pct(m.ask) + '</td><td>' + money(m.liquidity) + '</td><td>' + money(m.volume) + '</td><td>' + (m.sport || '-') + '</td></tr>').join('') : '<tr><td class="empty" colspan="7">No live markets in the cache.</td></tr>';
-      } catch (error) {
-        document.querySelector('#status-text').textContent = 'Offline';
-        dot.classList.add('off');
-        document.querySelector('#market-note').textContent = 'Start the local Scout API to connect';
-      }
-    }
-    document.querySelector('#refresh').addEventListener('click', load);
-    document.querySelectorAll('[data-sport]').forEach(button => button.addEventListener('click', () => { selectedSport = button.dataset.sport; document.querySelectorAll('[data-sport]').forEach(item => item.classList.toggle('active', item === button)); load(); }));
-    load();
-    setInterval(load, 15000);
-  </script>
-</body>
-</html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RUNNER LIVE DESK</title><style>
+:root{color-scheme:dark;--bg:#070b0e;--panel:#10171c;--panel2:#151f25;--line:#26343c;--ink:#edf4f4;--muted:#91a0a8;--lime:#c8f169;--cyan:#70d9d1;--amber:#ffc970;--red:#ff8879}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,#16352f 0,#0a1115 32rem,var(--bg) 70rem);color:var(--ink);font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif}header{padding:26px max(20px,4vw) 18px;border-bottom:1px solid var(--line)}.eyebrow{color:var(--lime);font:700 11px ui-monospace,monospace;letter-spacing:.18em}.brand{display:flex;align-items:end;justify-content:space-between;gap:20px}.brand h1{margin:5px 0 0;font:650 clamp(2rem,5vw,4rem)/1 Georgia,serif;letter-spacing:-.04em}.status{color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:8px}.dot.up{background:var(--lime);box-shadow:0 0 12px var(--lime)}nav{display:flex;gap:6px;overflow:auto;padding:14px max(20px,4vw);border-bottom:1px solid var(--line);position:sticky;top:0;background:#090f12e8;backdrop-filter:blur(10px);z-index:2}nav button{border:1px solid transparent;background:transparent;color:var(--muted);padding:8px 11px;white-space:nowrap;font:700 11px ui-monospace,monospace;letter-spacing:.06em;cursor:pointer}nav button.active{color:var(--lime);border-color:#52643b;background:#18221a}main{width:min(1500px,92vw);margin:auto;padding:24px 0 60px}.view{display:none}.view.active{display:block}.metrics,.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.metric,.card,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#121b20e8,#0d1418e8)}.metric{padding:15px}.metric b{display:block;color:var(--lime);font:600 1.7rem Georgia,serif;margin-top:5px}.cards{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}.card{padding:18px}.teams{display:grid;grid-template-columns:1fr auto;gap:8px;margin:14px 0;font-size:16px}.score{color:var(--cyan);font-size:21px;font-weight:800}.meta,.muted{color:var(--muted)}.tag{display:inline-block;padding:3px 7px;border:1px solid var(--line);font:11px ui-monospace,monospace;color:var(--amber)}h2{font:600 1.35rem Georgia,serif;margin:0}.panel{margin-top:18px;overflow:hidden}.panel-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--muted);font:10px ui-monospace,monospace;letter-spacing:.08em}.empty{padding:36px;text-align:center;color:var(--muted)}.providers{display:flex;flex-wrap:wrap;gap:10px}.provider{padding:12px;border:1px solid var(--line);background:var(--panel2);min-width:210px}.provider strong{display:block}.warn{color:var(--amber)}@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}}@media(max-width:520px){.metrics{grid-template-columns:1fr}.brand{align-items:start;flex-direction:column}}
+</style></head><body><header><div class="brand"><div><div class="eyebrow">RUNNER SPORTS &amp; ANALYTICS</div><h1>RUNNER LIVE DESK</h1><div class="muted">Game state, sportsbook context, and model availability without manufactured projections.</div></div><div class="status"><span id="dot" class="dot"></span><span id="status">Connecting</span><br><span id="updated">--</span></div></div></header>
+<nav id="nav">${["LIVE DESK","GAMES","MARKETS","TOTALS","PROPS","ALERTS","MODELS","REPLAY","PROVIDERS"].map((name,i)=>`<button data-tab="${name}" class="${i===0?"active":""}">${name}</button>`).join("")}</nav>
+<main>
+<section class="view active" data-view="LIVE DESK"><div class="metrics"><div class="metric"><span class="muted">Live games</span><b id="live-count">--</b></div><div class="metric"><span class="muted">Today's CFB games</span><b id="schedule-count">--</b></div><div class="metric"><span class="muted">Sportsbook outcomes</span><b id="sports-count">--</b></div><div class="metric"><span class="muted">Runner comparisons</span><b id="comparison-count">--</b></div></div><div id="live-games" class="cards"><div class="empty">Loading authoritative game state?</div></div></section>
+<section class="view" data-view="GAMES"><div class="panel"><div class="panel-head"><h2>CFB schedule</h2><span class="muted">ESPN scoreboard discovery</span></div><div id="schedule" class="cards" style="padding:16px;margin:0"></div></div></section>
+<section class="view" data-view="MARKETS"><div class="panel"><div class="panel-head"><h2>Raw Market Monitor</h2><span class="muted">Kalshi / Polymarket cache preserved</span></div><div class="table-wrap"><table><thead><tr><th>Provider</th><th>Market</th><th>Yes</th><th>Bid / Ask</th><th>Liquidity</th><th>Sport</th></tr></thead><tbody id="markets"></tbody></table></div></div><div class="panel"><div class="panel-head"><h2>CFB sportsbooks</h2><span class="muted">Latest normalized executable offers</span></div><div class="table-wrap"><table><thead><tr><th>Book</th><th>Market</th><th>Selection</th><th>Line</th><th>Price</th><th>Mapped game</th></tr></thead><tbody id="sportsbooks"></tbody></table></div></div></section>
+<section class="view" data-view="TOTALS"><div id="totals" class="empty">Totals unavailable until game/model inputs are evaluated.</div></section>
+<section class="view" data-view="PROPS"><div class="empty">Props are unavailable until a provider actually returns supported derivative markets.</div></section>
+<section class="view" data-view="ALERTS"><div class="empty">No automatic wagering or trading. Validated alerts will appear here.</div></section>
+<section class="view" data-view="MODELS"><div class="panel"><div class="panel-head"><h2>Market vs Runner model</h2><span class="muted">Edge is separate from confidence and data quality</span></div><div id="models" class="empty">Runner projection unavailable.</div></div></section>
+<section class="view" data-view="REPLAY"><div class="empty">Append-only game and market history is being retained. Replay controls are not yet exposed.</div></section>
+<section class="view" data-view="PROVIDERS"><div id="providers" class="providers"></div></section>
+</main><script>
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const val=v=>v===undefined||v===null||v===''?'Unavailable':esc(v);const pct=v=>v===undefined?'Unavailable':(v*100).toFixed(1)+'%';
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#nav button,.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelector('[data-view="'+b.dataset.tab+'"]').classList.add('active')});
+const get=async path=>{const r=await fetch(path);if(!r.ok)throw new Error(path+' '+r.status);return r.json()};
+function gameCard(g){const state=[g.statusDetail||g.status,g.period?'P'+g.period:null,g.clock,g.possession?'Poss '+g.possession:null].filter(Boolean).join(' ? ');return '<article class="card"><span class="tag">'+val(g.sport)+'</span><div class="teams"><span>'+val(g.away?.rank?'#'+g.away.rank+' '+g.away.name:g.away?.name)+'</span><span class="score">'+val(g.away?.score)+'</span><span>'+val(g.home?.rank?'#'+g.home.rank+' '+g.home.name:g.home?.name)+'</span><span class="score">'+val(g.home?.score)+'</span></div><div class="meta">'+val(state)+'</div><div class="meta">'+esc(g.runnerEventId)+'</div></article>'}
+function rows(items,render,cols){return items.length?items.map(render).join(''):'<tr><td class="empty" colspan="'+cols+'">No provider data available.</td></tr>'}
+async function load(){const results=await Promise.allSettled([get('/health'),get('/games/live'),get('/schedule/today?sport=cfb'),get('/markets/live'),get('/sportsbooks/live'),get('/models/comparisons'),get('/totals/live')]);const data=i=>results[i].status==='fulfilled'?(results[i].value.data||[]):[];const health=results[0].status==='fulfilled'?results[0].value:null,live=data(1),schedule=data(2),markets=data(3),sports=data(4),comparisons=data(5),totals=data(6);document.querySelector('#live-count').textContent=live.length;document.querySelector('#schedule-count').textContent=schedule.length;document.querySelector('#sports-count').textContent=sports.length;document.querySelector('#comparison-count').textContent=comparisons.filter(x=>x.available).length;document.querySelector('#live-games').innerHTML=live.length?live.map(gameCard).join(''):'<div class="empty">No CFB games are live, or ESPN game state is unavailable.</div>';document.querySelector('#schedule').innerHTML=schedule.length?schedule.map(gameCard).join(''):'<div class="empty">Schedule unavailable.</div>';document.querySelector('#markets').innerHTML=rows(markets,m=>'<tr><td>'+val(m.provider)+'</td><td>'+val(m.title)+'</td><td>'+pct(m.yesPrice)+'</td><td>'+pct(m.bid)+' / '+pct(m.ask)+'</td><td>'+val(m.liquidity)+'</td><td>'+val(m.sport)+'</td></tr>',6);document.querySelector('#sportsbooks').innerHTML=rows(sports,m=>'<tr><td>'+val(m.bookmakerName)+'</td><td>'+val(m.marketKind)+'</td><td>'+val(m.selection)+'</td><td>'+val(m.line)+'</td><td>'+val(m.americanPrice)+'</td><td>'+val(m.runnerEventId)+'</td></tr>',6);document.querySelector('#models').innerHTML=comparisons.length?comparisons.map(c=>'<div class="card"><strong>'+val(c.target||'Model comparison')+'</strong><div>'+val(c.selection)+'</div><div>Edge: '+val(c.probabilityEdge??c.lineEdge)+'</div><div>Confidence: '+val(c.confidence)+'</div><div>Data quality: '+val(c.dataQuality)+'</div><div class="warn">'+esc(c.available?'Execution not evaluated':c.suppressionReasons.join(', '))+'</div></div>').join(''):'<div class="empty">Runner projection unavailable.</div>';document.querySelector('#totals').innerHTML=totals.length?'<pre>'+esc(JSON.stringify(totals,null,2))+'</pre>':'Totals unavailable until game/model inputs are evaluated.';const providers=health?.providers||[];document.querySelector('#providers').innerHTML=providers.length?providers.map(p=>'<div class="provider"><strong><span class="dot '+(p.connected?'up':'')+'"></span>'+val(p.provider)+'</strong><span>'+val(p.status||'UNKNOWN')+'</span><br><span class="muted">'+val(p.lastError||p.lastMessageAt)+'</span></div>').join(''):'<div class="empty">Provider health has not been observed.</div>';document.querySelector('#status').textContent=health?'Desk online':'API unavailable';document.querySelector('#dot').classList.toggle('up',!!health);document.querySelector('#updated').textContent=health?new Date(health.updatedAt).toLocaleTimeString():'--'}
+load();setInterval(load,15000);
+</script></body></html>`;
 }

@@ -1,0 +1,32 @@
+import assert from "node:assert/strict";
+import { once } from "node:events";
+import { rmSync } from "node:fs";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { startApi } from "../api/server.js";
+import { GameFlowEngine } from "../game-flow/engine.js";
+import { LiveDataRuntime } from "../live-data/runtime.js";
+import { normalizeEspnGame } from "../normalization/games/espn.js";
+import { normalizeOddsApiEvent } from "../normalization/markets/oddsApi.js";
+import { MarketStateCache } from "../state/market-state/cache.js";
+import { SqliteStore } from "../storage/sqlite.js";
+const db = join(tmpdir(), `runner-api-${process.pid}-${Date.now()}.db`);
+const store = new SqliteStore(db); store.init();
+const live = new LiveDataRuntime(store);
+const event = { id: "api-game", date: "2026-09-12T19:30:00Z", status: { period: 1, displayClock: "10:00", type: { state: "in", detail: "10:00 - 1st" } }, competitions: [{ competitors: [
+  { homeAway: "home", score: "7", team: { id: "1", displayName: "USC Trojans", abbreviation: "USC" } }, { homeAway: "away", score: "3", team: { id: "2", displayName: "LSU Tigers", abbreviation: "LSU" } }
+] }] };
+const game = normalizeEspnGame(event, { receivedTimestamp: "2026-09-12T19:40:00Z" }); live.games.upsert(game);
+const market = normalizeOddsApiEvent({ id: "api-odds", home_team: game.home.name, away_team: game.away.name, bookmakers: [{ key: "book", markets: [{ key: "h2h", outcomes: [{ name: game.home.name, price: -120 }] }] }] }, { receivedTimestamp: "2026-09-12T19:40:01Z" }, game.runnerEventId)[0]; live.sportsMarkets.upsertMany([market]);
+live.discoverSchedule = async (filter = {}) => live.games.schedule({ ...filter, date: filter.date ?? "2026-09-12" });
+const server = startApi(new MarketStateCache(), 0, new GameFlowEngine(), store, live);
+if (!server.listening) await once(server, "listening");
+const address = server.address(); assert.ok(address && typeof address === "object"); const base = `http://127.0.0.1:${address.port}`;
+const liveResponse = await fetch(`${base}/games/live`); assert.equal(liveResponse.status, 200); assert.equal((await liveResponse.json()).data[0].runnerEventId, game.runnerEventId);
+const gameResponse = await fetch(`${base}/games/${encodeURIComponent(game.runnerEventId)}`); assert.equal(gameResponse.status, 200);
+const marketsResponse = await fetch(`${base}/games/${encodeURIComponent(game.runnerEventId)}/markets`); assert.equal((await marketsResponse.json()).data.length, 1);
+for (const route of ["/schedule/today", "/schedule/cfb?date=2026-09-12&sport=cfb", "/schedule/ranked?date=2026-09-12"]) assert.equal((await fetch(base + route)).status, 200);
+const health = await (await fetch(`${base}/health`)).json(); assert.ok(health.providers.every((provider: { connected: boolean }) => !provider.connected), "unobserved providers must not be reported healthy");
+await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+rmSync(db, { force: true });
+console.log("API surface tests passed");

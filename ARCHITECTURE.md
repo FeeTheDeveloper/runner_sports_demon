@@ -93,3 +93,15 @@ Provider mappings should record Kalshi market ids, Polymarket condition/market i
 - Mocks belong only in tests/fixtures.
 - Connectors must not import model or dashboard code.
 - Models must not import connector or UI code.
+
+
+## P0 live intelligence extension
+
+- `src/connectors/espn` owns CFB scoreboard and summary transport only.
+- `src/connectors/odds-api` owns The Odds API v4 transport and quota metadata only.
+- `src/normalization/games` and `src/normalization/markets/oddsApi.ts` separate raw provider payloads from canonical game state and sportsbook snapshots.
+- `src/live-data/runtime.ts` independently schedules ESPN (default 10s) and sportsbook (default 20s) work with no overlapping poll, bounded cadence, and exponential backoff. The prediction-market ingestion loop remains independent.
+- `GameStateCache` and `SportsMarketCache` serve current API state. SQLite retains deduplicated append-only history plus provider mappings and raw payload events.
+- Canonical CFB ids are `RUNNER:CFB:YYYY-MM-DD:AWAY:HOME`.
+
+The API now exposes `/schedule/today`, `/schedule/cfb`, `/schedule/ranked`, `/games/live`, `/games/:id`, `/games/:id/markets`, `/games/:id/baselines`, `/games/:id/comparisons`, `/sportsbooks/live`, and `/models/comparisons`. Existing market, totals, signal, observation, and health surfaces remain available.
