@@ -1,0 +1,119 @@
+{
+  "schema_version": "runner.sync-manifest.v1",
+  "generated_at": "2026-09-17T06:41:00Z",
+  "source_pack": {
+    "name": "Runner Sports & Analytics Behavior Source Master Pack",
+    "version": "1.0",
+    "status": "active",
+    "sections": [
+      "identity_mission_authority",
+      "intelligence_operating_doctrine",
+      "data_source_trust_lineage",
+      "prediction_market_risk",
+      "live_game_flow",
+      "model_ip_learning_postgame",
+      "product_revenue_content",
+      "agent_behavior_router"
+    ]
+  },
+  "audit": {
+    "base_branch": "main",
+    "base_commit": "a0e67a23b72cb0000d758d0a6582f9a6485590b6",
+    "human_report": "RUNNER_SYNC_AUDIT.md",
+    "overall_status": "partial",
+    "runtime_execution_verified_by_this_audit": false
+  },
+  "repositories": {
+    "runner_sports_demon": {
+      "role": "live_intelligence_engine",
+      "authority": [
+        "live_providers",
+        "canonical_live_state",
+        "markets",
+        "game_flow",
+        "totals",
+        "forecasts",
+        "model_runtime",
+        "signals",
+        "alerts",
+        "replay",
+        "postgame_records",
+        "publishing_contracts"
+      ]
+    },
+    "rsaa_verse": {
+      "role": "historical_intelligence_warehouse",
+      "authority": [
+        "historical_acquisition",
+        "historical_normalization",
+        "duckdb_parquet",
+        "research_datasets",
+        "historical_features",
+        "comparable_states",
+        "training_exports"
+      ]
+    },
+    "runner_sports-site": {
+      "role": "presentation_product_layer",
+      "authority": [
+        "dashboards",
+        "subscriber_experience",
+        "curated_cloud_read_models"
+      ],
+      "forbidden": [
+        "second_authoritative_model_engine"
+      ]
+    }
+  },
+  "stores": {
+    "demon_sqlite": "authoritative_operational_replay_store",
+    "runner_site_supabase": "curated_publication_bus",
+    "google_drive": "institutional_memory_and_exchange_not_live_database"
+  },
+  "controls": {
+    "agent_identity": "pass",
+    "repo_role_separation": "pass",
+    "live_data_verification": "partial",
+    "canonical_event_identity": "partial",
+    "append_only_history": "pass",
+    "pregame_baseline_immutability": "pass",
+    "market_executability_risk": "partial",
+    "game_flow": "partial",
+    "model_registry": "partial",
+    "model_calibration": "partial",
+    "source_lineage": "partial",
+    "agent_router": "partial",
+    "ci": "partial",
+    "runtime_status_freshness": "fail",
+    "historical_live_fusion": "partial",
+    "site_publishing_boundary": "partial",
+    "secret_hygiene": "pass",
+    "automatic_trading": "disabled"
+  },
+  "priority_gaps": [
+    "runtime_status_commit_freshness_anchor",
+    "production_grade_model_versions_and_calibration",
+    "uniform_lineage_envelope_with_pipeline_run_id",
+    "verse_to_demon_historical_adapter_acceptance",
+    "nfl_live_play_drive_ingestion"
+  ],
+  "required_reading": [
+    "RUNNER_SYNC_AUDIT.md",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "RUNNER_INTELLIGENCE_STATE.md",
+    ".runner/system-status.json",
+    "DATA_SOURCES.md",
+    "DATA_SCHEMA.md",
+    "MODEL_REGISTRY.json",
+    "MODEL_NOTES.md",
+    "BACKTESTING.md"
+  ],
+  "boundaries": {
+    "fabricated_live_data": false,
+    "auto_trading": false,
+    "secrets_in_repo": false,
+    "market_implied_probability_as_independent_runner_forecast": false,
+    "site_as_authoritative_model_engine": false
+  }
+}
