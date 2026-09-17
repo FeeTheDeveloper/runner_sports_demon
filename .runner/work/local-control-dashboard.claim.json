@@ -1,0 +1,9 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "feature/local-control-dashboard",
+  "paths": ["src/dashboard", "src/api/server.ts", "src/cli.ts", "src/tests/control.test.ts", "package.json", "README.md", "docs/ai-sync"],
+  "task": "Build and locally host a visual control center using saved engine data and existing schedule APIs.",
+  "started_at": "2026-09-16",
+  "status": "active"
+}

@@ -11,9 +11,12 @@ import { GameFlowEngine } from "./game-flow/engine.js";
 loadDotEnv();
 const command = process.argv[2] ?? "start";
 const cache = new MarketStateCache();
-const store = new SqliteStore();
 const flow = new GameFlowEngine();
 
+if (command === "dashboard") {
+  startApi(cache, intArg("--port", 8790), flow, undefined, { localDashboard: true });
+} else {
+const store = new SqliteStore();
 if (command === "start") {
   const api = process.argv.includes("--api");
   if (api) startApi(cache, intArg("--port", 8787), flow, store);
@@ -36,7 +39,8 @@ if (command === "start") {
   console.log(JSON.stringify(store.importFrom(dir), null, 2));
   console.log(`Imported ${resolve(dir)} into ${store.path}`);
 } else {
-  console.log("Usage: runner-scout start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
+  console.log("Usage: runner-scout dashboard [--port 8790] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
+}
 }
 
 function intArg(flag: string, fallback: number): number {
