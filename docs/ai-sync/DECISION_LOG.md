@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-16 — Local control center
+
+- Implemented the requested dashboard as a local operator view in Demon, preserving Site ownership of the consumer product.
+- Added a separate `dashboard` CLI command, bound to loopback, using read-only saved data. Hosting the dashboard does not implicitly start provider ingestion or cloud publishing.
+- Reused existing ESPN schedule services for explicit date/league requests. Search, filters, automatic-refresh controls and JSON export operate on display data.
+- Rendered recorded provider freshness and effective totals expiry; never derived provider connectivity from market presence. Historical coordination blockers are labeled for revalidation.
+- Used native HTML/CSS/JavaScript served by the existing Node API without new dependencies or remote asset hosts.
+
 ## 2026-09-16 — Master-sync bootstrap
 
 - Accepted the owner's authority hierarchy and explicit external-action boundaries. Local reversible implementation can proceed within the objective; external authority remains action-specific.

@@ -34,7 +34,7 @@ try {
   const old = new Date(Date.now() - 600_000).toISOString();
   const future = new Date(Date.now() + 600_000).toISOString();
   const schema = readFileSync(resolve("src/storage/schema.sql"), "utf8");
-  const payload = JSON.stringify({ expiresAt: old, selection: "OVER", marketLine: 40.5, runnerProjection: 44, edge: 3.5, confidence: 0.7, raw: privateMarker });
+  const payload = JSON.stringify({ expiresAt: old, selection: "UNDER", marketLine: 44, runnerProjection: 40.5, rawEdge: -3.5, favorableEdge: 3.5, confidence: 0.7, raw: privateMarker });
   execFileSync("sqlite3", [dbPath], { input: schema + `
     with recursive ids(n) as (select 1 union all select n+1 from ids where n < 251)
     insert into markets(id,provider,external_id,title,sport,status,raw_json,source_timestamp,received_timestamp,processed_timestamp,updated_at)
@@ -69,6 +69,7 @@ try {
   assert.equal(snapshot.activity.reduce((sum, bucket) => sum + bucket.count, 0), 1, "future and old events must not appear as recent activity");
   assert.equal(snapshot.windows.find(row => row.id === "window")?.status, "EXPIRED");
   assert.equal(snapshot.windows.find(row => row.id === "window")?.storedStatus, "ACTIONABLE");
+  assert.equal(snapshot.windows.find(row => row.id === "window")?.edge, 3.5, "display selection-aware favorableEdge from the actual totals window contract");
   assert.equal(snapshot.windows.find(row => row.id === "invalid-window")?.status, "UNKNOWN");
   const serialized = JSON.stringify(snapshot);
   assert.equal(serialized.includes(privateMarker), false);
@@ -80,6 +81,11 @@ try {
   writeFileSync(corrupt, privateMarker);
   const unavailable = readControlSnapshot(root, corrupt);
   assert.equal(unavailable.database.status, "unavailable");
+  assert.equal(unavailable.summary.markets, null);
+  assert.deepEqual(unavailable.markets, []);
+  assert.deepEqual(unavailable.providers, []);
+  assert.deepEqual(unavailable.activity, []);
+  assert.deepEqual(unavailable.windows, []);
   assert.equal(JSON.stringify(unavailable).includes(privateMarker), false, "database errors must not leak storage content");
   assert.equal(readControlSnapshot(root, root).database.status, "unavailable");
   console.log("control snapshot tests passed");

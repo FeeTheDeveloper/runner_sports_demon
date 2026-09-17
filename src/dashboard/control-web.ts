@@ -17,7 +17,7 @@ function icon(name: string): string {
 }
 
 export function renderControlDashboard(): string {
-  const nav = (id: string, title: string, count = "") => '<a href="#' + id + '" data-nav="' + id + '">' + icon(id) + '<span>' + title + '</span>' + (count ? '<small id="' + count + '">—</small>' : '') + '</a>';
+  const nav = (id: string, title: string, count = "") => '<a href="#' + id + '" data-nav="' + id + '" aria-label="' + title + '">' + icon(id) + '<span>' + title + '</span>' + (count ? '<small id="' + count + '">—</small>' : '') + '</a>';
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#101211"><title>Runner — Control Center</title><style>${controlStyles}</style></head>
 <body><a class="skip" href="#main">Skip to content</a>
@@ -35,7 +35,7 @@ export function renderControlDashboard(): string {
   <div id="error-banner" class="error-banner" role="alert" hidden></div>
   <section id="view-overview" data-view="overview">
     <div class="metrics">
-      <article class="metric"><div><span>Stored markets</span>${icon("markets")}</div><strong id="metric-markets">—</strong><small>Across connected market sources</small></article>
+      <article class="metric"><div><span>Stored markets</span>${icon("markets")}</div><strong id="metric-markets">—</strong><small>Across recorded market sources</small></article>
       <article class="metric"><div><span>Market events</span>${icon("totals")}</div><strong id="metric-events">—</strong><small>Saved for analysis and replay</small></article>
       <article class="metric"><div><span>Fresh provider samples</span>${icon("providers")}</div><strong id="metric-providers">—</strong><small>Received within the last 90 seconds</small></article>
       <article class="metric"><div><span>Open handoffs</span>${icon("workflows")}</div><strong id="metric-handoffs">—</strong><small>From the shared engineering queue</small></article>

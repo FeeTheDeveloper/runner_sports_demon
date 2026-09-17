@@ -53,6 +53,7 @@ The implementation includes REST market ingestion, normalization, SQLite persist
    - Sport-specific live fair-value models should implement a common `predict(state) -> probability` contract.
 
 6. **Interfaces**
+   - Local control center: `npm run dashboard` serves `src/dashboard/control-web.ts` on loopback port 8790. `GET /control/status` reads a bounded, display-safe SQLite snapshot plus repository coordination records via `src/dashboard/control.ts`. It does not initialize storage, start ingestion or publish. Local dashboard mode rejects non-GET requests; the original API mode remains separate.
    - Terminal dashboard: prints live Kalshi/Polymarket market rows sorted by liquidity/volume.
    - Local HTTP API: `/health`, `/markets/live`, `/edges/live`, `/signals/live`, `/games/live`.
    - `POST /observations` accepts structured observations from `GAME_FEED`, `YOUTUBE_TV_OBSERVATION`, `HUMAN_ANALYST`, `CLAUDE_RESEARCH`, `RUNNER_AI`, or `VERIFIED_NEWS`; it does not ingest or archive video.

@@ -5,5 +5,7 @@
   "paths": ["src/dashboard", "src/api/server.ts", "src/cli.ts", "src/tests/control.test.ts", "package.json", "README.md", "docs/ai-sync"],
   "task": "Build and locally host a visual control center using saved engine data and existing schedule APIs.",
   "started_at": "2026-09-16",
-  "status": "active"
+  "status": "complete",
+  "completed_at": "2026-09-16",
+  "validation": "Build, all 13 test programs, contract validation and local HTTP smoke checks passed. Hosted at http://127.0.0.1:8790; browser visual verification unavailable."
 }

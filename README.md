@@ -36,6 +36,20 @@ These capabilities are implemented locally; this list does not attest to live pr
 
 ## Quick start
 
+### Local control center
+
+```bash
+npm run dashboard
+```
+
+Open **http://127.0.0.1:8790**. The responsive control center shows saved markets, provider freshness, event activity, totals windows, model records, repository presence and engineering handoffs. Search/filter markets, navigate work queues, pause automatic refresh, request an ESPN schedule by date, or download the displayed status as JSON.
+
+This command binds to loopback and reads the existing SQLite store without initializing or modifying it. It works when the database is missing, with unavailable values clearly marked. It does not start ingestion, cloud publishing, trading, or agents. Schedules are fetched only when requested and remain in memory. Existing local `.env` configuration supplies `RUNNER_SCOUT_DB` when set; no credentials are sent to the browser.
+
+Use `npm run dashboard -- --port 8791` for another port. Stop with Ctrl+C in the launch terminal. The original engine/API commands below retain their behavior.
+
+### Market ingestion
+
 ```bash
 npm ci
 cp .env.example .env

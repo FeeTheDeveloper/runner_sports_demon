@@ -1,5 +1,21 @@
 # Current state
 
+## 2026-09-16, 9:37 PM Central — Three-repository local session
+
+Opened all three folders in the shared VS Code workspace. Demon ingestion/API is running on port 8787 with 250 freshly discovered Kalshi markets; the control center remains on 8790. Runner Site homepage and health pass on `http://localhost:3001`. Verse CLI works after installing declared Python dependencies; 11 warehouses are readable, four tests pass, and the 2025 six-artifact export validates. Verse uses batch commands rather than a persistent server. Site continues reading Supabase; automatic local Demon-to-Site integration is not established. See [LOCAL_STACK.md](LOCAL_STACK.md) for exact commands and limits.
+
+## 2026-09-16 — Local control dashboard
+
+Implemented and hosted the owner's requested visual control center at **http://127.0.0.1:8790**, with the Node process bound to loopback. Restart with `npm run dashboard`; an alternative port can be supplied with `-- --port 8791`.
+
+The dashboard displays read-only SQLite snapshots, recorded provider freshness, 24 hourly event buckets, market search/provider filters/sorting, totals window expiry, engineering handoffs, historical blockers, repository presence and model metadata. Navigation, pause/resume refresh, manual refresh, JSON status export and on-demand ESPN date/league schedules are implemented. Missing/unreadable storage has explicit empty/unavailable states. The original engine/API mode is preserved.
+
+Local verification found 1,413 stored markets, 38,532 market events, five handoffs and three models. Recorded Kalshi/Polymarket telemetry was stale; the UI does not call it live. Build, all 13 test programs, contracts and loopback HTTP checks passed. Browser visual inspection was unavailable because no browser session was connected; emitted-client behavior was tested in a minimal DOM environment.
+
+Work branch: `feature/local-control-dashboard`, started from `3af26af`. An intervening workspace commit `70c08d1` captured part of the work; subsequent changes remain in the working tree. No remote push, cloud deployment, ingestion or Site publication was performed by this session. Local process details/logs are in ignored `.ai/local/`.
+
+## Earlier bootstrap record
+
 Verified 2026-09-16 from source and local checks at baseline `ae89200`. The working tree was clean on arrival at `release/runner-production`; documentation work uses `docs/ai-sync-bootstrap`.
 
 Implemented: REST market polling, normalization/cache, SQLite market history, ESPN NFL/CFB game discovery, structured game observations, football totals heuristics, suppression/windows, totals frame replay, dashboards, and optional curated Site publishing. Source map: [ARCHITECTURE.md](ARCHITECTURE.md).

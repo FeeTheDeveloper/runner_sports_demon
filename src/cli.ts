@@ -16,31 +16,31 @@ const flow = new GameFlowEngine();
 if (command === "dashboard") {
   startApi(cache, intArg("--port", 8790), flow, undefined, { localDashboard: true });
 } else {
-const store = new SqliteStore();
-if (command === "start") {
-  const api = process.argv.includes("--api");
-  if (api) startApi(cache, intArg("--port", 8787), flow, store);
-  await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once") });
-} else if (command === "init-db") {
-  store.init();
-  console.log(`Initialized ${store.path}`);
-} else if (command === "export") {
-  const base = process.argv[3] ?? process.env.RUNNER_SCOUT_EXPORT_DIR ?? "exports";
-  const dir = process.argv[3] ? base : `${base}/${new Date().toISOString().replace(/[:.]/g, "-")}`;
-  console.log(JSON.stringify(store.exportTo(dir), null, 2));
-  console.log(`Exported ${store.path} to ${resolve(dir)}`);
-} else if (command === "import") {
-  const dir = process.argv[3] ?? process.env.RUNNER_SCOUT_IMPORT_DIR;
-  if (!dir) {
-    console.log("Usage: runner-scout import <dir> (or set RUNNER_SCOUT_IMPORT_DIR)");
-    process.exit(1);
+  const store = new SqliteStore();
+  if (command === "start") {
+    const api = process.argv.includes("--api");
+    if (api) startApi(cache, intArg("--port", 8787), flow, store);
+    await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once") });
+  } else if (command === "init-db") {
+    store.init();
+    console.log(`Initialized ${store.path}`);
+  } else if (command === "export") {
+    const base = process.argv[3] ?? process.env.RUNNER_SCOUT_EXPORT_DIR ?? "exports";
+    const dir = process.argv[3] ? base : `${base}/${new Date().toISOString().replace(/[:.]/g, "-")}`;
+    console.log(JSON.stringify(store.exportTo(dir), null, 2));
+    console.log(`Exported ${store.path} to ${resolve(dir)}`);
+  } else if (command === "import") {
+    const dir = process.argv[3] ?? process.env.RUNNER_SCOUT_IMPORT_DIR;
+    if (!dir) {
+      console.log("Usage: runner-scout import <dir> (or set RUNNER_SCOUT_IMPORT_DIR)");
+      process.exit(1);
+    }
+    store.init();
+    console.log(JSON.stringify(store.importFrom(dir), null, 2));
+    console.log(`Imported ${resolve(dir)} into ${store.path}`);
+  } else {
+    console.log("Usage: runner-scout dashboard [--port 8790] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
   }
-  store.init();
-  console.log(JSON.stringify(store.importFrom(dir), null, 2));
-  console.log(`Imported ${resolve(dir)} into ${store.path}`);
-} else {
-  console.log("Usage: runner-scout dashboard [--port 8790] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
-}
 }
 
 function intArg(flag: string, fallback: number): number {

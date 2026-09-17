@@ -1,5 +1,17 @@
 # Deployment status
 
+## Three-repository local run — September 16, 2026, 9:37 PM Central
+
+Engine/API running at `http://localhost:8787`, control center at `http://127.0.0.1:8790`, and Site at `http://localhost:3001`. Site homepage/health and Demon health/markets were verified. Verse is available as a working Python CLI with validated local warehouse access, not a persistent server. Engine cloud publishing remains disabled. [Local stack instructions](LOCAL_STACK.md) record process/log locations, hostname requirements, prerequisites and integration limits.
+
+## Authorized local dashboard — 2026-09-16
+
+Hosted at **http://127.0.0.1:8790** and verified with successful page/status HTTP responses. Started as a hidden local Node process; its PID and output logs are in `.ai/local/dashboard.pid`, `dashboard.stdout.log` and `dashboard.stderr.log`. These runtime files are ignored. This process lasts until stopped or the machine/session ends; no startup task was installed.
+
+Restart from the repository with `npm run dashboard`; stop a foreground launch with Ctrl+C. The dashboard command does not start ingestion, database writes, cloud publishing or trading. The owner explicitly authorized local hosting. Remote deployment remains unperformed and requires separate authorization.
+
+## Earlier infrastructure audit
+
 Verified from tracked repository configuration on 2026-09-16. No production deployment state was queried.
 
 - Documented target: local Node CLI/service with sqlite3; optional HTTP on port 8787 and curated publishing to Runner Site Supabase.

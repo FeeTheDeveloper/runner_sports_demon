@@ -45,7 +45,7 @@ select 'windows', json_object('id',id,'runnerEventId',runner_event_id,'marketTyp
   'storedStatus',status,'detectedAt',detected_at,
   'expiresAt',coalesce(json_extract(safe_payload,'$.expiresAt'),json_extract(safe_payload,'$.windowExpiresAt')),
   'selection',json_extract(safe_payload,'$.selection'),'marketLine',json_extract(safe_payload,'$.marketLine'),
-  'runnerProjection',json_extract(safe_payload,'$.runnerProjection'),'edge',json_extract(safe_payload,'$.edge'),
+  'runnerProjection',json_extract(safe_payload,'$.runnerProjection'),'edge',json_extract(safe_payload,'$.favorableEdge'),
   'confidence',json_extract(safe_payload,'$.confidence'))
 from (select id,runner_event_id,market_type,status,detected_at,
   case when json_valid(payload_json) then payload_json else '{}' end as safe_payload
@@ -130,6 +130,11 @@ export function readControlSnapshot(root = process.cwd(), dbPath = resolve(root,
   } catch {
     // Deliberately omit subprocess errors: paths, provider data or credentials may appear there.
     snapshot.database.status = "unavailable";
+    for (const key of Object.keys(snapshot.summary) as (keyof typeof snapshot.summary)[]) snapshot.summary[key] = null;
+    snapshot.markets = [];
+    snapshot.providers = [];
+    snapshot.activity = [];
+    snapshot.windows = [];
   }
   return snapshot;
 }

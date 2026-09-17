@@ -1,5 +1,17 @@
 # Testing status
 
+## System check and sample task — September 16, 2026, 9:26 PM Central
+
+Re-ran build/all 13 tests, contract validation, repository-presence validation and SQLite `quick_check`: all passed. The running dashboard returned HTTP 200. A live ESPN NFL schedule request for September 17 returned Detroit at Buffalo with valid identity/timestamps and unchanged saved engine counts. Market-provider telemetry remains stale and no engine API listener was found on port 8787. See [the system check report](SYSTEM_CHECK_2026-09-16.md) for evidence and limits.
+
+## Local control dashboard — 2026-09-16
+
+`npm run build`, `npm test` (all 13 programs), `npm run contracts:validate`, and diff whitespace checks passed after implementation. The new tests cover read-only SQLite inspection and field projection, timestamp freshness and expiry, missing/corrupt databases, real loopback HTTP requests, method/Host restrictions, legacy API authentication, emitted-client navigation, pause/resume, refresh, search/filter behavior and hostile-title escaping.
+
+The launched server returned HTTP 200 for `/` and `/control/status` on port 8790, with a readable local database and current repository metadata. It listens only on `127.0.0.1`. No browser session was connected, so layout/visual browser inspection was not performed; client interactions ran against a minimal DOM in Node. Live provider schedules were not fetched as part of automated validation.
+
+## Earlier bootstrap validation
+
 Executed locally on 2026-09-16, Windows PowerShell, Node 24.13.0, npm 11.6.2. Existing dependencies and sqlite3 executable were available; no dependency reinstall was required.
 
 | Check | Result | Scope |
