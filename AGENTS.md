@@ -8,6 +8,8 @@ This repository is the primary Runner Sports & Analytics intelligence engine. `r
 ## Agent synchronization
 Codex, Claude Code, GitHub Copilot, and VS Code work from this repository as the shared source of truth. Do not create agent-specific forks of production logic or separate secret files that drift from the repository contract.
 
+Follow `docs/ai-sync/SESSION_START.md` for major sessions; close with `docs/ai-sync/SESSION_CLOSE.md`. Keep operational claims/handoffs in the existing `.runner/` directories and revalidate dated status.
+
 Before changing code:
 1. Read `PROJECT_HANDOFF.md` when present, `ARCHITECTURE.md`, `CURRENT_INFRASTRUCTURE_AUDIT.md`, `DATA_SOURCES.md`, `MODEL_NOTES.md`, and `BACKTESTING.md`.
 2. Inspect the relevant implementation and tests.
@@ -42,5 +44,12 @@ Runner Sports Demon is intelligence-first. Do not enable automatic trading witho
 
 Prioritize: live data integrity, timestamps/latency, canonical event mapping, normalization, probability models, market reaction, signals/suppression, replay, backtesting, observability, API/dashboard integration.
 
+## Authority and external actions
+
+King Fee retains final human authority. Hutchrok Solutions Group LLC is the parent organization; Fee The Developer is its technical division. Repository files and Git history establish implementation truth; Hutchrok-approved records establish enterprise truth. Never claim automatic synchronization, shared memory, or hidden access between tools. See `docs/ai-sync/SYSTEM_ROLES.md`.
+
+Reversible repository-local work necessary for an authorized objective may proceed autonomously. Pushes, merges, deployments, publishing, purchases, production deletion/data mutation, secret rotation, third-party contact, billing/DNS changes, and irreversible external actions require explicit authorization for that exact action. See `docs/ai-sync/SECURITY_BOUNDARIES.md`.
+
 ## Source control
+
 Use focused branches/commits. Do not force-push, rewrite shared history, or commit secrets. Production logic must remain version controlled.

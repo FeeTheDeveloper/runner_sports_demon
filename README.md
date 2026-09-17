@@ -28,11 +28,16 @@ This repository remains local-first. SQLite is the authoritative engine store, w
 - Provider health tracking.
 - Terminal dashboard sorted by liquidity/volume.
 - Minimal local API for health and live markets.
+- ESPN NFL/CFB schedules and game-state snapshots; credential-gated NFL Odds API markets.
+- Structured Game Flow observations, football totals heuristics, suppression and decision windows.
+- Totals frame replay, a browser dashboard, and optional curated Site Supabase publishing.
+
+These capabilities are implemented locally; this list does not attest to live provider health or deployment. The ingestion loop polls REST; WebSocket helpers are not wired into it. Models remain uncalibrated research tools.
 
 ## Quick start
 
 ```bash
-npm install
+npm ci
 cp .env.example .env
 npm run scout -- start --once
 ```
@@ -45,6 +50,9 @@ npm run scout -- start --api
 
 ## Documentation
 
+- [AI session start](docs/ai-sync/SESSION_START.md)
+- [Verified project manifest](docs/ai-sync/PROJECT_MANIFEST.md)
+- [Current state and audit follow-ups](docs/ai-sync/CURRENT_STATE.md)
 - `CURRENT_INFRASTRUCTURE_AUDIT.md`
 - `ARCHITECTURE.md`
 - `DATA_SOURCES.md`
@@ -54,4 +62,6 @@ npm run scout -- start --api
 
 ## Current stop point
 
-This repository intentionally stops after proving market ingestion and local persistence. Prediction modeling, live game-state adapters, lag detection, alert routing, replay execution, and backtesting should be built next on top of the persisted event stream.
+The implementation includes market ingestion, game discovery/observations, and totals decision support. General live edge/signal routes remain placeholders; full event-store replay, representative backtesting, calibration, and NFL play-by-play/drive ingestion remain follow-up work. See [active priorities](docs/ai-sync/ACTIVE_PRIORITIES.md).
+
+The CLI loads local `.env` configuration. Starting ingestion can publish to Site Supabase when credentials are configured and publishing is enabled. Review [security boundaries](docs/ai-sync/SECURITY_BOUNDARIES.md) before operational commands; build/tests do not establish permission to publish.

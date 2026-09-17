@@ -1,6 +1,6 @@
 # Backtesting
 
-Backtesting is scaffolded in storage only. Future implementation should replay stored game state, market prices, model predictions, signals, and alerts from SQLite.
+General backtesting is scaffolded in storage only. `src/totals/replay.ts` implements deterministic replay of supplied in-memory totals frames through the shared totals runtime, covered by `src/tests/totals-engine.test.ts`. This is not a full SQLite event-store replay or representative backtesting system. Future implementation should replay stored game state, market prices, model predictions, signals, and alerts from SQLite.
 
 Required metrics:
 
