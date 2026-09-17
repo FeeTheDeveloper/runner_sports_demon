@@ -22,7 +22,7 @@ The engine remains local-first. The Runner Site Supabase project is optional and
 
 ## Phase implemented here
 
-This initial foundation implements market ingestion, market normalization, SQLite persistence, a live in-memory cache, provider health tracking, a terminal dashboard, and a minimal local API. Prediction modeling beyond baseline implied probability is intentionally deferred.
+The implementation includes REST market ingestion, normalization, SQLite persistence, market caching, provider health tracking, terminal/browser dashboards, ESPN NFL/CFB game discovery, structured observations, football totals heuristics, and optional Site publishing. The baseline implied probability helper is a smoke-test utility; totals heuristics are implemented but uncalibrated. See `docs/ai-sync/ARCHITECTURE.md` for the verified runtime map.
 
 ## Runtime components
 
@@ -30,6 +30,8 @@ This initial foundation implements market ingestion, market normalization, SQLit
    - `src/connectors/kalshi`: Kalshi REST discovery and authenticated WebSocket subscription support.
    - `src/connectors/polymarket`: Polymarket Gamma discovery and public CLOB market WebSocket subscription support.
    - Connectors only fetch/stream provider data and track health.
+   - `src/connectors/odds-api` implements credential-gated NFL sportsbook discovery; `src/games/discovery` implements ESPN NFL/CFB scoreboards.
+   - The ingestion loop invokes REST fetches; connector WebSocket helpers are not connected to the active loop.
 
 2. **Normalization**
    - `src/normalization/markets`: Converts provider payloads into `NormalizedMarket`.
@@ -57,7 +59,7 @@ This initial foundation implements market ingestion, market normalization, SQLit
 
 ## Data flow
 
-Provider API/WebSocket → connector health/retry → provider payload validation → normalized market → market-state cache → SQLite current market upsert + event/price insert → dashboard/API → future model/signal/alert pipeline.
+Provider REST API → connector health/retry → normalized market → market-state cache → SQLite current market upsert + event/price insert → dashboard/API and optional Site publishing. A general predictive market/signal pipeline remains future work.
 
 Structured observation → game-flow engine → momentum/regime/latent-state snapshot → SQLite/API. YouTube TV is an observational source only; ESPN and other machine-readable feeds remain authoritative for numerical game state.
 

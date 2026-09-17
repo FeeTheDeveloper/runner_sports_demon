@@ -34,12 +34,14 @@ Runner Site
 Demon
     = live intelligence engine
 
-## Existing Runner Sports feeds to integrate next
+## Implemented sports feeds and remaining integration
 
-- Odds API provider from `runner_sports-site/lib/providers/oddsApi.ts`.
-- ESPN provider from `runner_sports-site/lib/providers/espnApi.ts`.
+- `src/connectors/odds-api/client.ts` implements NFL sportsbook discovery when `ODDS_API_KEY` is configured.
+- `src/games/discovery/espn.ts` and `service.ts` implement NFL/CFB scoreboard normalization and schedule discovery.
 - Site Supabase team registry and provider mappings remain shared cloud data used by the presentation layer; they are not the primary Demon persistence layer.
 
 ## Staleness rules
+
+The current ingestion loop uses REST polling; WebSocket helpers exist but are not started by `src/ingestion.ts`. NFL play-by-play/drive ingestion remains incomplete. This is source-code verification dated 2026-09-16, not live provider validation. Provider endpoint/signing claims above are inherited documentation and were not reverified against provider services in this session.
 
 Provider health is stored in SQLite. Future signal generation must lower confidence or suppress signals when a provider is disconnected, stale, or reporting excessive latency.

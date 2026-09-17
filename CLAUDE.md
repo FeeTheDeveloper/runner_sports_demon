@@ -15,3 +15,5 @@ Before claiming a change works, run the relevant build/tests. If an external con
 
 ## Coordination
 Keep architecture, schemas, formulas, signals, and operational decisions in repository documentation so Codex, Copilot, Claude Code, and future sessions share the same state.
+
+Use `docs/ai-sync/SESSION_START.md` and `docs/ai-sync/SESSION_CLOSE.md` for evidence-based continuity. Follow the authority and external-action boundaries in `AGENTS.md`. Operational claims and handoffs stay in `.runner/`; shared documentation does not imply automatic synchronization or access to another assistant's memory.
