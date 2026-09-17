@@ -22,7 +22,25 @@ export class TotalsRuntime {
     return result;
   }
 
-  get(runnerEventId: string) { return this.evaluations.get(runnerEventId); }
-  all() { return [...this.evaluations.values()]; }
-  alerts() { return this.all().flatMap(e => e.windows).filter(w => w.status === "ACTIONABLE" || w.status === "ARMED" || w.status === "WATCH").sort((a,b)=>(b.favorableEdge*b.confidence)-(a.favorableEdge*a.confidence)); }
+  get(runnerEventId: string, now = new Date().toISOString()) {
+    const evaluation = this.evaluations.get(runnerEventId);
+    return evaluation ? refreshWindowExpiry(evaluation, now) : undefined;
+  }
+  all(now = new Date().toISOString()) { return [...this.evaluations.values()].map(evaluation => refreshWindowExpiry(evaluation, now)); }
+  alerts(now = new Date().toISOString()) { return this.all(now).flatMap(e => e.windows).filter(w => w.status === "ACTIONABLE" || w.status === "ARMED" || w.status === "WATCH").sort((a,b)=>(b.favorableEdge*b.confidence)-(a.favorableEdge*a.confidence)); }
+}
+
+function refreshWindowExpiry(evaluation: TotalsEvaluation, now: string): TotalsEvaluation {
+  const nowMs = Date.parse(now);
+  if (!Number.isFinite(nowMs)) return evaluation;
+  let changed = false;
+  const windows = evaluation.windows.map(window => {
+    const expiresAtMs = window.expiresAt ? Date.parse(window.expiresAt) : Number.NaN;
+    if (window.status !== "EXPIRED" && Number.isFinite(expiresAtMs) && expiresAtMs <= nowMs) {
+      changed = true;
+      return { ...window, status: "EXPIRED" as const, secondsRemaining: 0 };
+    }
+    return window;
+  });
+  return changed ? { ...evaluation, windows } : evaluation;
 }

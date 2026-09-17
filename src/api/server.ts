@@ -7,7 +7,7 @@ import { SqliteStore } from "../storage/sqlite.js";
 import { TotalsRuntime } from "../totals/runtime.js";
 import { renderWebDashboard } from "../dashboard/web.js";
 import { CfbScheduleService, NflScheduleService } from "../games/discovery/service.js";
-import { optionalStringEnv } from "../utils/env.js";
+import { intEnv, optionalStringEnv } from "../utils/env.js";
 import { renderControlDashboard } from "../dashboard/control-web.js";
 import { readControlSnapshot } from "../dashboard/control.js";
 
@@ -172,15 +172,27 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     else { response.statusCode = 404; response.end(JSON.stringify({ error: "not_found" })); }
   });
   if (options.localDashboard) server.listen(port, "127.0.0.1", () => console.log(`Runner Control Center: http://127.0.0.1:${port}`));
-  else server.listen(port, () => console.log(`Runner Scout API listening on http://localhost:${port}`));
+  else {
+    const host = optionalStringEnv("RUNNER_API_HOST") ?? "127.0.0.1";
+    server.listen(port, host, () => console.log(`Runner Scout API listening on http://${host}:${port}`));
+  }
   return server;
 }
 
 function readBody(request: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     let body = "";
+    const maxBytes = intEnv("RUNNER_API_MAX_BODY_BYTES", 1_048_576);
+    let bytes = 0;
     request.setEncoding("utf8");
-    request.on("data", (chunk: string) => { body += chunk; });
+    request.on("data", (chunk: string) => {
+      bytes += Buffer.byteLength(chunk);
+      if (bytes > maxBytes) {
+        reject(new Error(`request body exceeds ${maxBytes} bytes`));
+        return;
+      }
+      body += chunk;
+    });
     request.on("end", () => resolve(body));
     request.on("error", reject);
   });

@@ -17,6 +17,7 @@ const environment = {
   RUNNER_SCOUT_DB: process.env.RUNNER_SCOUT_DB,
   RUNNER_API_BEARER_TOKEN: process.env.RUNNER_API_BEARER_TOKEN,
   RUNNER_API_ALLOWED_ORIGINS: process.env.RUNNER_API_ALLOWED_ORIGINS,
+  RUNNER_API_MAX_BODY_BYTES: process.env.RUNNER_API_MAX_BODY_BYTES,
   RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY: process.env.RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY,
 };
 const originalFetch = globalThis.fetch;
@@ -30,7 +31,7 @@ async function launch(localDashboard: boolean): Promise<Server> {
   return server;
 }
 
-async function call(server: Server, path: string, method = "GET", headers: Record<string, string> = {}) {
+async function call(server: Server, path: string, method = "GET", headers: Record<string, string> = {}, body?: string) {
   const address = server.address();
   assert.ok(address && typeof address !== "string");
   return new Promise<{ status: number; headers: import("node:http").IncomingHttpHeaders; body: string }>((resolve, reject) => {
@@ -43,7 +44,7 @@ async function call(server: Server, path: string, method = "GET", headers: Recor
     });
     outgoing.setTimeout(5000, () => outgoing.destroy(new Error("Local API request timed out")));
     outgoing.on("error", reject);
-    outgoing.end();
+    outgoing.end(body);
   });
 }
 
@@ -52,6 +53,7 @@ try {
   process.env.RUNNER_API_BEARER_TOKEN = syntheticToken;
   process.env.RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY = syntheticProviderSecret;
   process.env.RUNNER_API_ALLOWED_ORIGINS = "*";
+  process.env.RUNNER_API_MAX_BODY_BYTES = "128";
   globalThis.fetch = (async () => {
     externalRequests++;
     throw new Error("Provider access is forbidden in local dashboard integration tests");
@@ -131,6 +133,12 @@ try {
   const unauthorized = await call(normal, "/observations", "POST");
   assert.equal(unauthorized.status, 401);
   assert.equal(JSON.parse(unauthorized.body).error, "unauthorized");
+  const oversized = await call(normal, "/observations", "POST", {
+    authorization: `Bearer ${syntheticToken}`,
+    "content-type": "application/json",
+  }, JSON.stringify({ notes: "x".repeat(256) }));
+  assert.equal(oversized.status, 400);
+  assert.match(JSON.parse(oversized.body).error, /request body exceeds 128 bytes/);
   assert.equal(externalRequests, 0, "page and status requests must not fetch providers");
   assert.equal(existsSync(missingDatabase), false, "read-only status must never initialize a database");
   console.log("control API integration tests passed");

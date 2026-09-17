@@ -1,5 +1,9 @@
 # Testing status
 
+## Repository audit â€” September 16, 2026
+
+After the authenticated-upload, API binding/body-limit, and totals-expiry fixes, `npm run build`, all 13 test programs, `npm run contracts:validate`, `npm run system:validate`, `git diff --check`, and `npm audit --omit=dev` passed. Regression assertions cover elapsed totals windows being excluded from alerts and oversized authenticated mutation requests being rejected. This is local verification; live providers and cloud publishing were not exercised.
+
 ## System check and sample task — September 16, 2026, 9:26 PM Central
 
 Re-ran build/all 13 tests, contract validation, repository-presence validation and SQLite `quick_check`: all passed. The running dashboard returned HTTP 200. A live ESPN NFL schedule request for September 17 returned Detroit at Buffalo with valid identity/timestamps and unchanged saved engine counts. Market-provider telemetry remains stale and no engine API listener was found on port 8787. See [the system check report](SYSTEM_CHECK_2026-09-16.md) for evidence and limits.

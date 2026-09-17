@@ -11,8 +11,8 @@ Runtime evidence:
 - `npm run dashboard` is the explicitly authorized local hosting path. It binds to `127.0.0.1`, restricts Host names, rejects non-GET requests, reads SQLite with `-readonly`, and does not start ingestion or Site publishing. The UI only requests provider schedules when the user submits a league/date. The general engine/API mode below remains separate.
 
 - `src/cli.ts` loads `.env`. `src/publishing/sitePublisher.ts` can publish when Site credentials are present and publishing is enabled. Build/test success does not authorize starting publishing.
-- `POST /observations` and `POST /totals/evaluate` fail closed if `RUNNER_API_BEARER_TOKEN` is absent. Read routes are unauthenticated; CORS is opt-in and is not authentication. `server.listen(port)` does not explicitly restrict binding to loopback; evaluate exposure before any authorized deployment.
-- `scripts/push-runner-intel.mjs`, Drive sync, history imports and scheduled-task installation have write effects. Inspect their paths, target environment and exact authorization before running them.
+- `POST /observations` and `POST /totals/evaluate` fail closed if `RUNNER_API_BEARER_TOKEN` is absent and enforce a configurable body-size limit. Read routes are unauthenticated; CORS is opt-in and is not authentication. The API binds to IPv4 loopback by default; an authorized deployment can explicitly set `RUNNER_API_HOST` with appropriate network controls.
+- `scripts/push-runner-intel.mjs` requires `RUNNER_API_BEARER_TOKEN`; Drive sync, history imports and scheduled-task installation have write effects. Inspect their paths, target environment and exact authorization before running them.
 - Kalshi signing keys, Odds credentials, Supabase service-role credentials and webhook URLs are sensitive. Provider health and missing configuration can be reported without exposing values.
 
 No automatic wagering or trading. The handoff requires calibrated models, reliable feeds, replay/backtesting, transaction-cost/liquidity/latency representation and validated signal performance before any separate authorization to enable execution.

@@ -5,8 +5,7 @@ Updated 2026-09-16. The master-sync bootstrap is complete. These are recommended
 | Priority | Next bounded objective | Evidence / acceptance |
 |---|---|---|
 | P0 | Align canonical NFL IDs across ESPN and Odds API | ESPN supplies abbreviations; Odds falls back to three letters of the team nickname. Prove the same matchup joins across sources. |
-| P0 | Correct freshness semantics and window reads | ESPN labels kickoff as `sourceTimestamp`; totals reads return previously evaluated windows. Verify provider-update timing and expired-window suppression with controlled clocks. |
-| P0 | Restore authenticated intel upload | `scripts/push-runner-intel.mjs` omits bearer auth required by `/observations`; add authorized token handling and rejection/success checks without weakening the API. |
+| P0 | Correct freshness semantics | ESPN labels kickoff as `sourceTimestamp`; replace it with a verified provider-update timestamp before treating scoreboard records as live-fresh. |
 | P0 | Complete NFL live PBP/drive ingestion | Existing handoff `HO-20260913-002`; verify approved source, timing, mapping and replayable snapshots. |
 | P1 | Validate historical import and export completeness | Dedicated Verse loader exists; actual import not checked. General `EXPORT_TABLES` omits historical tables and game-state snapshots; prove intended export/restore coverage. |
 | P1 | Build representative replay/calibration | Totals frame replay exists; general backtesting and predictive validation remain incomplete. Retain no-profitability/no-auto-trading gates. |

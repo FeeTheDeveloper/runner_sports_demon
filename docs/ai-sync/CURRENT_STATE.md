@@ -1,5 +1,9 @@
 # Current state
 
+## 2026-09-16 repository audit
+
+Revalidated the clean `feature/local-control-dashboard` checkout against source, tests, environment contracts, and operational records. Corrected four high-confidence runtime defects: authenticated intel uploads now supply the configured bearer token; mutation request bodies are bounded; totals reads expire elapsed decision windows; and the general API defaults to IPv4 loopback with an explicit host override for authorized deployments. Build, all 13 test programs, contract and sibling-repository validation, diff checks, and `npm audit --omit=dev` pass. No provider, publishing, deployment, push, merge, or trading action was performed.
+
 ## 2026-09-16, 9:37 PM Central — Three-repository local session
 
 Opened all three folders in the shared VS Code workspace. Demon ingestion/API is running on port 8787 with 250 freshly discovered Kalshi markets; the control center remains on 8790. Runner Site homepage and health pass on `http://localhost:3001`. Verse CLI works after installing declared Python dependencies; 11 warehouses are readable, four tests pass, and the 2025 six-artifact export validates. Verse uses batch commands rather than a persistent server. Site continues reading Supabase; automatic local Demon-to-Site integration is not established. See [LOCAL_STACK.md](LOCAL_STACK.md) for exact commands and limits.

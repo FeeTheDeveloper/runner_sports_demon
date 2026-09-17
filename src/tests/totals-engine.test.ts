@@ -3,6 +3,7 @@ import { advanceDecisionWindow, analyzeLadder, classifyTrend, createDecisionWind
 import { mapProviderTotalsMarket, normalizeTotalsMarketType } from "../totals/market-mapper.js";
 import type { FootballTotalsInputs, TotalsMarketSnapshot } from "../totals/types.js";
 import { replayTotals } from "../totals/replay.js";
+import { TotalsRuntime } from "../totals/runtime.js";
 
 const input: FootballTotalsInputs = { runnerEventId:"RUNNER:NFL:2026-09-05:DAL:PHI", timestamp:"2026-09-05T20:00:05Z", sourceTimestamp:"2026-09-05T20:00:04Z", period:2, clockSecondsRemaining:600, currentHomePoints:10, currentAwayPoints:7, possession:"HOME", drivesCompleted:10, playsPerDrive:6, secondsPerPlay:25, homeObservedPointsPerDrive:2.2, awayObservedPointsPerDrive:1.7, homePregamePointsPerDrive:2, awayPregamePointsPerDrive:1.8, homeScoringOpportunities:4, awayScoringOpportunities:3, homeRedZoneEntries:2, awayRedZoneEntries:2, homeExplosivePlays:3, awayExplosivePlays:1, homePressureAllowed:0.2, awayPressureAllowed:0.4, opportunityPointsExpectation:24, actualOpportunityPoints:17, tempoDirection:"RISING", gameRegime:"BALANCED" };
 const market: TotalsMarketSnapshot = { id:"book:total", runnerEventId:input.runnerEventId, provider:"odds_api", bookmaker:"book", marketKey:"totals", marketType:"GAME_TOTAL", selection:"OVER", line:41.5, price:-110, timestamp:"2026-09-05T20:00:04Z" };
@@ -38,4 +39,11 @@ assert.equal(analyzeLadder([{...market,line:20.5},{...market,id:"2",line:27.5}],
 assert.ok(impliedProbability(-110)>0.52);
 assert.ok(Math.abs(noVigProbabilities(-110,-110).overNoVig-0.5)<0.001);
 assert.deepEqual(replayTotals([{input,markets:[market]}]),replayTotals([{input,markets:[market]}]));
+const runtime = new TotalsRuntime();
+const runtimeResult = runtime.evaluate(input, [market], "2026-09-05T20:00:05Z");
+const expiresAt = runtimeResult.windows[0]?.expiresAt;
+assert.ok(expiresAt);
+assert.notEqual(runtime.get(input.runnerEventId, "2026-09-05T20:00:05Z")?.windows[0]?.status, "EXPIRED");
+assert.equal(runtime.get(input.runnerEventId, new Date(Date.parse(expiresAt) + 1).toISOString())?.windows[0]?.status, "EXPIRED");
+assert.equal(runtime.alerts(new Date(Date.parse(expiresAt) + 1).toISOString()).length, 0);
 console.log("totals engine tests passed");
