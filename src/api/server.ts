@@ -8,6 +8,8 @@ import { TotalsRuntime } from "../totals/runtime.js";
 import { renderWebDashboard } from "../dashboard/web.js";
 import { CfbScheduleService, NflScheduleService } from "../games/discovery/service.js";
 import { optionalStringEnv } from "../utils/env.js";
+import { renderControlDashboard } from "../dashboard/control-web.js";
+import { readControlSnapshot } from "../dashboard/control.js";
 
 // Compares the provided bearer token against the configured one in constant time,
 // so response timing cannot be used to guess the correct token byte-by-byte.
@@ -63,19 +65,35 @@ function applyCors(request: IncomingMessage, response: ServerResponse): void {
   response.setHeader("access-control-allow-headers", "Content-Type, Authorization");
 }
 
-export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFlowEngine(), store?: SqliteStore) {
+export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFlowEngine(), store?: SqliteStore, options: { localDashboard?: boolean } = {}) {
   const totals = new TotalsRuntime(store);
   const cfbSchedule = new CfbScheduleService();
   const nflSchedule = new NflScheduleService();
   const server = createServer(async (request, response) => {
     response.setHeader("content-type", "application/json");
-    applyCors(request, response);
+    response.setHeader("cache-control", "no-store");
+    response.setHeader("x-content-type-options", "nosniff");
+    if (options.localDashboard) {
+      const host = (request.headers.host ?? "").split(":")[0];
+      if (!["localhost", "127.0.0.1"].includes(host)) {
+        response.statusCode = 403; response.end(JSON.stringify({ error: "local_host_required" })); return;
+      }
+      response.setHeader("content-security-policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'");
+      if (request.method !== "GET") {
+        response.statusCode = 405; response.setHeader("allow", "GET"); response.end(JSON.stringify({ error: "dashboard_is_read_only" })); return;
+      }
+    } else applyCors(request, response);
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
     const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
     const path = requestUrl.pathname;
     if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
       response.setHeader("content-type", "text/html; charset=utf-8");
-      response.end(renderWebDashboard());
+      response.end(options.localDashboard ? renderControlDashboard() : renderWebDashboard());
+      return;
+    }
+    if (request.method === "GET" && path === "/control/status" && options.localDashboard) {
+      try { response.end(JSON.stringify(readControlSnapshot())); }
+      catch { response.statusCode = 503; response.end(JSON.stringify({ error: "local_status_unavailable" })); }
       return;
     }
     if (request.method === "GET" && ["/schedule/today", "/schedule/cfb", "/schedule/nfl", "/schedule/ranked"].includes(path)) {
@@ -153,7 +171,8 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [], implemented: false }));
     else { response.statusCode = 404; response.end(JSON.stringify({ error: "not_found" })); }
   });
-  server.listen(port, () => console.log(`Runner Scout API listening on http://localhost:${port}`));
+  if (options.localDashboard) server.listen(port, "127.0.0.1", () => console.log(`Runner Control Center: http://127.0.0.1:${port}`));
+  else server.listen(port, () => console.log(`Runner Scout API listening on http://localhost:${port}`));
   return server;
 }
 
