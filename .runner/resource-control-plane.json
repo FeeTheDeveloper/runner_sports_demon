@@ -1,0 +1,125 @@
+{
+  "schema_version": "runner.resource-control-plane.v1",
+  "effective_date": "2026-09-22",
+  "status": "locked",
+  "authority": "Fee The Developer / authorized Runner Sports leadership",
+  "doctrine": {
+    "control_chain": [
+      "human",
+      "control_plane",
+      "authorized_identity",
+      "authorized_entitlement",
+      "agent_execution",
+      "telemetry_audit"
+    ],
+    "scale_principle": "identity and simulated-actor counts are configuration, not architecture",
+    "distinctions": [
+      "organization",
+      "workspace",
+      "identity",
+      "seat",
+      "entitlement",
+      "agent",
+      "simulated_actor",
+      "execution",
+      "telemetry"
+    ]
+  },
+  "execution_modes": [
+    "SIMULATED",
+    "SANDBOX",
+    "LIVE"
+  ],
+  "registries": [
+    "organization_registry",
+    "workspace_registry",
+    "identity_registry",
+    "entitlement_registry",
+    "agent_worker_registry",
+    "usage_cost_ledger",
+    "campaign_simulation_registry",
+    "evidence_audit_ledger"
+  ],
+  "identity_policy": {
+    "allow_legitimately_provisioned_scale": true,
+    "fixed_user_limit": null,
+    "identity_implies_entitlement": false,
+    "cross_tenant_default": "deny",
+    "explicit_cross_tenant_authorization_required": true
+  },
+  "entitlement_policy": {
+    "track": [
+      "provider",
+      "organization",
+      "workspace",
+      "plan",
+      "authorized_identities",
+      "seat_count",
+      "billing_period",
+      "entitlement_type",
+      "quota_total",
+      "quota_remaining",
+      "trial_or_promotion",
+      "start_at",
+      "renewal_at",
+      "end_at",
+      "cancellation_deadline",
+      "rate_limits",
+      "eligible_workloads",
+      "prohibited_workloads",
+      "evidence",
+      "last_verified_at",
+      "status"
+    ],
+    "may_optimize_legitimate_entitlements": true,
+    "may_assume_new_identity_creates_new_trial": false
+  },
+  "extension_policy": {
+    "role": "adapter_sensor_operator",
+    "source_of_truth": false,
+    "allowed": [
+      "observe_active_workspace",
+      "report_visible_plan_quota",
+      "invoke_approved_workflows",
+      "capture_artifacts",
+      "forward_telemetry",
+      "support_human_approval"
+    ]
+  },
+  "campaign_policy": {
+    "loop": [
+      "SIMULATE",
+      "SCORE",
+      "APPROVE",
+      "EXECUTE",
+      "OBSERVE",
+      "LEARN",
+      "SIMULATE"
+    ],
+    "require_mode_label": true,
+    "fake_engagement": false,
+    "synthetic_as_live": false
+  },
+  "remote_dev_policy": {
+    "workstation_role": "enterprise_dev_node",
+    "remote_control_is_control_surface_not_authorization_bypass": true,
+    "preserve_repo_branch_secret_approval_audit_controls": true
+  },
+  "hard_boundaries": {
+    "committed_secrets": false,
+    "fabricated_real_people_identities": false,
+    "limit_evasion": false,
+    "unauthorized_trial_or_promotion_farming": false,
+    "fake_ad_engagement": false,
+    "fabricated_performance_data": false,
+    "unauthorized_cross_tenant_use": false,
+    "automatic_wagering_trading": false,
+    "rate_limit_or_access_control_bypass": false
+  },
+  "required_documents": [
+    "ENTERPRISE_RESOURCE_CONTROL_PLANE.md",
+    "AGENTS.md",
+    "RUNNER_SYNC_AUDIT.md",
+    "ARCHITECTURE.md"
+  ]
+}
