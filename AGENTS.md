@@ -13,6 +13,8 @@ The synchronization control plane is:
 
 - `RUNNER_SYNC_AUDIT.md` — human-readable authority, audit, drift rules, and priority gaps.
 - `.runner/sync-manifest.json` — machine-readable ownership, control status, required reading, and boundaries.
+- `ENTERPRISE_RESOURCE_CONTROL_PLANE.md` — locked enterprise architecture for authorized SaaS identities, entitlements, extensions, simulations, remote development, provider routing, usage/cost, and audit evidence.
+- `.runner/resource-control-plane.json` — machine-readable enterprise resource-control policy.
 
 When the sync audit conflicts with verified current code/runtime data, investigate the drift. Do not silently choose whichever source is convenient.
 
@@ -32,7 +34,7 @@ Never allow stale knowledge or a stale status snapshot to override verified curr
 
 ## Before changing code
 
-1. Read `RUNNER_SYNC_AUDIT.md` and `.runner/sync-manifest.json`.
+1. Read `RUNNER_SYNC_AUDIT.md`, `.runner/sync-manifest.json`, `ENTERPRISE_RESOURCE_CONTROL_PLANE.md`, and `.runner/resource-control-plane.json`.
 2. Read `PROJECT_HANDOFF.md` when present/relevant, `ARCHITECTURE.md`, `RUNNER_INTELLIGENCE_STATE.md`, `.runner/system-status.json`, `CURRENT_INFRASTRUCTURE_AUDIT.md`, `DATA_SOURCES.md`, `DATA_SCHEMA.md`, `MODEL_REGISTRY.json`, `MODEL_NOTES.md`, and `BACKTESTING.md`.
 3. Inspect the relevant implementation, contracts, and tests.
 4. Check git status and current branch.

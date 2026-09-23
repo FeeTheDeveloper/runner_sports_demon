@@ -1,6 +1,6 @@
 {
   "schema_version": "runner.sync-manifest.v1",
-  "generated_at": "2026-09-17T06:41:00Z",
+  "generated_at": "2026-09-22T05:00:00Z",
   "source_pack": {
     "name": "Runner Sports & Analytics Behavior Source Master Pack",
     "version": "1.0",
@@ -13,7 +13,8 @@
       "live_game_flow",
       "model_ip_learning_postgame",
       "product_revenue_content",
-      "agent_behavior_router"
+      "agent_behavior_router",
+      "enterprise_resource_control_plane"
     ]
   },
   "audit": {
@@ -88,7 +89,8 @@
     "historical_live_fusion": "partial",
     "site_publishing_boundary": "partial",
     "secret_hygiene": "pass",
-    "automatic_trading": "disabled"
+    "automatic_trading": "disabled",
+    "enterprise_resource_control_plane": "pass"
   },
   "priority_gaps": [
     "runtime_status_commit_freshness_anchor",
@@ -100,6 +102,8 @@
   "required_reading": [
     "RUNNER_SYNC_AUDIT.md",
     "AGENTS.md",
+    "ENTERPRISE_RESOURCE_CONTROL_PLANE.md",
+    ".runner/resource-control-plane.json",
     "ARCHITECTURE.md",
     "RUNNER_INTELLIGENCE_STATE.md",
     ".runner/system-status.json",
@@ -114,6 +118,15 @@
     "auto_trading": false,
     "secrets_in_repo": false,
     "market_implied_probability_as_independent_runner_forecast": false,
-    "site_as_authoritative_model_engine": false
+    "site_as_authoritative_model_engine": false,
+    "unauthorized_entitlement_evasion": false,
+    "fake_ad_engagement": false,
+    "unauthorized_cross_tenant_use": false
+  },
+  "enterprise_resource_control": {
+    "policy": ".runner/resource-control-plane.json",
+    "human_contract": "ENTERPRISE_RESOURCE_CONTROL_PLANE.md",
+    "handoff": ".runner/handoffs/2026-09-22-resource-control-lock.md",
+    "status": "locked"
   }
 }
