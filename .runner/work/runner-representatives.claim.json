@@ -1,0 +1,11 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "feat/runner-demon-cockpit",
+  "paths": [".runner/agents", ".github/agents/runner-deezy-p.agent.md", ".github/agents/runner-kendra-a.agent.md", "docs/ops/RUNNER_REPRESENTATIVES_2026-09-26.md", "docs/ai-sync/SYSTEM_ROLES.md"],
+  "task": "Register two owner-designated Runner representatives with evidence-separated Workspace identity and connection states.",
+  "started_at": "2026-09-26",
+  "status": "complete",
+  "completion_scope": "Local profile registration only; identity confirmation, portraits and Google connection remain pending",
+  "evidence": "docs/ops/RUNNER_REPRESENTATIVES_2026-09-26.md"
+}

@@ -10,6 +10,8 @@ class Element {
   value = "";
   hidden = false;
   disabled = false;
+  focused = false;
+  focus() { this.focused = true; }
   className = "";
   dataset: Record<string, string> = {};
   attributes = new Map<string, string>();
@@ -46,6 +48,9 @@ const navigation = [...html.matchAll(/data-nav="([^"]+)"/g)].map(match => {
 element("provider-filter").value = "all";
 element("market-sort").value = "recent";
 element("handoff-filter").value = "all";
+element("content-league").value = "all";
+let contentFails = false;
+let contentResponse = [{ cardType: "game-preview", artifact: { sport: "NFL", freshness: "FIXTURE" }, sections: { "Current State": '<img src=x onerror="alert(1)">' } }, { cardType: "game-preview", artifact: { sport: "NCAAF", freshness: "FIXTURE" }, sections: { "Current State": "College preview" } }];
 const location = { hash: "" };
 const windowListeners = new Map<string, () => void>();
 const intervals: Array<() => void> = [];
@@ -74,6 +79,7 @@ const context = createContext({
   window: { addEventListener: (name: string, callback: () => void) => windowListeners.set(name, callback) },
   AbortSignal,
   fetch: async (url: string) => {
+    if (url === "/content") return { ok: !contentFails, json: async () => structuredClone({ data: contentResponse }) };
     assert.equal(url, "/control/status", "hydration and refresh must only request local status");
     requested++;
     return { ok: true, json: async () => structuredClone(snapshot) };
@@ -136,3 +142,30 @@ assert.equal(element("market-result-count").textContent, "0");
 assert.match(element("market-rows").innerHTML, /No matching markets/);
 assert.equal(element("error-banner").hidden, true);
 console.log("control client interaction tests passed");
+element("market-clear").fire("click");
+assert.equal(element("market-search").value, "");
+assert.equal(element("market-search").focused, true);
+assert.equal(element("market-clear").hidden, true);
+location.hash = "#content";
+windowListeners.get("hashchange")!();
+await flush();
+assert.match(element("content-status").textContent, /^2 editorial shells/);
+assert.ok(!element("content-cards").innerHTML.includes(maliciousTitle));
+assert.match(element("content-cards").innerHTML, /&lt;img/);
+element("content-league").value = "NFL";
+element("content-league").fire("change");
+assert.match(element("content-status").textContent, /^1 editorial shells/);
+assert.ok(!element("content-cards").innerHTML.includes("College preview"));
+const previousCards = element("content-cards").innerHTML;
+contentFails = true;
+element("content-retry").fire("click");
+await flush();
+assert.match(element("content-status").textContent, /unavailable/);
+assert.equal(element("content-cards").innerHTML, previousCards, "failed reload retains readable content");
+assert.equal(element("content-retry").disabled, false);
+contentFails = false;
+contentResponse = [];
+element("content-retry").fire("click");
+await flush();
+assert.match(element("content-cards").innerHTML, /No content in this view/);
+console.log("content studio and search recovery tests passed");

@@ -82,11 +82,18 @@ try {
   const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length > 0, "the rendered dashboard must include its client script");
   for (const script of scripts) new Script(script[1], { filename: "rendered-control-client.js" });
-  for (const view of ["overview", "markets", "schedule", "totals", "providers", "workflows", "models"]) {
+  for (const view of ["overview", "markets", "schedule", "totals", "providers", "content", "workflows", "models"]) {
     assert.ok(html.includes(`href="#${view}" data-nav="${view}"`), `${view} must be navigable`);
     assert.ok(html.includes(`id="view-${view}" data-view="${view}"`), `${view} must have a destination panel`);
   }
 
+  for (const path of ["/assets/runner-logo.png", "/assets/runner-demon.png"]) {
+    const asset = await call(local, path);
+    assert.equal(asset.status, 200);
+    assert.equal(asset.headers["content-type"], "image/png");
+    assert.equal((await call(local, path, "GET", { host: "hostile.example" })).status, 403);
+  }
+  assert.equal((await call(local, "/assets/unknown.png")).status, 404);
   const result = await call(local, "/control/status", "GET", { origin: "https://example.invalid" });
   assert.equal(result.status, 200);
   const snapshot = JSON.parse(result.body);
