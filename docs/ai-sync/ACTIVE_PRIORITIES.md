@@ -1,5 +1,9 @@
 # Active priorities
 
+## 2026-09-26 operating-audit additions
+
+Before unattended local ingestion, make Site publishing explicit opt-in and add a single-flight polling guard with focused regression tests. The [Runner Sports Plug audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md) records the current read-only operating mode and verification boundary. Existing priorities below remain open.
+
 Updated 2026-09-16. The master-sync bootstrap is complete. These are recommended follow-ups, not newly executed work or external authorization; retain existing `.runner/handoffs/` ownership.
 
 | Priority | Next bounded objective | Evidence / acceptance |

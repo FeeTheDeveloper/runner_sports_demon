@@ -1,5 +1,11 @@
 # Blockers and known limitations
 
+## 2026-09-26 operating-audit additions
+
+- A normal engine start can publish to Site when credentials are configured because `RUNNER_PUBLISH_ENABLED` defaults to true in `src/publishing/sitePublisher.ts` and `.env.example`. Use an explicit false override for local ingestion until a reviewable opt-in fix is made. The inspected local `.env` has empty Site publishing fields.
+- `src/ingestion.ts` uses `setInterval` without a single-flight guard; slow ticks may overlap. Test sequencing and idempotency before unattended polling.
+- The installed Runner Sports Plug is skills-only, so it cannot itself schedule or execute recurring repository operations. See [the dated operating audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md).
+
 Updated 2026-09-16. No blocker prevents completion of the documentation bootstrap. These limits apply to runtime/integration readiness; not every item is a reproduced production incident.
 
 | Finding | Evidence and consequence |
