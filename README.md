@@ -64,6 +64,11 @@ npm run scout -- start --api
 
 ## Documentation
 
+- [Local operations runbook](docs/ops/RUNNER_LOCAL_RUNBOOK.md): health, snapshots, content generation, ingest and export/import commands.
+- [Data spine and provider matrix](docs/ops/RUNNER_DATA_SPINE.md): contracts, provenance, freshness and Runner Sports Plug policy.
+- Generate fixture content with `npm run content:generate`; validate schemas and artifact hashes with `npm run data:validate`.
+- `npm run scout -- api` starts the local API without ingestion. Dashboard `/content` exposes repository content and `/markets/snapshot` exposes saved markets with explicit freshness.
+
 - [AI session start](docs/ai-sync/SESSION_START.md)
 - [Verified project manifest](docs/ai-sync/PROJECT_MANIFEST.md)
 - [Current state and audit follow-ups](docs/ai-sync/CURRENT_STATE.md)

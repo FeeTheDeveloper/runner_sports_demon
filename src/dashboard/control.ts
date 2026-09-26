@@ -25,15 +25,15 @@ select 'summary' as section, json_object(
   'totalsWindows', (select count(*) from totals_decision_windows)) as data
 union all
 select 'markets', json_object('id',m.id,'provider',m.provider,'title',m.title,'sport',m.sport,
-  'status',m.status,'runnerEventId',m.runner_event_id,'updatedAt',m.updated_at,
+  'status',m.status,'runnerEventId',m.runner_event_id,'updatedAt',m.updated_at,'receivedAt',m.received_timestamp,
   'yesPrice',p.yes_price,'noPrice',p.no_price,'bid',p.bid,'ask',p.ask,
   'spread',p.spread,'volume',p.volume,'liquidity',p.liquidity)
-from (select id,provider,title,sport,status,runner_event_id,updated_at from markets order by updated_at desc,id limit 250) m
+from (select id,provider,title,sport,status,runner_event_id,updated_at,received_timestamp from markets order by updated_at desc,id limit 250) m
 left join market_prices p on p.id = (select id from market_prices where market_id=m.id order by processed_timestamp desc,id desc limit 1)
 union all
 select 'providers', json_object('provider',provider,'connected',connected,'lastMessageAt',last_message_at,
-  'updatedAt',updated_at,'eventCount',event_count,'reconnectAttempts',reconnect_attempts,'latencyMs',latency_ms)
-from (select provider,connected,last_message_at,updated_at,event_count,reconnect_attempts,latency_ms from provider_health order by provider limit 50)
+  'updatedAt',updated_at,'eventCount',event_count,'reconnectAttempts',reconnect_attempts,'latencyMs',latency_ms,'hasError',has_error)
+from (select provider,connected,last_message_at,updated_at,event_count,reconnect_attempts,latency_ms,case when coalesce(last_error,'') <> '' then 1 else 0 end as has_error from provider_health order by provider limit 50)
 union all
 select 'activity', json_object('hour',strftime('%Y-%m-%dT%H:00:00Z',processed_timestamp),'count',count(*))
 from market_events
@@ -103,7 +103,7 @@ export function readControlSnapshot(root = process.cwd(), dbPath = resolve(root,
     for (const key of Object.keys(snapshot.summary) as (keyof typeof snapshot.summary)[]) snapshot.summary[key] = number(counts[key]);
     snapshot.markets = (grouped.markets ?? []).map(row => ({
       id: string(row.id), provider: string(row.provider), title: string(row.title), sport: string(row.sport), status: string(row.status), runnerEventId: string(row.runnerEventId), updatedAt: string(row.updatedAt),
-      yesPrice: number(row.yesPrice), noPrice: number(row.noPrice), bid: number(row.bid), ask: number(row.ask), spread: number(row.spread), volume: number(row.volume), liquidity: number(row.liquidity),
+      receivedAt: string(row.receivedAt), yesPrice: number(row.yesPrice), noPrice: number(row.noPrice), bid: number(row.bid), ask: number(row.ask), spread: number(row.spread), volume: number(row.volume), liquidity: number(row.liquidity),
     }));
     snapshot.providers = (grouped.providers ?? []).map(row => {
       const messageTime = Date.parse(string(row.lastMessageAt) ?? "");
@@ -111,7 +111,7 @@ export function readControlSnapshot(root = process.cwd(), dbPath = resolve(root,
       const valid = Number.isFinite(messageTime) && Number.isFinite(updateTime) && messageTime <= now && updateTime <= now;
       const age = valid ? Math.floor((now - Math.min(messageTime, updateTime)) / 1000) : null;
       const status = age === null ? "unknown" : now - Math.min(messageTime, updateTime) > 90_000 ? "stale" : row.connected === 1 ? "connected" : "disconnected";
-      return { provider: string(row.provider), status, lastMessageAt: string(row.lastMessageAt), updatedAt: string(row.updatedAt), ageSeconds: age, eventCount: number(row.eventCount), reconnectAttempts: number(row.reconnectAttempts), latencyMs: number(row.latencyMs) };
+      return { provider: string(row.provider), status, hasError: row.hasError === 1, warning: row.hasError === 1 ? "Provider fetch failed; inspect redacted local logs." : null, lastMessageAt: string(row.lastMessageAt), updatedAt: string(row.updatedAt), ageSeconds: age, eventCount: number(row.eventCount), reconnectAttempts: number(row.reconnectAttempts), latencyMs: number(row.latencyMs) };
     });
     const activity = new Map((grouped.activity ?? []).map(row => [string(row.hour), number(row.count) ?? 0]));
     const hour = Math.floor(now / 3_600_000) * 3_600_000;

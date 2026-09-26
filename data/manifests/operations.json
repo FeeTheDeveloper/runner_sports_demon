@@ -1,0 +1,51 @@
+{
+  "artifact": {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "operations-manifest",
+    "kind": "manifest",
+    "runnerEventId": "AGGREGATE:OPERATIONS",
+    "sport": "MULTI",
+    "league": "MULTI",
+    "source": "Repository artifact inventory; each member carries its own source and receipt.",
+    "provider": "runner",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "UNKNOWN",
+    "confidence": "UNKNOWN",
+    "redistribution": "INTERNAL",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Inventory of synthetic examples and a historical local-state summary. Hashes attest to file integrity, not provider truth."
+    }
+  },
+  "files": [
+    {
+      "path": "data/fixtures/operations.json",
+      "sha256": "9b5a71b073818c8477f655066f776052df19a276a1dbcc29cf08aa1735b42a5d"
+    },
+    {
+      "path": "data/normalized/operations.json",
+      "sha256": "7397d57c5c3c8eac494c63f6fa0ed020351807f1feed840f0b23d2d2e816e6b8"
+    },
+    {
+      "path": "data/snapshots/historical-state.json",
+      "sha256": "da64d7a21eb21b69f4120cbe3d77adc80fb4992046a8ed9a8b9b7860f7c91b1c"
+    },
+    {
+      "path": "data/content/cards.json",
+      "sha256": "cff6501eb81b5f78af32ff46fa41cb70c8e3a24f3b151b07817e94ac0448c2bc"
+    },
+    {
+      "path": "data/content/cards.md",
+      "sha256": "7203395eccf20ae42e469b16bb2d0426b08b0e8224e137033ec0af023ee5970c"
+    }
+  ]
+}

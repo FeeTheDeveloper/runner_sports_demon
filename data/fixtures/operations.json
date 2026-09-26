@@ -1,0 +1,224 @@
+[
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-nfl-schedule",
+    "kind": "schedule",
+    "runnerEventId": "FIXTURE:NFL:AWAY:HOME",
+    "sport": "NFL",
+    "league": "NFL",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic schedule shell. Missing values remain UNKNOWN. No verified Runner model output.",
+      "homeTeam": "Example Home",
+      "awayTeam": "Example Away",
+      "status": "UNKNOWN"
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-nfl-market",
+    "kind": "market",
+    "runnerEventId": "FIXTURE:NFL:AWAY:HOME",
+    "sport": "NFL",
+    "league": "NFL",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic market shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-nfl-observation",
+    "kind": "observation",
+    "runnerEventId": "FIXTURE:NFL:AWAY:HOME",
+    "sport": "NFL",
+    "league": "NFL",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic observation shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-nfl-model",
+    "kind": "model",
+    "runnerEventId": "FIXTURE:NFL:AWAY:HOME",
+    "sport": "NFL",
+    "league": "NFL",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic model shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-ncaaf-schedule",
+    "kind": "schedule",
+    "runnerEventId": "FIXTURE:NCAAF:AWAY:HOME",
+    "sport": "NCAAF",
+    "league": "NCAAF",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic schedule shell. Missing values remain UNKNOWN. No verified Runner model output.",
+      "homeTeam": "Example Home",
+      "awayTeam": "Example Away",
+      "status": "UNKNOWN"
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-ncaaf-market",
+    "kind": "market",
+    "runnerEventId": "FIXTURE:NCAAF:AWAY:HOME",
+    "sport": "NCAAF",
+    "league": "NCAAF",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic market shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-ncaaf-observation",
+    "kind": "observation",
+    "runnerEventId": "FIXTURE:NCAAF:AWAY:HOME",
+    "sport": "NCAAF",
+    "league": "NCAAF",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic observation shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  },
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "fixture-ncaaf-model",
+    "kind": "model",
+    "runnerEventId": "FIXTURE:NCAAF:AWAY:HOME",
+    "sport": "NCAAF",
+    "league": "NCAAF",
+    "source": "Synthetic example authored in this repository; no provider retrieval.",
+    "provider": "runner-fixture",
+    "retrievedAt": "2026-09-26T17:45:00Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "FIXTURE",
+    "confidence": "UNKNOWN",
+    "redistribution": "PUBLIC",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Synthetic model shell. Missing values remain UNKNOWN. No verified Runner model output."
+    }
+  }
+]

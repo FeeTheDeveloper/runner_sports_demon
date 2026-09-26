@@ -34,6 +34,7 @@ export function renderControlDashboard(): string {
   <div class="session-bar"><span><span class="dot" id="connection-dot"></span><b id="connection">Connecting to local workspace</b><span class="session-divider">/</span><span id="snapshot-note">Reading saved engine state</span></span><span id="last-read">Waiting for snapshot</span></div>
   <div id="error-banner" class="error-banner" role="alert" hidden></div>
   <section id="view-overview" data-view="overview">
+    <p><a class="text-link" href="/content">NFL / NCAAF content shells (FIXTURE JSON)</a> &middot; <a class="text-link" href="/markets/snapshot">Saved market snapshot with freshness</a></p>
     <div class="metrics">
       <article class="metric"><div><span>Stored markets</span>${icon("markets")}</div><strong id="metric-markets">—</strong><small>Across recorded market sources</small></article>
       <article class="metric"><div><span>Market events</span>${icon("totals")}</div><strong id="metric-events">—</strong><small>Saved for analysis and replay</small></article>

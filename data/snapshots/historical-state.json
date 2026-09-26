@@ -1,0 +1,29 @@
+[
+  {
+    "schemaVersion": "runner.data.v1",
+    "artifactId": "local-kalshi-historical-state-20260926",
+    "kind": "manifest",
+    "runnerEventId": "UNKNOWN:AGGREGATE",
+    "sport": "UNKNOWN",
+    "league": "UNKNOWN",
+    "source": "Local read-only SQLite inspection on 2026-09-26; provider_health.last_message_at",
+    "provider": "kalshi",
+    "retrievedAt": "2026-09-19T08:50:27.924Z",
+    "eventStartTime": null,
+    "transformVersion": "runner-operations-v1",
+    "freshness": "HISTORICAL",
+    "confidence": "UNKNOWN",
+    "redistribution": "INTERNAL",
+    "intelligence": {
+      "classification": "UNKNOWN",
+      "modelProbability": null,
+      "marketProbability": null,
+      "fairPrice": null,
+      "executablePrice": null,
+      "edge": null
+    },
+    "payload": {
+      "note": "Last recorded Kalshi receipt. Inspected 2026-09-26: 1413 saved markets, 39236 market events, 39236 price events, 7 observations, 0 totals windows. Counts span providers; this is not a fresh ingest."
+    }
+  }
+]

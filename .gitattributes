@@ -1,0 +1,7 @@
+# Keep checksummed operations text identical across Windows/Linux checkouts.
+data/fixtures/*.json text eol=lf
+data/normalized/*.json text eol=lf
+data/snapshots/*.json text eol=lf
+data/content/*.json text eol=lf
+data/content/*.md text eol=lf
+data/manifests/operations.json text eol=lf

@@ -114,6 +114,14 @@ try {
     assert.equal(JSON.parse(rejected.body).error, "local_host_required");
   }
   assert.equal((await call(local, "/control/status", "GET", { host: "localhost" })).status, 200);
+  const content = await call(local, "/content");
+  assert.equal(content.status, 200);
+  assert.equal(JSON.parse(content.body).freshness, "FIXTURE");
+  assert.equal(JSON.parse(content.body).data.length, 20);
+  const saved = await call(local, "/markets/snapshot");
+  assert.equal(saved.status, 503);
+  assert.equal(JSON.parse(saved.body).freshness, "UNKNOWN");
+  assert.equal(JSON.parse((await call(local, "/api/health")).body).scope, "process liveness only; provider health is separate");
 
   const normal = await launch(false);
   const oldPage = await call(normal, "/");
@@ -139,6 +147,32 @@ try {
   }, JSON.stringify({ notes: "x".repeat(256) }));
   assert.equal(oversized.status, 400);
   assert.match(JSON.parse(oversized.body).error, /request body exceeds 128 bytes/);
+  for (const path of ["/observations", "/totals/evaluate"]) {
+    assert.equal((await call(normal, path, "POST", { authorization: "Bearer wrong-token" })).status, 401);
+  }
+  delete process.env.RUNNER_API_ALLOWED_ORIGINS;
+  assert.equal((await call(normal, "/api/health", "GET", { origin: "https://example.invalid" })).headers["access-control-allow-origin"], undefined);
+  process.env.RUNNER_API_ALLOWED_ORIGINS = "https://site.example";
+  const allowed = await call(normal, "/observations", "OPTIONS", { origin: "https://site.example" });
+  assert.equal(allowed.status, 204);
+  assert.equal(allowed.headers["access-control-allow-origin"], "https://site.example");
+  assert.equal(allowed.headers.vary, "Origin");
+  assert.equal((await call(normal, "/observations", "OPTIONS", { origin: "https://untrusted.example" })).headers["access-control-allow-origin"], undefined);
+  process.env.RUNNER_API_MAX_BODY_BYTES = "1048576";
+  const authorized = { authorization: `Bearer ${syntheticToken}`, "content-type": "application/json" };
+  const observation = await call(normal, "/observations", "POST", authorized, JSON.stringify({
+    id: "synthetic-api-observation", runnerEventId: "FIXTURE:NFL:AWAY:HOME", source: "HUMAN_ANALYST",
+    observedAt: "2026-09-19T12:00:00Z", receivedAt: "2026-09-19T12:00:01Z", confidence: 0.5,
+  }));
+  assert.equal(observation.status, 201);
+  assert.equal(JSON.parse(observation.body).freshness, "HISTORICAL");
+  const evaluation = await call(normal, "/totals/evaluate", "POST", authorized, JSON.stringify({ input: {
+    runnerEventId: "FIXTURE:NFL:AWAY:HOME", timestamp: "2026-09-19T12:00:01Z", sourceTimestamp: "2026-09-19T12:00:00Z",
+    period: 2, clockSecondsRemaining: 0, currentHomePoints: 10, currentAwayPoints: 7,
+  }, markets: [] }));
+  assert.equal(evaluation.status, 201);
+  assert.equal(JSON.parse(evaluation.body).freshness, "HISTORICAL");
+  assert.equal(JSON.parse((await call(normal, "/markets/live")).body).freshness, "UNKNOWN");
   assert.equal(externalRequests, 0, "page and status requests must not fetch providers");
   assert.equal(existsSync(missingDatabase), false, "read-only status must never initialize a database");
   console.log("control API integration tests passed");

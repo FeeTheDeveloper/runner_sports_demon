@@ -1,5 +1,7 @@
 # Runner Commands
 
+Executable local operations (including ingest, content, health, export/import and failure handling) are documented in [RUNNER_LOCAL_RUNBOOK.md](docs/ops/RUNNER_LOCAL_RUNBOOK.md). `npm run content:generate` writes reusable fixture JSON/Markdown; `npm run data:validate` verifies provenance, schemas and checksums. Use `.github/prompts/runner-operations.prompt.md` for shared Codex/Claude/Copilot execution.
+
 The local operating console accepts natural-language intent and maps it to canonical commands. Use the matching Copilot prompt under `.github/prompts/`; the agent must inspect current APIs, provider health, contracts, and timestamps before reporting results.
 
 | Intent | Canonical command | Owner |
