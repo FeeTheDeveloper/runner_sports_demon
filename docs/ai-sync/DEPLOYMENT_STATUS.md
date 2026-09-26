@@ -1,5 +1,7 @@
 # Deployment status
 
+2026-09-26 local-only update: dashboard 8790 and API-only 8787 served the new operations routes. Port 3001 was not listening. No deployment or public Site acceptance was performed. [Evidence](../ops/MACHINE_STATE_2026-09-26.md).
+
 ## Three-repository local run — September 16, 2026, 9:37 PM Central
 
 Engine/API running at `http://localhost:8787`, control center at `http://127.0.0.1:8790`, and Site at `http://localhost:3001`. Site homepage/health and Demon health/markets were verified. Verse is available as a working Python CLI with validated local warehouse access, not a persistent server. Engine cloud publishing remains disabled. [Local stack instructions](LOCAL_STACK.md) record process/log locations, hostname requirements, prerequisites and integration limits.

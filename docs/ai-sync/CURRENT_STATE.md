@@ -1,5 +1,7 @@
 # Current state
 
+Operations package completed locally on 2026-09-26: strict data/content schemas, 20 fixture content shells, receipt-aware routes, API-only mode and runbook. Markets remain HISTORICAL; ESPN CFB retrieval succeeded at 17:50 UTC. See [completion evidence](../ops/MACHINE_STATE_2026-09-26.md).
+
 ## 2026-09-26 Runner Sports Plug operating audit
 
 The installed Runner Sports Plug provides skills and governing instructions for intelligence work, not a persistent runner or repository connector. The local read-only dashboard is currently reachable at `http://127.0.0.1:8790`; this process is not installed for startup. Saved markets were last processed on 2026-09-19, so the dashboard is a historical snapshot. Build, 13 tests, contract/repository validation, and SQLite `quick_check` passed. The [dated operating audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md) records risks and scope. No engine ingestion, Site publication, deployment, or trading was performed.

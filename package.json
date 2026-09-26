@@ -10,9 +10,13 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "data:validate": "npm run build && node dist/operations/cli.js validate",
+    "content:generate": "npm run build && node dist/operations/cli.js content",
+    "operations": "npm run build && node dist/operations/cli.js",
     "start": "node dist/cli.js start",
     "dashboard": "npm run build && node dist/cli.js dashboard",
-    "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js && node dist/tests/game-flow.test.js && node dist/tests/games.test.js && node dist/tests/totals.test.js && node dist/tests/totals-engine.test.js && node dist/tests/site-publisher.test.js && node dist/tests/vig-engine.test.js && node dist/tests/adversity.test.js && node dist/tests/historical-schema.test.js && node dist/tests/control.test.js && node dist/tests/control-api.test.js && node dist/tests/control-client.test.js",
+    "test": "npm run build && node dist/tests/normalization.test.js && node dist/tests/probability.test.js && node dist/tests/game-flow.test.js && node dist/tests/games.test.js && node dist/tests/totals.test.js && node dist/tests/totals-engine.test.js && node dist/tests/site-publisher.test.js && node dist/tests/vig-engine.test.js && node dist/tests/adversity.test.js && node dist/tests/historical-schema.test.js && node dist/tests/control.test.js && node dist/tests/control-api.test.js && node dist/tests/control-client.test.js && node dist/tests/operations.test.js",
     "scout": "npm run build && node dist/cli.js",
     "contracts:validate": "node scripts/validate-runner-contracts.mjs",
     "system:validate": "node scripts/validate-runner-repositories.mjs",
@@ -24,10 +28,17 @@
     "type": "git",
     "url": "http://localhost:26831/FeeTheDeveloper/runner_sports_demon"
   },
-  "keywords": ["runner-sports", "kalshi", "polymarket", "market-intelligence"],
+  "keywords": [
+    "runner-sports",
+    "kalshi",
+    "polymarket",
+    "market-intelligence"
+  ],
   "author": "Fee The Developer / Runner Sports & Analytics",
   "license": "UNLICENSED",
   "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "ws": "8.21.0"
   },
   "devDependencies": {

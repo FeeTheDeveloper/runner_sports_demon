@@ -10,6 +10,7 @@ import { CfbScheduleService, NflScheduleService } from "../games/discovery/servi
 import { intEnv, optionalStringEnv } from "../utils/env.js";
 import { renderControlDashboard } from "../dashboard/control-web.js";
 import { readControlSnapshot } from "../dashboard/control.js";
+import { freshnessAt, metadata, readContent } from "../operations/data.js";
 
 // Compares the provided bearer token against the configured one in constant time,
 // so response timing cannot be used to guess the correct token byte-by-byte.
@@ -92,8 +93,31 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
       return;
     }
     if (request.method === "GET" && path === "/control/status" && options.localDashboard) {
-      try { response.end(JSON.stringify(readControlSnapshot())); }
+      try {
+        const snapshot = readControlSnapshot();
+        const meta = metadata("local SQLite snapshot", snapshot.markets.map(m => m.receivedAt));
+        response.end(JSON.stringify({ ...snapshot, ...meta,
+          warnings: [...meta.warnings, ...snapshot.providers.filter(p => p.status !== "connected" || p.hasError).map(p => `${p.provider}: ${p.hasError ? "fetch failed; " : ""}${p.status}; inspect source freshness.`)] }));
+      }
       catch { response.statusCode = 503; response.end(JSON.stringify({ error: "local_status_unavailable" })); }
+      return;
+    }
+    if (request.method === "GET" && path === "/content") {
+      try {
+        const data = readContent();
+        const labels = [...new Set(data.map(card => card.artifact.freshness))];
+        response.end(JSON.stringify({ data, source: "data/content/cards.json", freshness: labels.length === 1 ? labels[0] : "UNKNOWN", warnings: ["Content shells require verified evidence and editorial review."] }));
+      }
+      catch { response.statusCode = 503; response.end(JSON.stringify({ error: "content_unavailable", freshness: "UNKNOWN" })); }
+      return;
+    }
+    if (request.method === "GET" && path === "/markets/snapshot" && options.localDashboard) {
+      const snapshot = readControlSnapshot();
+      response.statusCode = snapshot.database.status === "ready" ? 200 : 503;
+      response.end(JSON.stringify({ ...metadata("SQLite saved market observations", snapshot.markets.map(m => m.receivedAt)),
+        data: snapshot.markets.map(m => ({ ...m, retrievedAt: m.receivedAt, freshness: freshnessAt(m.receivedAt),
+          provenance: { provider: m.provider, source: "SQLite markets / market_prices", transformVersion: "runner-operations-v1", timestampBasis: "provider response received by local engine" } })),
+        providers: snapshot.providers, databaseStatus: snapshot.database.status }));
       return;
     }
     if (request.method === "GET" && ["/schedule/today", "/schedule/cfb", "/schedule/nfl", "/schedule/ranked"].includes(path)) {
@@ -106,10 +130,12 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
         const data = path === "/schedule/ranked" || requestUrl.searchParams.get("ranked") === "true"
           ? games.filter((game) => game.awayRank !== undefined || game.homeRank !== undefined)
           : games;
-        response.end(JSON.stringify({ data }));
+        response.end(JSON.stringify({ ...metadata("ESPN scoreboard receipt; sourceTimestamp in legacy rows is kickoff, not provider update time", data.map(game => game.receivedTimestamp), 300_000),
+          data: data.map(({ raw, ...game }) => ({ ...game, retrievedAt: game.receivedTimestamp, freshness: freshnessAt(game.receivedTimestamp, undefined, Date.now(), 300_000),
+            provenance: { provider: "espn", source: "scoreboard", transformVersion: "espn-football-v1", eventStartTime: game.kickoff } })) }));
       } catch (error) {
         response.statusCode = 502;
-        response.end(JSON.stringify({ error: error instanceof Error ? error.message : "schedule_unavailable" }));
+        response.end(JSON.stringify({ error: "schedule_unavailable", freshness: "UNKNOWN", source: "ESPN scoreboard", warnings: ["Provider request failed. No fallback is presented as current."] }));
       }
       return;
     }
@@ -120,7 +146,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
         const snapshot = flow.ingest(observation);
         store?.persistGameFlow(observation, snapshot);
         response.statusCode = 201;
-        response.end(JSON.stringify({ data: snapshot }));
+        response.end(JSON.stringify({ data: snapshot, ...metadata(`Observation: ${observation.source}`, [observation.observedAt], 15_000), provenance: { observedAt: observation.observedAt, receivedAt: observation.receivedAt, observationId: observation.id } }));
       } catch (error) {
         response.statusCode = 400;
         response.end(JSON.stringify({ error: error instanceof Error ? error.message : "invalid_observation" }));
@@ -133,7 +159,7 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
         const body = JSON.parse(await readBody(request));
         const result = totals.evaluate(body.input, body.markets ?? []);
         response.statusCode = 201;
-        response.end(JSON.stringify({ data: result }));
+        response.end(JSON.stringify({ data: result, ...metadata("football-heuristic-v1; uncalibrated research", [body.input.sourceTimestamp, ...(body.markets ?? []).map((m: { timestamp?: string }) => m.timestamp)], 15_000), provenance: { modelFile: "src/totals/engine.ts", version: "football-heuristic-v1", sourceTimestamp: body.input.sourceTimestamp, inputTimestamp: body.input.timestamp } }));
       } catch (error) {
         response.statusCode = 400;
         response.end(JSON.stringify({ error: error instanceof Error ? error.message : "invalid_totals_input" }));
@@ -164,8 +190,8 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
       if (!game) { response.statusCode = 404; response.end(JSON.stringify({ error: "game_not_found" })); return; }
       response.end(JSON.stringify({ data: game })); return;
     }
-    if (path === "/health") response.end(JSON.stringify({ ok: true, updatedAt: new Date().toISOString() }));
-    else if (path === "/markets/live") response.end(JSON.stringify({ data: cache.all() }));
+    if (request.method === "GET" && (path === "/health" || path === "/api/health")) response.end(JSON.stringify({ ok: true, updatedAt: new Date().toISOString(), source: "local process", freshness: "CURRENT", scope: "process liveness only; provider health is separate", mode: options.localDashboard ? "local-snapshot" : "engine" }));
+    else if (request.method === "GET" && path === "/markets/live") response.end(JSON.stringify({ ...metadata("in-memory provider observations", cache.all().map(m => m.receivedTimestamp)), data: cache.all().map(({ raw, ...market }) => ({ ...market, retrievedAt: market.receivedTimestamp, freshness: freshnessAt(market.receivedTimestamp), provenance: { provider: market.provider, sourceTimestamp: market.sourceTimestamp, transformVersion: "normalized-market-v1" } })) }));
     else if (path === "/totals/live") response.end(JSON.stringify({ data: totals.all().length ? totals.all() : flow.allSnapshots().map((snapshot) => ({ runnerEventId: snapshot.runnerEventId, timestamp: snapshot.totals.timestamp, totals: snapshot.totals, signals: snapshot.totalsSignals })) }));
     else if (path === "/totals/alerts") response.end(JSON.stringify({ data: totals.alerts() }));
     else if (path === "/edges/live" || path === "/signals/live") response.end(JSON.stringify({ data: [], implemented: false }));

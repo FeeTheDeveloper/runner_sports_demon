@@ -63,11 +63,23 @@ def download(season: int, root: Path, force: bool = False) -> dict:
             if tmp.exists():
                 tmp.unlink()
 
+    retrieved_at = datetime.now(timezone.utc).isoformat()
     record = {
         "source_id": SOURCE_ID,
         "source_name": "nflverse play-by-play",
         "source_url": url,
-        "retrieved_at": datetime.now(timezone.utc).isoformat(),
+        "retrieved_at": retrieved_at,
+        "runnerEventId": f"AGGREGATE:NFL:SEASON:{season}",
+        "league": "NFL",
+        "source": url,
+        "provider": "nflverse",
+        "retrievedAt": retrieved_at,
+        "eventStartTime": None,
+        "transformVersion": "raw-acquisition-v1",
+        "freshness": "HISTORICAL",
+        "confidence": "UNKNOWN",
+        "redistribution": "UNKNOWN",
+        "eventDateScope": "Multiple games; event dates and identifiers are contained in the parquet rows.",
         "sport": "NFL",
         "season": season,
         "dataset": "play_by_play",

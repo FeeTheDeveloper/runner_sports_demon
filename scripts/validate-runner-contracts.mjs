@@ -6,6 +6,7 @@ const registry = JSON.parse(readFileSync(join(root, ".runner", "command-registry
 if (registry.schema_version !== "runner.command-registry.v1" || !Array.isArray(registry.commands) || registry.commands.length < 20) throw new Error("command registry is missing or incomplete");
 const contractsDir = join(root, "contracts");
 const requiredContracts = ["runner-event.schema.json", "verse-export.schema.json", "model-manifest.schema.json", "feature-manifest.schema.json", "live-observation.schema.json", "game-flow.schema.json", "market-snapshot.schema.json", "model-output.schema.json", "site-publish.schema.json", "postgame-result.schema.json"];
+requiredContracts.push("runner-data-contract.json", "runner-content-card.schema.json");
 const failures = [];
 for (const file of requiredContracts) {
   const path = join(contractsDir, file);

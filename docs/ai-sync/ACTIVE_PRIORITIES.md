@@ -1,5 +1,7 @@
 # Active priorities
 
+2026-09-26: Requested local operations/data-spine package is complete; see [evidence](../ops/MACHINE_STATE_2026-09-26.md). Next runtime work remains opt-in publishing, serialized ingestion, provider verification and Site consumer acceptance. Fixture content must remain labelled.
+
 ## 2026-09-26 operating-audit additions
 
 Before unattended local ingestion, make Site publishing explicit opt-in and add a single-flight polling guard with focused regression tests. The [Runner Sports Plug audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md) records the current read-only operating mode and verification boundary. Existing priorities below remain open.

@@ -1,5 +1,7 @@
 # Blockers and known limitations
 
+2026-09-26 operations update: receipt-aware API labels and artifact validation are implemented. Historical market state, unverified authenticated feeds, no scraper adapter and unverified public Site consumption remain explicit. [Current package limits](../ops/MACHINE_STATE_2026-09-26.md#blocked-items).
+
 ## 2026-09-26 operating-audit additions
 
 - A normal engine start can publish to Site when credentials are configured because `RUNNER_PUBLISH_ENABLED` defaults to true in `src/publishing/sitePublisher.ts` and `.env.example`. Use an explicit false override for local ingestion until a reviewable opt-in fix is made. The inspected local `.env` has empty Site publishing fields.
