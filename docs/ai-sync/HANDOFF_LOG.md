@@ -1,5 +1,11 @@
 # Session handoff log
 
+## 2026-09-26 — Runner Sports Plug operating audit
+
+- Audited the installed skills-only Runner Sports Plug against this checkout and recorded operating scope, risks, and verification in [RUNNER_PLUGIN_OPERATIONS_2026-09-26.md](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md).
+- Started and HTTP-verified the authorized read-only loopback dashboard. Its process is local and session-dependent; saved market data is stale and must not be described as live.
+- Build, all 13 test programs, contract/repository validation, and SQLite `quick_check` passed. No ingestion, Site publication, deployment, push, merge, or trading was performed.
+
 ## 2026-09-16 — Local dashboard delivered
 
 - Built the visual control center with overview, market search/filter/sort, game schedule requests, totals windows, providers, handoffs and models. Refresh can be paused/resumed, and the displayed snapshot can be exported.

@@ -1,5 +1,9 @@
 # Testing status
 
+## Runner Sports Plug operating audit — September 26, 2026
+
+`npm run build`, all 13 `npm test` programs, `npm run contracts:validate`, `npm run system:validate`, and SQLite `PRAGMA quick_check` passed. The read-only dashboard returned HTTP 200 for `/` and `/control/status` on `127.0.0.1:8790`. These checks do not establish live provider freshness, production health, Site publication safety, or autonomous plugin execution. See [the dated operating audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md).
+
 ## Repository audit â€” September 16, 2026
 
 After the authenticated-upload, API binding/body-limit, and totals-expiry fixes, `npm run build`, all 13 test programs, `npm run contracts:validate`, `npm run system:validate`, `git diff --check`, and `npm audit --omit=dev` passed. Regression assertions cover elapsed totals windows being excluded from alerts and oversized authenticated mutation requests being rejected. This is local verification; live providers and cloud publishing were not exercised.
