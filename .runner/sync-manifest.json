@@ -22,7 +22,14 @@
     "base_commit": "a0e67a23b72cb0000d758d0a6582f9a6485590b6",
     "human_report": "RUNNER_SYNC_AUDIT.md",
     "overall_status": "partial",
-    "runtime_execution_verified_by_this_audit": false
+    "runtime_execution_verified_by_this_audit": false,
+    "evidence_audit": {
+      "command": "npm run audit",
+      "script": "scripts/runner-audit.mjs",
+      "report": ".runner/audit/LATEST_AUDIT.md",
+      "structured": ".runner/audit/latest.json",
+      "schema": "runner.audit-report.v1"
+    }
   },
   "repositories": {
     "runner_sports_demon": {

@@ -27,3 +27,7 @@ The local operating console accepts natural-language intent and maps it to canon
 | Export/sync | `RUNNER EXPORT` / `RUNNER SYNC` | `runner-lead`
 
 `RUNNER` commands are analytical and read-only unless a task explicitly requests an implementation. No command places wagers, submits trades, or converts unknown data into facts.
+
+## Evidence audit
+
+`npm run audit` produces `.runner/audit/LATEST_AUDIT.md` and `.runner/audit/latest.json` from real file, import-graph, git, and execution checks. Use it for `RUNNER STATUS`, `RUNNER QA`, and `RUNNER SYNC` before reporting system state.

@@ -5,6 +5,10 @@ Audit date: 2026-09-17
 Audited base: `main@a0e67a23b72cb0000d758d0a6582f9a6485590b6`
 Primary repository: `FeeTheDeveloper/runner_sports_demon`
 
+## Evidence audit (run this, do not trust snapshots)
+
+`npm run audit` (`scripts/runner-audit.mjs`) verifies real files instead of documents: referenced paths exist, handoff artifacts are on disk, `src/` modules are wired into `src/cli.ts` and reached by tests, every test file is registered in `run-all`, `.env.example` matches the variables code reads, no secrets are tracked, status/registry freshness against git, and per-suite build/test/contract execution. It writes `.runner/audit/latest.json` (schema `runner.audit-report.v1`) and `.runner/audit/LATEST_AUDIT.md`, anchored to the audited commit. `--skip-exec` runs static checks only; `--strict` exits non-zero on any FAIL. When this document and the evidence audit disagree, the evidence audit wins and this document must be corrected.
+
 ## Purpose
 
 This file is the human-readable synchronization and audit control plane for Runner Sports & Analytics engineering.

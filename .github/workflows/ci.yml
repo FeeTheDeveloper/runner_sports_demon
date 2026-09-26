@@ -17,3 +17,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
+      - run: npm run contracts:validate
+      # Evidence audit (static checks; build/test already ran above). Non-strict until the
+      # known FAIL rows in .runner/audit/LATEST_AUDIT.md are resolved; then add --strict.
+      - run: npm run audit -- --skip-exec

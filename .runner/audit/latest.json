@@ -1,0 +1,412 @@
+{
+  "schema_version": "runner.audit-report.v1",
+  "generated_at": "2026-09-26T03:21:41.450Z",
+  "git": {
+    "commit": "03ef13d8606ea79eec849aaa80ea9b22d55cda65",
+    "branch": "claude/affectionate-dirac-usscuc",
+    "committed_at": "2026-09-26T03:21:37+00:00",
+    "uncommitted_changes": 1
+  },
+  "execution_performed": true,
+  "overall": "fail",
+  "counts": {
+    "pass": 39,
+    "warn": 12,
+    "fail": 3,
+    "unverifiable": 2,
+    "info": 2
+  },
+  "sections": [
+    {
+      "id": "references",
+      "title": "Referenced files exist and have content",
+      "checks": [
+        {
+          "status": "warn",
+          "name": ".vscode/extensions.json",
+          "detail": "exists but only 197 bytes",
+          "evidence": [
+            "doc:VSCODE_AGENT_PLAYBOOK.md"
+          ]
+        },
+        {
+          "status": "pass",
+          "name": "summary",
+          "detail": "75 referenced paths, 0 missing, 1 thin"
+        }
+      ]
+    },
+    {
+      "id": "handoffs",
+      "title": "Handoff artifacts exist on disk",
+      "checks": [
+        {
+          "status": "unverifiable",
+          "name": "HO-20260913-001",
+          "detail": "status=ready, validation=passed; 0 present, 0 missing, 3 unverifiable",
+          "evidence": [
+            {
+              "artifact": "../rsaa_verse/data/raw/nfl/play_by_play/season=2025/play_by_play_2025.parquet",
+              "state": "unverifiable_repo_absent"
+            },
+            {
+              "artifact": "../rsaa_verse/warehouse/runner_nfl_history.duckdb",
+              "state": "unverifiable_repo_absent"
+            },
+            {
+              "artifact": "../rsaa_verse/exports/runner_demon/manifest.json",
+              "state": "unverifiable_repo_absent"
+            }
+          ]
+        },
+        {
+          "status": "pass",
+          "name": "HO-20260913-002",
+          "detail": "status=requested, no artifacts listed"
+        },
+        {
+          "status": "pass",
+          "name": "HO-20260913-003",
+          "detail": "status=requested, no artifacts listed"
+        },
+        {
+          "status": "pass",
+          "name": "HO-20260913-004",
+          "detail": "status=requested, no artifacts listed"
+        },
+        {
+          "status": "pass",
+          "name": "HO-20260913-005",
+          "detail": "status=requested, no artifacts listed"
+        }
+      ]
+    },
+    {
+      "id": "source",
+      "title": "Source modules are wired, non-trivial, and tested",
+      "checks": [
+        {
+          "status": "info",
+          "name": "inventory",
+          "detail": "45 production modules, 15 test files, 4220 total lines"
+        },
+        {
+          "status": "warn",
+          "name": "not reachable from src/cli.ts",
+          "detail": "10 module(s) are compiled but never loaded by the runtime entry point",
+          "evidence": [
+            "src/adversity/events.ts",
+            "src/adversity/market-alignment.ts",
+            "src/games/discovery/espn.ts",
+            "src/games/discovery/service.ts",
+            "src/games/types.ts",
+            "src/intel/runner-intel.ts",
+            "src/models/vig/engine.ts",
+            "src/signals/divergence/divergence.ts",
+            "src/totals/market-mapper.ts",
+            "src/totals/replay.ts"
+          ]
+        },
+        {
+          "status": "warn",
+          "name": "not imported by any test",
+          "detail": "8 module(s) have no test path",
+          "evidence": [
+            "src/connectors/index.ts",
+            "src/connectors/kalshi/client.ts",
+            "src/connectors/polymarket/client.ts",
+            "src/dashboard/terminal.ts",
+            "src/games/discovery/service.ts",
+            "src/ingestion.ts",
+            "src/intel/runner-intel.ts",
+            "src/signals/divergence/divergence.ts"
+          ]
+        },
+        {
+          "status": "pass",
+          "name": "thin modules",
+          "detail": "0 module(s) under 5 code lines",
+          "evidence": []
+        },
+        {
+          "status": "pass",
+          "name": "stub markers",
+          "detail": "0 module(s) contain TODO/FIXME/not-implemented",
+          "evidence": []
+        },
+        {
+          "status": "pass",
+          "name": "test files registered in run-all",
+          "detail": "0 test file(s) never executed",
+          "evidence": []
+        },
+        {
+          "status": "pass",
+          "name": "run-all suites exist",
+          "detail": "0 registered suite(s) have no file",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "environment",
+      "title": "Environment variables used in code match .env.example",
+      "checks": [
+        {
+          "status": "pass",
+          "name": "used but not declared",
+          "detail": "0 variable(s) read by code are missing from .env.example",
+          "evidence": []
+        },
+        {
+          "status": "warn",
+          "name": "declared but never read",
+          "detail": "4 variable(s) in .env.example are not read by src/ or scripts/",
+          "evidence": [
+            "DISCORD_WEBHOOK",
+            "POLYMARKET_API_KEY",
+            "RUNNER_ESPN_POLL_MS",
+            "RUNNER_ODDS_POLL_MS"
+          ]
+        },
+        {
+          "status": "info",
+          "name": "summary",
+          "detail": "37 declared, 33 read by code"
+        }
+      ]
+    },
+    {
+      "id": "secrets",
+      "title": "No secrets or local env files tracked",
+      "checks": [
+        {
+          "status": "pass",
+          "name": "tracked env files",
+          "detail": "0 tracked .env file(s)",
+          "evidence": []
+        },
+        {
+          "status": "pass",
+          "name": "secret patterns in tracked files",
+          "detail": "0 match(es); values not recorded",
+          "evidence": []
+        },
+        {
+          "status": "pass",
+          "name": ".env.example secret slots empty",
+          "detail": "0 secret-named variable(s) carry a value",
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "id": "freshness",
+      "title": "Status snapshots and registries match the code they describe",
+      "checks": [
+        {
+          "status": "fail",
+          "name": "system-status age",
+          "detail": "updated_at=2026-09-13T14:30:00Z, age=300.9h (max 24h), HEAD committed 2026-09-26T03:21:37+00:00 — status predates HEAD"
+        },
+        {
+          "status": "fail",
+          "name": "system-status commit anchor",
+          "detail": "no git_commit field; status cannot be tied to code"
+        },
+        {
+          "status": "warn",
+          "name": "sync-manifest base commit",
+          "detail": "audited a0e67a23b72c; HEAD is 12 commit(s) ahead"
+        },
+        {
+          "status": "warn",
+          "name": "sync-manifest execution",
+          "detail": "manifest self-reports that its audit did not execute the runtime"
+        },
+        {
+          "status": "fail",
+          "name": "model football_totals_heuristic",
+          "detail": "version=existing, status=active, calibration=not_calibrated"
+        },
+        {
+          "status": "pass",
+          "name": "model baseline_market_implied",
+          "detail": "version=baseline_market_implied_v0, status=non-production, calibration=none"
+        },
+        {
+          "status": "warn",
+          "name": "model runner_nfl_historical_fusion",
+          "detail": "version=pending, status=awaiting_implementation, calibration=pending"
+        }
+      ]
+    },
+    {
+      "id": "runtime_outputs",
+      "title": "Runtime has produced persisted outputs",
+      "checks": [
+        {
+          "status": "warn",
+          "name": ".runner/predictions",
+          "detail": "empty — no recorded runs in repo"
+        },
+        {
+          "status": "warn",
+          "name": ".runner/model-runs",
+          "detail": "empty — no recorded runs in repo"
+        },
+        {
+          "status": "warn",
+          "name": ".runner/postgame",
+          "detail": "empty — no recorded runs in repo"
+        },
+        {
+          "status": "warn",
+          "name": ".runner/live-reports",
+          "detail": "empty — no recorded runs in repo"
+        },
+        {
+          "status": "warn",
+          "name": ".runner/research",
+          "detail": "empty — no recorded runs in repo"
+        }
+      ]
+    },
+    {
+      "id": "execution",
+      "title": "Toolchain present and build/tests/contracts execute",
+      "checks": [
+        {
+          "status": "pass",
+          "name": "node >= 22",
+          "detail": "node 22.22.2"
+        },
+        {
+          "status": "pass",
+          "name": "sqlite3 on PATH",
+          "detail": "3.45.1"
+        },
+        {
+          "status": "pass",
+          "name": "python3 (historical ingestion)",
+          "detail": "Python 3.11.15"
+        },
+        {
+          "status": "pass",
+          "name": "dependencies installed",
+          "detail": "node_modules present"
+        },
+        {
+          "status": "pass",
+          "name": "CI runs npm build",
+          "detail": "present in ci.yml"
+        },
+        {
+          "status": "pass",
+          "name": "CI runs npm test",
+          "detail": "present in ci.yml"
+        },
+        {
+          "status": "pass",
+          "name": "CI runs npm contracts:validate",
+          "detail": "present in ci.yml"
+        },
+        {
+          "status": "pass",
+          "name": "CI runs npm audit",
+          "detail": "present in ci.yml"
+        },
+        {
+          "status": "pass",
+          "name": "npm run build",
+          "detail": "1918ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite normalization",
+          "detail": "48ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite probability",
+          "detail": "48ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite game-flow",
+          "detail": "61ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite totals",
+          "detail": "62ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite totals-engine",
+          "detail": "67ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite espn-game",
+          "detail": "101ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite odds-api",
+          "detail": "100ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite baseline-comparison",
+          "detail": "64ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite persistence-api",
+          "detail": "283ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite api",
+          "detail": "283ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite dashboard",
+          "detail": "44ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite site-publisher",
+          "detail": "100ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite adversity",
+          "detail": "81ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite games",
+          "detail": "46ms"
+        },
+        {
+          "status": "pass",
+          "name": "test suite vig-engine",
+          "detail": "47ms"
+        },
+        {
+          "status": "pass",
+          "name": "contracts:validate",
+          "detail": "Validated 10 contracts and 5 handoffs."
+        },
+        {
+          "status": "unverifiable",
+          "name": "verse:validate-export",
+          "detail": "Error: Verse export manifest missing: ../rsaa_verse/exports/runner_demon/manifest.json"
+        }
+      ]
+    }
+  ]
+}
