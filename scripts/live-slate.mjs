@@ -34,6 +34,24 @@ export function normalizeEvent(event, league) {
     ['STATUS_POSTPONED', 'STATUS_CANCELED'].includes(status) ? 'TERMINAL_OTHER' :
     status === 'STATUS_SCHEDULED' ? 'SCHEDULED' : 'UNKNOWN';
   const score = (team) => /^\d+$/.test(String(team.score)) ? Number(team.score) : null;
+  const situation = competition.situation ?? {};
+  const possession = [home, away].find((team) => String(team.team.id) === String(situation.possession));
+  const gameState = league === 'NFL' ? {
+    possession: possession?.team.abbreviation ?? null,
+    down: Number.isInteger(situation.down) ? situation.down : null,
+    distance: Number.isInteger(situation.distance) ? situation.distance : null,
+    downDistanceText: situation.downDistanceText ?? null,
+    redZone: typeof situation.isRedZone === 'boolean' ? situation.isRedZone : null,
+    lastPlay: situation.lastPlay?.text ?? null,
+  } : league === 'MLB' ? {
+    balls: Number.isInteger(situation.balls) ? situation.balls : null,
+    strikes: Number.isInteger(situation.strikes) ? situation.strikes : null,
+    outs: Number.isInteger(situation.outs) ? situation.outs : null,
+    bases: { first: situation.onFirst === true, second: situation.onSecond === true, third: situation.onThird === true },
+    batter: situation.batter?.athlete?.displayName ?? null,
+    pitcher: situation.pitcher?.athlete?.displayName ?? null,
+    lastPlay: situation.lastPlay?.text ?? null,
+  } : null;
   return {
     league,
     source: 'ESPN scoreboard',
@@ -46,6 +64,7 @@ export function normalizeEvent(event, league) {
     statusDetail: event.status?.type?.detail ?? null,
     period: Number.isInteger(event.status?.period) ? event.status.period : null,
     clock: event.status?.displayClock ?? null,
+    gameState,
     sourceUpdatedAt: null,
   };
 }
@@ -87,8 +106,8 @@ export async function snapshot(date) {
 function fingerprint(report) {
   return createHash('sha256').update(JSON.stringify(report.leagues.map((feed) => ({
     league: feed.league, status: feed.status,
-    games: feed.games.map(({ sourceEventId, status, statusDetail, period, clock, away, home }) =>
-      ({ sourceEventId, status, statusDetail, period, clock, awayScore: away.score, homeScore: home.score })),
+    games: feed.games.map(({ sourceEventId, status, statusDetail, period, clock, away, home, gameState }) =>
+      ({ sourceEventId, status, statusDetail, period, clock, awayScore: away.score, homeScore: home.score, gameState })),
   })))).digest('hex');
 }
 

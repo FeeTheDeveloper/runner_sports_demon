@@ -18,6 +18,8 @@ test('slate keeps delayed games and fails closed on unmapped teams', () => {
   assert.equal(game.phase, 'DELAYED');
   assert.equal(game.away.score, 3);
   assert.equal(game.home.score, 4);
+  assert.equal(game.gameState.outs, null);
+  assert.deepEqual(game.gameState.bases, { first: false, second: false, third: false });
   assert.equal(normalizeEvent({ ...event, competitions: [] }, 'MLB'), null);
   assert.throws(() => parseDate('2026-09-31'));
 });
