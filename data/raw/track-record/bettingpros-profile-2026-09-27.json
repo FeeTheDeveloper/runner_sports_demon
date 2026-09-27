@@ -1,0 +1,55 @@
+{
+  "schema_version": "runner.track-record.v1",
+  "captured_at": "2026-09-27T18:37:00.000Z",
+  "entity": "Runner Sports & Analytics LLC",
+  "source": {
+    "platform": "BettingPros",
+    "surface": "Own account profile, iOS app",
+    "handle": "@Runner_Sports",
+    "region": "Texas",
+    "linked_site": "werunsportsandanalytics.com",
+    "capture_method": "Owner-supplied screenshot, manually transcribed",
+    "subscription": {
+      "tier": "BettingPros Premium - Annual",
+      "price_usd": 119.99,
+      "billing": "Apple In-App Purchase",
+      "state": "CANCELED_BUT_ACTIVE",
+      "access_ends": "2027-04-18"
+    }
+  },
+  "authority": {
+    "level": "OWN_ACCOUNT_RECORD",
+    "publishable": false,
+    "publishable_note": "This is Runner's own wagering record on a third-party platform. It is NOT verified, NOT independently audited, and NOT a Runner model result. Do not publish as a performance claim without the reconciliation and disclosure items listed under open_questions.",
+    "model_input_approved": false
+  },
+  "windows": {
+    "last_12_months": {
+      "bets": 94,
+      "win_rate_pct": 23,
+      "profit_usd": 76.34
+    },
+    "last_30_days": {
+      "bets": 19,
+      "record": "13-6",
+      "win_rate_pct": 68.4,
+      "profit_usd": 693.84
+    },
+    "today": {
+      "profit_usd": 0.0
+    }
+  },
+  "books": {
+    "balance_usd": 73.5,
+    "connected_count": 1
+  },
+  "streak": 4,
+  "open_questions": [
+    "The two windows disagree sharply: 23% win rate over 12 months versus 13-6 (68%) over 30 days. Since 13 of roughly 22 total wins fall in the last month, the prior 11 months imply about 9 wins in 75 bets (~12%). Confirm whether the 12-month figure is win rate or ROI before either number is shown anywhere.",
+    "A 23% win rate returning positive profit implies heavy plus-money selections. Average odds and stake sizing are needed before profit is meaningful.",
+    "$693.84 profit in 30 days against $76.34 across 12 months means the trailing 11 months were roughly -$617. A 30-day figure shown alone would misrepresent the record.",
+    "Confirm whether these are real-money graded wagers, and whether the single connected book covers all activity.",
+    "Publishing wagering performance on a paid subscription site is a marketing claim. Runner's own reference audit states that no performance statistics establish Runner accuracy. Legal review of claim wording, sample disclosure and jurisdiction is required first."
+  ],
+  "boundary": "BettingPros is a reference and inspiration target, not a data source. This record contains only Runner's own account figures. No BettingPros projection, rating, consensus or other proprietary computation is stored here or ingested anywhere in this repository."
+}

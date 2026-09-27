@@ -17,3 +17,7 @@ exports/
 .ai/local/
 .runner/predictions/*.json
 .runner/predictions/*.log
+.runner/slates/*.json
+.runner/slates/*.log
+.runner/positions/*.json
+.runner/transcripts/*.json

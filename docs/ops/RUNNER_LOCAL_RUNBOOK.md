@@ -75,6 +75,34 @@ The first command saves one timestamped JSON file under `.runner/predictions/`. 
 
 This is an **experimental historical comparison**, not Runner's deployed prediction model, a market edge, or a betting recommendation. It uses 2016–24 historical score and clock states, at most three minutes and two score-margin points from the live state, with a minimum of 80 games. Its 2025 holdout only tests halftime winners. It does not account for live possession, injuries, team strength, weather, or executable odds. Scoreboard retrieval time does not establish ESPN's last update time. The watcher covers only the date passed to it and depends on this machine and dashboard staying online.
 
+## NFL, WNBA, and MLB date slate
+
+```powershell
+node scripts/live-slate.mjs --date 2026-09-27 --write
+node scripts/live-slate.mjs --date 2026-09-27 --watch --interval-seconds 120
+```
+
+The local research receipt fetches every game ESPN returns for the selected calendar date in each league, including scheduled, live, final, and delayed games. Each league has its own receipt and `UNKNOWN` state if its fetch fails; the script never fills a failed feed with cached games. Changed snapshots are saved under `.runner/slates/`, ignored by Git. The watcher checks every two minutes and stops when every returned game is final or otherwise terminal; leave this machine online and stop with Ctrl+C if needed. Empty dates require manual stop. ESPN's retrieval timestamp does not prove when its score last changed, and this path does not supply sportsbook prices, Kalshi positions, model estimates, or sell decisions. These ESPN endpoints are used for local research; review provider terms before public redistribution.
+
+## Private Kalshi position inventory
+
+```powershell
+node scripts/kalshi-positions-readonly.mjs
+node scripts/kalshi-positions-readonly.mjs --write
+```
+
+The command only makes authenticated `GET /portfolio/positions` requests and paginates them. It needs `KALSHI_API_KEY_ID` and `KALSHI_PRIVATE_KEY_BASE64` in the existing untracked environment. Without both, it reports `NOT_CONFIGURED` and makes no account request. It never places, amends, or cancels an order. Private receipts remain under ignored `.runner/positions/`. A browser login is not scheduler authority or an API credential. A position stays `UNKNOWN` for sell/hold analysis until Runner has a verified lot cost basis, executable exit quote including fees, and validated fair value. Do not present a scoreboard lead or market midpoint as an executable exit.
+
+## Authorized transcript intake and Gemini analysis
+
+```powershell
+node scripts/transcript-intake.mjs --file C:\path\captions.vtt --source-url https://www.youtube.com/watch?v=VIDEO_ID --rights OWNER --event-id ESPN_EVENT_ID
+# Optional, only for a source you may send to Google and with GEMINI_API_KEY configured:
+node scripts/transcript-intake.mjs --file C:\path\captions.vtt --source-url https://www.youtube.com/watch?v=VIDEO_ID --rights OWNER --event-id ESPN_EVENT_ID --send-to-gemini --authorize-transfer
+```
+
+The intake accepts `.vtt`, `.srt`, or `.txt` caption files, saves a hashed private receipt under ignored `.runner/transcripts/`, and prepares an English Gemini analysis prompt. `--rights` records the operator's stated owner, license, or public-domain basis; it does not independently establish rights. The game ID remains `USER_SUPPLIED_UNVERIFIED` until reconciled to a scoreboard event. The default path does not contact Gemini. The explicit transfer flags and `GEMINI_API_KEY` are required to send up to 20,000 transcript characters to Google using `gemini-3.8-flash`; the response remains unverified commentary. The Browser plugin can export a transcript from a YouTube watch page when YouTube exposes one. The official YouTube caption download API requires permission to edit the video. Live audio transcription needs a separately authorized audio source and Gemini Live API wiring; this intake does not capture or restream broadcasts.
+
 ## Content and exports
 
 ```powershell
