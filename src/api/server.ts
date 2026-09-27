@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { readFileSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { timingSafeEqual } from "node:crypto";
 import { MarketStateCache } from "../state/market-state/cache.js";
@@ -87,6 +88,15 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     if (request.method === "OPTIONS") { response.statusCode = 204; response.end(); return; }
     const requestUrl = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
     const path = requestUrl.pathname;
+    if (request.method === "GET" && ["/assets/runner-logo.png", "/assets/runner-demon.png"].includes(path)) {
+      try {
+        const file = path === "/assets/runner-logo.png" ? "runner-logo.png" : "runner-demon.png";
+        const bytes = readFileSync(new URL(`../../assets/dashboard/${file}`, import.meta.url));
+        response.setHeader("content-type", "image/png");
+        response.end(bytes);
+      } catch { response.statusCode = 404; response.end(JSON.stringify({ error: "asset_unavailable" })); }
+      return;
+    }
     if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
       response.setHeader("content-type", "text/html; charset=utf-8");
       response.end(options.localDashboard ? renderControlDashboard() : renderWebDashboard());

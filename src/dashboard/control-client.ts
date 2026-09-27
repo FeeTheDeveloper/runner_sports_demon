@@ -27,14 +27,17 @@ export const controlClient = String.raw`
   let paused = false;
   let loading = false;
   let toastTimer;
+  let contentCards = null;
+  let contentLoading = false;
   const views = {
-    overview:['Workspace overview','Your intelligence engine. One clear view.'],
+    overview:['Command center','Every source. Every signal. One cockpit.'],
     markets:['Market inventory','Find the market. Inspect the evidence.'],
     schedule:['Game schedule','The games behind the numbers.'],
     totals:['Totals desk','Projection, context, and the decision window.'],
     providers:['Data providers','Know where your information stands.'],
     workflows:['Engineering work queue','Shared ownership. Visible progress.'],
-    models:['Model registry','The reasoning behind the signal.']
+    models:['Model registry','The reasoning behind the signal.'],
+    content:['Content studio','Turn verified evidence into the next Runner story.']
   };
   function navigate() {
     const route = location.hash.slice(1);
@@ -45,6 +48,7 @@ export const controlClient = String.raw`
     $('#page-description').textContent = views[view][1];
     $('#breadcrumb').textContent = view === 'overview' ? 'Overview' : views[view][0];
     document.title = 'Runner — ' + views[view][0];
+    if(view === 'content' && !contentCards) loadContent();
   }
   function getProviders() {
     return ['kalshi','polymarket','odds_api',...new Set((snapshot?.providers || []).map(p=>p.provider))]
@@ -57,6 +61,7 @@ export const controlClient = String.raw`
   }
   function renderMarkets() {
     const query = $('#market-search').value.toLowerCase().trim();
+    $('#market-clear').hidden = !$('#market-search').value;
     const provider = $('#provider-filter').value;
     const sort = $('#market-sort').value;
     const rows = (snapshot?.markets || []).filter(m => (provider === 'all' || m.provider === provider) && (m.title + ' ' + m.runnerEventId + ' ' + m.sport).toLowerCase().includes(query));
@@ -88,6 +93,8 @@ export const controlClient = String.raw`
   }
   function render() {
     const s = snapshot;
+    $('#freshness-label').textContent = s.freshness || 'UNKNOWN';
+    $('#freshness-label').className = 'pill ' + (s.freshness === 'CURRENT' ? 'lime' : 'amber');
     $('#metric-markets').textContent = number(s.summary.markets);
     $('#metric-events').textContent = number(s.summary.marketEvents);
     $('#metric-providers').textContent = s.database.status === 'ready' ? s.providers.filter(p=>p.status === 'connected').length + ' / ' + getProviders().length : '—';
@@ -122,6 +129,12 @@ export const controlClient = String.raw`
   }
   async function loadSchedule(event) {
     event.preventDefault();
+    if($('#schedule-load').disabled) return;
+    const value = $('#schedule-date').value;
+    const valid = /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString().slice(0,10) === value;
+    $('#schedule-error').hidden = valid;
+    $('#schedule-date').setAttribute('aria-invalid',String(!valid));
+    if(!valid) { $('#schedule-error').textContent = 'Choose a valid game date before loading the schedule.'; $('#schedule-date').focus(); return; }
     $('#schedule-load').disabled = true; $('#schedule-status').textContent = 'Requesting ESPN…';
     $('#schedule-games').innerHTML = empty('Loading the scoreboard…','Waiting for the selected league and date.');
     try {
@@ -137,9 +150,34 @@ export const controlClient = String.raw`
     } finally { $('#schedule-load').disabled = false; }
   }
   function showToast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(()=>$('#toast').hidden = true,3000); }
+  function renderContent() {
+    const league = $('#content-league').value;
+    const cards = (contentCards || []).filter(c => league === 'all' || c.artifact.sport === league);
+    $('#content-status').textContent = cards.length + ' editorial shells · source labels preserved';
+    $('#content-cards').innerHTML = cards.map(c => '<article class="content-card"><header><span>' + esc(c.artifact.sport) + '</span>' + badge(c.artifact.freshness) + '</header><h3>' + esc(titleCase(c.cardType.replaceAll('-',' '))) + '</h3><p>' + esc(c.sections['Current State']) + '</p><details><summary>Read editorial brief</summary>' + Object.entries(c.sections).map(([heading,text]) => '<h4>' + esc(heading) + '</h4><p>' + esc(text) + '</p>').join('') + '</details></article>').join('') || empty('No content in this view.','Choose another league or reload the studio.');
+  }
+  async function loadContent() {
+    if(contentLoading) return;
+    contentLoading = true; $('#content-retry').disabled = true;
+    $('#content-status').textContent = 'Loading repository content…';
+    if(!contentCards) $('#content-cards').innerHTML = empty('Opening the studio…','Reading saved editorial shells.');
+    try {
+      const response = await fetch('/content',{signal:AbortSignal.timeout(15000),cache:'no-store'});
+      if(!response.ok) throw new Error('Content unavailable');
+      const payload = await response.json();
+      if(!Array.isArray(payload.data)) throw new Error('Content unavailable');
+      contentCards = payload.data; renderContent();
+    } catch {
+      $('#content-status').textContent = 'Content unavailable. Reload to retry.';
+      if(!contentCards) $('#content-cards').innerHTML = empty('The studio could not load.','Check the local service, then choose Reload content.');
+    } finally { contentLoading = false; $('#content-retry').disabled = false; }
+  }
   $('#refresh').addEventListener('click',()=>refresh(true));
   $('#pause').addEventListener('click',()=>{paused = !paused; $('#pause').setAttribute('aria-pressed',String(paused)); $('#pause-label').textContent = paused ? 'Resume refresh' : 'Pause refresh'; $('#pause-symbol').textContent = paused ? '▷' : 'Ⅱ'; showToast(paused ? 'Automatic refresh paused. Saved data remains visible.' : 'Automatic refresh resumed'); if(!paused) refresh();});
   $('#market-search').addEventListener('input',renderMarkets);
+  $('#market-clear').addEventListener('click',()=>{ $('#market-search').value = ''; renderMarkets(); $('#market-search').focus(); });
+  $('#content-league').addEventListener('change',renderContent);
+  $('#content-retry').addEventListener('click',loadContent);
   $('#provider-filter').addEventListener('change',renderMarkets);
   $('#market-sort').addEventListener('change',renderMarkets);
   $('#handoff-filter').addEventListener('change',renderHandoffs);

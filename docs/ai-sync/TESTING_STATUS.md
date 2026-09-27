@@ -1,5 +1,9 @@
 # Testing status
 
+## Runner Demon cockpit — September 26, 2026
+
+All 14 tests/build passed. Strict UI audit has zero findings; DESIGN lint has no errors and 16 prose-mapping warnings. Browser verified desktop, 390px and 320px layouts, content/search controls, inline date errors, pause/keyboard resume and reduced motion. See [cockpit evidence and limits](../ops/DEMON_COCKPIT_2026-09-26.md).
+
 Operations package: all 14 test programs/build, typecheck, 12 contract metadata checks, data/card validation, 5 artifact hashes and 11 historical hashes passed. Local HTTP verified; lint has no configured script. See [dated evidence](../ops/MACHINE_STATE_2026-09-26.md).
 
 ## Runner Sports Plug operating audit — September 26, 2026

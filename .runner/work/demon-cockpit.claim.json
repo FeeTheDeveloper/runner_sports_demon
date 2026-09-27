@@ -1,0 +1,7 @@
+{
+  "agent": "codex", "repository": "runner_sports_demon", "branch": "feat/runner-demon-cockpit",
+  "paths": ["src/dashboard", "src/api/server.ts", "src/tests", "assets/dashboard", "DESIGN.md", "UX-CONTRACT.md", "docs/ops"],
+  "task": "Build Runner-branded automotive control center with supplied logo and custom Challenger Demon concept imagery.",
+  "started_at": "2026-09-26", "status": "complete",
+  "evidence": "docs/ops/DEMON_COCKPIT_2026-09-26.md"
+}

@@ -1,0 +1,8 @@
+{
+  "sourceRoots": ["src/dashboard"],
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Navigation", "Select/Listbox", "Date", "Form", "Search", "Scrollbar", "Toast", "Data display"],
+  "requiredCommands": ["build", "test"],
+  "commands": { "build": "npm run build", "test": "npm test" },
+  "evidence": { "failurePaths": "src/tests/control-client.test.ts" }
+}

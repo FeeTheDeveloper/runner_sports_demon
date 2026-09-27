@@ -1,5 +1,11 @@
 # Session handoff log
 
+2026-09-26: Runner Sports Plug full-platform diagnostic and engineering handoff recorded in [docs/platform](../platform/RUNNER_IMPLEMENTATION_STATUS.md). Ten requested documents map existing architecture, observed BettingPros page families, parity gaps, proposed Systems Engine, sources, routes, checks and release blockers. Demon tests (14 programs, including build) and Site build/lint passed. Tracker isolation, publisher default, command capability boundaries, model labeling and example systems remain open. Reference mobile coverage was not established. No runtime/schema changes or external mutation occurred in this pass; full platform is NOT READY. Current HEAD includes earlier cockpit/representative work; older entries' process and uncommitted-state claims are historical.
+
+2026-09-26: Registered owner-designated Deezy P and Kendra A as shared Demon/Site representative profiles in `.runner/agents` and `.github/agents`. Verified two Runner-domain welcome messages in the CEO Gmail account; individual address bindings and portrait mapping await owner confirmation. Google external execution is not connected. [Evidence and remaining decisions](../ops/RUNNER_REPRESENTATIVES_2026-09-26.md).
+
+2026-09-26: Codex implemented the Runner Demon automotive dashboard on `feat/runner-demon-cockpit`, including supplied logo, custom car concept art, eight views and content studio. Build/tests, strict UI audit and desktop/mobile browser checks completed. Local changes remain uncommitted; dashboard runs on 8790. [Evidence and connector limits](../ops/DEMON_COCKPIT_2026-09-26.md).
+
 2026-09-26: Codex completed the requested operations prompt on feat/runner-operations-data-spine. Local changes remain uncommitted. Dashboard 8790 and API-only 8787 verified; provider markets HISTORICAL, content FIXTURE. No cross-repository consumer acceptance is claimed. [Full handoff](../ops/MACHINE_STATE_2026-09-26.md).
 
 ## 2026-09-26 — Runner Sports Plug operating audit
