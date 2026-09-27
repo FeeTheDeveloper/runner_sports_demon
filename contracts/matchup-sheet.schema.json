@@ -1,0 +1,542 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runner.matchup-sheet.v1",
+  "title": "Runner Third-Party Matchup Sheet",
+  "description": "Curated third-party pregame matchup reference. Reference input only; never authoritative, never a Runner model output, and never presented as Runner-validated truth.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "matchup_id",
+    "season",
+    "week",
+    "source",
+    "authority",
+    "teams"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "runner.matchup-sheet.v1"
+    },
+    "matchup_id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,3}-[A-Z]{2,3}$"
+    },
+    "runner_event_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Canonical Runner event id. Null when the engine schedule has no matching event."
+    },
+    "runner_event_state": {
+      "enum": [
+        "MATCHED",
+        "NO_ENGINE_EVENT"
+      ]
+    },
+    "season": {
+      "type": "integer"
+    },
+    "week": {
+      "type": "integer"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "author",
+        "artifact",
+        "ingested_at",
+        "stats_sheet_present"
+      ],
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "artifact": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ingested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "transcription": {
+          "type": "string"
+        },
+        "stats_sheet_present": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "model_input_approved",
+        "publishable"
+      ],
+      "properties": {
+        "level": {
+          "const": "REFERENCE_ONLY"
+        },
+        "model_input_approved": {
+          "const": false
+        },
+        "publishable": {
+          "const": false
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "conventions": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "How to read the stored figures, including inferred sheet conventions pending owner confirmation."
+    },
+    "teams": {
+      "type": "object",
+      "minProperties": 2,
+      "maxProperties": 2,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "abbreviation",
+          "season_log",
+          "offense_log",
+          "defense_log",
+          "quarterback",
+          "opposing_quarterback_log",
+          "tempo",
+          "offense_efficiency",
+          "defense_efficiency",
+          "lines"
+        ],
+        "properties": {
+          "abbreviation": {
+            "type": "string"
+          },
+          "sheet_abbreviation": {
+            "type": "string"
+          },
+          "season_log": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "week",
+                "opponent",
+                "favorite_column",
+                "total",
+                "score",
+                "winner",
+                "ats_winner",
+                "ou_result"
+              ],
+              "properties": {
+                "week": {
+                  "type": "integer"
+                },
+                "opponent": {
+                  "type": "string"
+                },
+                "favorite_column": {
+                  "type": "number"
+                },
+                "total": {
+                  "type": "number"
+                },
+                "score": {
+                  "type": "string"
+                },
+                "winner": {
+                  "type": "string"
+                },
+                "ats_winner": {
+                  "type": "string"
+                },
+                "ou_result": {
+                  "enum": [
+                    "OVER",
+                    "UNDER",
+                    "PUSH"
+                  ]
+                }
+              }
+            }
+          },
+          "offense_log": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/unitGameLog"
+            }
+          },
+          "defense_log": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/unitGameLog"
+            }
+          },
+          "quarterback": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "log"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "log": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/qbGameLog"
+                }
+              }
+            }
+          },
+          "opposing_quarterback_log": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/qbGameLog"
+            }
+          },
+          "tempo": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "required": [
+              "pace_rank",
+              "run_freq_rank",
+              "pass_freq_rank"
+            ],
+            "properties": {
+              "pace_rank": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "run_freq_rank": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "pass_freq_rank": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "offense_efficiency": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/efficiencyBlock"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "defense_efficiency": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/efficiencyBlock"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context_ranks": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Defenses/offenses faced, explosive and havoc ranks. Null where PDF column interleaving made attribution ambiguous."
+          },
+          "lines": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "offensive_line",
+                  "defensive_line"
+                ],
+                "properties": {
+                  "offensive_line": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "run_blocking",
+                      "pass_blocking"
+                    ],
+                    "properties": {
+                      "run_blocking": {
+                        "$ref": "#/$defs/rankQuad"
+                      },
+                      "pass_blocking": {
+                        "$ref": "#/$defs/rankQuad"
+                      }
+                    }
+                  },
+                  "defensive_line": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "run_defense",
+                      "pass_rush"
+                    ],
+                    "properties": {
+                      "run_defense": {
+                        "$ref": "#/$defs/rankQuad"
+                      },
+                      "pass_rush": {
+                        "$ref": "#/$defs/rankQuad"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "unitGameLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "week",
+        "opponent",
+        "rush_yards",
+        "rush_ypc",
+        "rush_sr_pct",
+        "rush_epa",
+        "pass_yards",
+        "pass_ypa",
+        "pass_rating",
+        "pass_sr_pct",
+        "pass_epa",
+        "overall_sr_pct",
+        "overall_epa"
+      ],
+      "properties": {
+        "week": {
+          "type": "integer"
+        },
+        "opponent": {
+          "type": "string"
+        },
+        "rush_yards": {
+          "type": "number"
+        },
+        "rush_ypc": {
+          "type": "number"
+        },
+        "rush_sr_pct": {
+          "type": "number"
+        },
+        "rush_epa": {
+          "type": "number"
+        },
+        "pass_yards": {
+          "type": "number"
+        },
+        "pass_ypa": {
+          "type": "number"
+        },
+        "pass_rating": {
+          "type": "number"
+        },
+        "pass_sr_pct": {
+          "type": "number"
+        },
+        "pass_epa": {
+          "type": "number"
+        },
+        "overall_sr_pct": {
+          "type": "number"
+        },
+        "overall_epa": {
+          "type": "number"
+        }
+      }
+    },
+    "qbGameLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "week",
+        "label",
+        "dropbacks",
+        "completions",
+        "attempts",
+        "yards",
+        "rating",
+        "td",
+        "int",
+        "time_to_throw",
+        "turnover_worthy_plays",
+        "big_time_throws",
+        "blitz_pct",
+        "pressure_pct"
+      ],
+      "properties": {
+        "week": {
+          "type": "integer"
+        },
+        "label": {
+          "type": "string"
+        },
+        "dropbacks": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "completions": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "attempts": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "yards": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "rating": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "td": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "int": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "time_to_throw": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "turnover_worthy_plays": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "big_time_throws": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "blitz_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "pressure_pct": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "efficiencyBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overall",
+        "rush",
+        "pass"
+      ],
+      "properties": {
+        "overall": {
+          "$ref": "#/$defs/rateWithRanks"
+        },
+        "rush": {
+          "$ref": "#/$defs/rateWithRanks"
+        },
+        "pass": {
+          "$ref": "#/$defs/rateWithRanks"
+        }
+      }
+    },
+    "rateWithRanks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rate",
+        "sr_rank",
+        "epa_rank"
+      ],
+      "properties": {
+        "rate": {
+          "type": "number",
+          "description": "Raw rate (YPP, YPC or YPA); not a rank."
+        },
+        "sr_rank": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "epa_rank": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        }
+      }
+    },
+    "rankQuad": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 32
+      }
+    }
+  }
+}

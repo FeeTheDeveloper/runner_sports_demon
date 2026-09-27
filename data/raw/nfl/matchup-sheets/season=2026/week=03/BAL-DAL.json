@@ -1,0 +1,496 @@
+{
+  "schema_version": "runner.matchup-sheet.v1",
+  "matchup_id": "BAL-DAL",
+  "runner_event_id": "RUNNER:NFL:2026-09-27:BAL:DAL",
+  "runner_event_state": "MATCHED",
+  "season": 2026,
+  "week": 3,
+  "source": {
+    "author": "Kye Kirms",
+    "artifact": [
+      "BAL-DAL-week-3-logs.pdf",
+      "BAL-DAL-week-3-stats.pdf"
+    ],
+    "ingested_at": "2026-09-27T14:05:00.000Z",
+    "stats_sheet_present": true,
+    "transcription": "Manual transcription from owner-supplied PDFs. Not machine-extracted; verify before any downstream use."
+  },
+  "authority": {
+    "level": "REFERENCE_ONLY",
+    "model_input_approved": false,
+    "publishable": false,
+    "note": "Third-party influence material supplied by the owner. Not gospel, not Runner-validated, not a Runner model output. Never present these figures as Runner intelligence or republish them."
+  },
+  "conventions": {
+    "efficiency_triplet": "First figure is the raw rate (YPP/YPC/YPA); the two following integers are SR% and EPA ranks out of 32. Inferred from magnitude; pending owner confirmation.",
+    "rank_direction": "Sheet rank direction (1 = best vs 1 = most) is not stated on the sheet and has not been confirmed.",
+    "favorite_column": "Stored verbatim. Sheet appears to use positive = team favored by that number, negative = team underdog, inferred from recorded results; pending owner confirmation.",
+    "percentages": "SR% and rate percentages stored as numbers without the percent sign.",
+    "context_ranks": "Defenses/offenses faced, explosive and havoc ranks were NOT transcribed: the PDF text layer interleaves the two teams’ columns, so attribution is ambiguous. Left null deliberately rather than guessed.",
+    "qb_detail_splits": "QB situational splits (clean pocket / pressured / blitzed, vs man and zone coverage, safety shells, pass depth and concept buckets) are present on the source sheets and are NOT yet transcribed."
+  },
+  "teams": {
+    "BAL": {
+      "abbreviation": "BAL",
+      "sheet_abbreviation": "BAL",
+      "season_log": [
+        {
+          "week": 1,
+          "opponent": "@ IND",
+          "favorite_column": 3,
+          "total": 48.5,
+          "score": "41-23",
+          "winner": "BAL",
+          "ats_winner": "BAL",
+          "ou_result": "OVER"
+        },
+        {
+          "week": 2,
+          "opponent": "vs NO",
+          "favorite_column": 8.5,
+          "total": 45.5,
+          "score": "17-24",
+          "winner": "NO",
+          "ats_winner": "NO",
+          "ou_result": "UNDER"
+        }
+      ],
+      "offense_log": [
+        {
+          "week": 1,
+          "opponent": "@ IND",
+          "rush_yards": 202,
+          "rush_ypc": 5.94,
+          "rush_sr_pct": 47,
+          "rush_epa": 0.28,
+          "pass_yards": 307,
+          "pass_ypa": 11.81,
+          "pass_rating": 121.3,
+          "pass_sr_pct": 54,
+          "pass_epa": 0.376,
+          "overall_sr_pct": 50,
+          "overall_epa": 0.321
+        },
+        {
+          "week": 2,
+          "opponent": "vs NO",
+          "rush_yards": 108,
+          "rush_ypc": 4.91,
+          "rush_sr_pct": 77,
+          "rush_epa": 0.136,
+          "pass_yards": 204,
+          "pass_ypa": 6.18,
+          "pass_rating": 82.3,
+          "pass_sr_pct": 55,
+          "pass_epa": 0.103,
+          "overall_sr_pct": 64,
+          "overall_epa": 0.116
+        }
+      ],
+      "defense_log": [
+        {
+          "week": 1,
+          "opponent": "@ IND",
+          "rush_yards": 102,
+          "rush_ypc": 5.1,
+          "rush_sr_pct": 50,
+          "rush_epa": 0.122,
+          "pass_yards": 149,
+          "pass_ypa": 4.52,
+          "pass_rating": 68.5,
+          "pass_sr_pct": 36.4,
+          "pass_epa": -0.462,
+          "overall_sr_pct": 41.5,
+          "overall_epa": -0.241
+        },
+        {
+          "week": 2,
+          "opponent": "vs NO",
+          "rush_yards": 65,
+          "rush_ypc": 2.41,
+          "rush_sr_pct": 37,
+          "rush_epa": -0.051,
+          "pass_yards": 236,
+          "pass_ypa": 6.38,
+          "pass_rating": 100.3,
+          "pass_sr_pct": 51.4,
+          "pass_epa": 0.295,
+          "overall_sr_pct": 45.3,
+          "overall_epa": 0.149
+        }
+      ],
+      "quarterback": {
+        "name": "Lamar Jackson",
+        "log": [
+          {
+            "week": 1,
+            "label": "@ IND",
+            "dropbacks": 30,
+            "completions": 17,
+            "attempts": 25,
+            "yards": 324,
+            "rating": 124.2,
+            "td": 1,
+            "int": 0,
+            "time_to_throw": 3.31,
+            "turnover_worthy_plays": 1,
+            "big_time_throws": 1,
+            "blitz_pct": 46.7,
+            "pressure_pct": 46.7
+          },
+          {
+            "week": 2,
+            "label": "vs NO",
+            "dropbacks": 38,
+            "completions": 21,
+            "attempts": 31,
+            "yards": 235,
+            "rating": 87.4,
+            "td": 1,
+            "int": 1,
+            "time_to_throw": 3.07,
+            "turnover_worthy_plays": 2,
+            "big_time_throws": 3,
+            "blitz_pct": 44.7,
+            "pressure_pct": 39.5
+          }
+        ]
+      },
+      "opposing_quarterback_log": [
+        {
+          "week": 1,
+          "label": "Jones",
+          "dropbacks": 34,
+          "completions": 19,
+          "attempts": 31,
+          "yards": 166,
+          "rating": 72.8,
+          "td": 1,
+          "int": 1,
+          "time_to_throw": 2.74,
+          "turnover_worthy_plays": 1,
+          "big_time_throws": 0,
+          "blitz_pct": 38.2,
+          "pressure_pct": 41.2
+        },
+        {
+          "week": 2,
+          "label": "Shough",
+          "dropbacks": 39,
+          "completions": 27,
+          "attempts": 34,
+          "yards": 252,
+          "rating": 107.4,
+          "td": 1,
+          "int": 0,
+          "time_to_throw": 2.8,
+          "turnover_worthy_plays": 0,
+          "big_time_throws": 2,
+          "blitz_pct": 48.7,
+          "pressure_pct": 30.8
+        }
+      ],
+      "tempo": {
+        "pace_rank": 24,
+        "run_freq_rank": 8,
+        "pass_freq_rank": 25
+      },
+      "offense_efficiency": {
+        "overall": {
+          "rate": 7.14,
+          "sr_rank": 2,
+          "epa_rank": 4
+        },
+        "rush": {
+          "rate": 5.54,
+          "sr_rank": 1,
+          "epa_rank": 2
+        },
+        "pass": {
+          "rate": 9.47,
+          "sr_rank": 3,
+          "epa_rank": 8
+        }
+      },
+      "defense_efficiency": {
+        "overall": {
+          "rate": 4.72,
+          "sr_rank": 19,
+          "epa_rank": 14
+        },
+        "rush": {
+          "rate": 3.55,
+          "sr_rank": 19,
+          "epa_rank": 23
+        },
+        "pass": {
+          "rate": 5.97,
+          "sr_rank": 16,
+          "epa_rank": 13
+        }
+      },
+      "context_ranks": null,
+      "lines": {
+        "offensive_line": {
+          "run_blocking": [
+            2,
+            9,
+            3,
+            6
+          ],
+          "pass_blocking": [
+            11,
+            31,
+            31,
+            18
+          ]
+        },
+        "defensive_line": {
+          "run_defense": [
+            2,
+            13,
+            3,
+            26
+          ],
+          "pass_rush": [
+            3,
+            17,
+            17,
+            15
+          ]
+        }
+      }
+    },
+    "DAL": {
+      "abbreviation": "DAL",
+      "sheet_abbreviation": "DAL",
+      "season_log": [
+        {
+          "week": 1,
+          "opponent": "@ NYG",
+          "favorite_column": 3,
+          "total": 47.5,
+          "score": "20-28",
+          "winner": "NYG",
+          "ats_winner": "NYG",
+          "ou_result": "OVER"
+        },
+        {
+          "week": 2,
+          "opponent": "vs WAS",
+          "favorite_column": 3.5,
+          "total": 51.5,
+          "score": "37-20",
+          "winner": "DAL",
+          "ats_winner": "DAL",
+          "ou_result": "OVER"
+        }
+      ],
+      "offense_log": [
+        {
+          "week": 1,
+          "opponent": "@ NYG",
+          "rush_yards": 69,
+          "rush_ypc": 3.83,
+          "rush_sr_pct": 50,
+          "rush_epa": 0.061,
+          "pass_yards": 175,
+          "pass_ypa": 5.15,
+          "pass_rating": 84.8,
+          "pass_sr_pct": 44,
+          "pass_epa": 0.305,
+          "overall_sr_pct": 46,
+          "overall_epa": 0.221
+        },
+        {
+          "week": 2,
+          "opponent": "vs WAS",
+          "rush_yards": 66,
+          "rush_ypc": 3.14,
+          "rush_sr_pct": 43,
+          "rush_epa": -0.136,
+          "pass_yards": 266,
+          "pass_ypa": 8.06,
+          "pass_rating": 141.5,
+          "pass_sr_pct": 64,
+          "pass_epa": 0.458,
+          "overall_sr_pct": 56,
+          "overall_epa": 0.227
+        }
+      ],
+      "defense_log": [
+        {
+          "week": 1,
+          "opponent": "@ NYG",
+          "rush_yards": 165,
+          "rush_ypc": 4.85,
+          "rush_sr_pct": 50,
+          "rush_epa": 0.061,
+          "pass_yards": 234,
+          "pass_ypa": 7.55,
+          "pass_rating": 127.1,
+          "pass_sr_pct": 71,
+          "pass_epa": 0.707,
+          "overall_sr_pct": 60,
+          "overall_epa": 0.369
+        },
+        {
+          "week": 2,
+          "opponent": "vs WAS",
+          "rush_yards": 182,
+          "rush_ypc": 5.69,
+          "rush_sr_pct": 53.1,
+          "rush_epa": 0.106,
+          "pass_yards": 207,
+          "pass_ypa": 5.91,
+          "pass_rating": 100.5,
+          "pass_sr_pct": 48.6,
+          "pass_epa": 0.035,
+          "overall_sr_pct": 50.7,
+          "overall_epa": 0.069
+        }
+      ],
+      "quarterback": {
+        "name": "Dak Prescott",
+        "log": [
+          {
+            "week": 1,
+            "label": "@ NYG",
+            "dropbacks": 36,
+            "completions": 22,
+            "attempts": 34,
+            "yards": 175,
+            "rating": 84.8,
+            "td": 2,
+            "int": 1,
+            "time_to_throw": 2.74,
+            "turnover_worthy_plays": 2,
+            "big_time_throws": 1,
+            "blitz_pct": 27.8,
+            "pressure_pct": 30.6
+          },
+          {
+            "week": 2,
+            "label": "vs WAS",
+            "dropbacks": 36,
+            "completions": 26,
+            "attempts": 31,
+            "yards": 279,
+            "rating": 143.8,
+            "td": 4,
+            "int": 0,
+            "time_to_throw": 2.81,
+            "turnover_worthy_plays": 0,
+            "big_time_throws": 1,
+            "blitz_pct": 58.3,
+            "pressure_pct": 30.6
+          }
+        ]
+      },
+      "opposing_quarterback_log": [
+        {
+          "week": 1,
+          "label": "Dart",
+          "dropbacks": 34,
+          "completions": 23,
+          "attempts": 29,
+          "yards": 230,
+          "rating": 134.2,
+          "td": 3,
+          "int": 0,
+          "time_to_throw": 2.64,
+          "turnover_worthy_plays": 2,
+          "big_time_throws": 0,
+          "blitz_pct": 44.1,
+          "pressure_pct": 29.4
+        },
+        {
+          "week": 2,
+          "label": "Daniels",
+          "dropbacks": 23,
+          "completions": 11,
+          "attempts": 17,
+          "yards": 96,
+          "rating": 99.1,
+          "td": 1,
+          "int": 0,
+          "time_to_throw": 3.37,
+          "turnover_worthy_plays": 0,
+          "big_time_throws": 0,
+          "blitz_pct": 26.1,
+          "pressure_pct": 34.8
+        }
+      ],
+      "tempo": {
+        "pace_rank": 13,
+        "run_freq_rank": 27,
+        "pass_freq_rank": 6
+      },
+      "offense_efficiency": {
+        "overall": {
+          "rate": 5.43,
+          "sr_rank": 4,
+          "epa_rank": 3
+        },
+        "rush": {
+          "rate": 3.46,
+          "sr_rank": 11,
+          "epa_rank": 13
+        },
+        "pass": {
+          "rate": 6.78,
+          "sr_rank": 4,
+          "epa_rank": 4
+        }
+      },
+      "defense_efficiency": {
+        "overall": {
+          "rate": 5.97,
+          "sr_rank": 32,
+          "epa_rank": 30
+        },
+        "rush": {
+          "rate": 5.26,
+          "sr_rank": 30,
+          "epa_rank": 28
+        },
+        "pass": {
+          "rate": 6.62,
+          "sr_rank": 32,
+          "epa_rank": 30
+        }
+      },
+      "context_ranks": null,
+      "lines": {
+        "offensive_line": {
+          "run_blocking": [
+            22,
+            32,
+            28,
+            30
+          ],
+          "pass_blocking": [
+            16,
+            24,
+            12,
+            3
+          ]
+        },
+        "defensive_line": {
+          "run_defense": [
+            29,
+            22,
+            30,
+            23
+          ],
+          "pass_rush": [
+            15,
+            26,
+            16,
+            30
+          ]
+        }
+      }
+    }
+  }
+}
