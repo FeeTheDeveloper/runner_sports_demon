@@ -1,5 +1,9 @@
 # Deployment status
 
+## Vercel project provisioned - September 27, 2026
+
+Created Vercel project `runner-sports-site` (`prj_A5nLYgVKoz7J4FyWD21rWjGg9oUM`) on team `team_mjDCwdXOv5dHtOGdxnyqqVcE`, connected to `FeeTheDeveloper/runner_sports-site`, framework nextjs, Vercel Auth enabled. Seven non-secret config environment variables set; 24 owner-supplied values still missing. No deployment created, no domain attached, no push performed. The working tree holds 92 uncommitted files that a Git-linked deploy would omit. [Preparation record](../ops/VERCEL_DEPLOYMENT_2026-09-27.md).
+
 ## Connected-launch preparation - September 26, 2026
 
 Local compiled Site preview is started on loopback port 3002 for review; it is session-dependent. Vercel import search confirmed `FeeTheDeveloper/runner_sports-site` is available, but no project import/deployment was submitted. Existing `runner-dashboard-site` belongs to a different repository. Clerk/Supabase bindings and Stripe merchant/terms remain unresolved; provider tabs were retained for setup. No provider mutation, migration, commit, push, merge or deployment. [Exact current handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md).
