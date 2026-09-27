@@ -15,3 +15,5 @@ dist/
 coverage/
 exports/
 .ai/local/
+.runner/predictions/*.json
+.runner/predictions/*.log

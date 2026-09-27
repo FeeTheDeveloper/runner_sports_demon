@@ -62,6 +62,19 @@ npm run scout -- start --once
 
 The explicit false publish override is required because existing publisher defaults are enabled. Inspect provider receipts afterward; command exit success alone does not prove successful ingest (individual connector failures are caught). For polling plus API use `npm run scout -- start --api --port 8787` in place of --once after stopping API-only mode. Continuous ingestion retains the existing overlapping-tick risk; unattended operation is not certified.
 
+## Experimental live NFL snapshots
+
+Python 3.11+ can produce a local, read-only score/clock analog from the saved historical SQLite database and the dashboard's current ESPN schedule receipt:
+
+```powershell
+python scripts/live-win-analog.py --date 2026-09-27 --write
+python scripts/live-win-analog.py --date 2026-09-27 --watch --interval-seconds 300
+```
+
+The first command saves one timestamped JSON file under `.runner/predictions/`. The second saves a new file every five minutes until every game on that date is final; stop it with Ctrl+C. It requires the local dashboard at `127.0.0.1:8790` and refuses stale or warning-bearing schedule receipts. The earliest saved live probability for each game is frozen for grading once its final score appears. Generated snapshots and logs remain local and are ignored by Git.
+
+This is an **experimental historical comparison**, not Runner's deployed prediction model, a market edge, or a betting recommendation. It uses 2016–24 historical score and clock states, at most three minutes and two score-margin points from the live state, with a minimum of 80 games. Its 2025 holdout only tests halftime winners. It does not account for live possession, injuries, team strength, weather, or executable odds. Scoreboard retrieval time does not establish ESPN's last update time. The watcher covers only the date passed to it and depends on this machine and dashboard staying online.
+
 ## Content and exports
 
 ```powershell
