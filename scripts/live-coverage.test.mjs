@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { constants, generateKeyPairSync, verify } from 'node:crypto';
-import { normalizeEvent, parseDate } from './live-slate.mjs';
+import { chicagoDate, normalizeEvent, parseDate } from './live-slate.mjs';
 import { authHeaders, readOpenPositions } from './kalshi-positions-readonly.mjs';
 import { parseCaptions, prepareGeminiInput, safeSourceUrl } from './transcript-intake.mjs';
 
@@ -22,6 +22,7 @@ test('slate keeps delayed games and fails closed on unmapped teams', () => {
   assert.deepEqual(game.gameState.bases, { first: false, second: false, third: false });
   assert.equal(normalizeEvent({ ...event, competitions: [] }, 'MLB'), null);
   assert.throws(() => parseDate('2026-09-31'));
+  assert.equal(chicagoDate(new Date('2026-09-28T02:00:00Z')), '2026-09-27');
 });
 
 test('Kalshi read-only signature signs path without query', () => {

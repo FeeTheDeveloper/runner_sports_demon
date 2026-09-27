@@ -80,9 +80,10 @@ This is an **experimental historical comparison**, not Runner's deployed predict
 ```powershell
 node scripts/live-slate.mjs --date 2026-09-27 --write
 node scripts/live-slate.mjs --date 2026-09-27 --watch --interval-seconds 120
+node scripts/live-slate.mjs --rolling --interval-seconds 120
 ```
 
-The local research receipt fetches every game ESPN returns for the selected calendar date in each league, including scheduled, live, final, and delayed games. Each league has its own receipt and `UNKNOWN` state if its fetch fails; the script never fills a failed feed with cached games. Changed snapshots are saved under `.runner/slates/`, ignored by Git. The watcher checks every two minutes and stops when every returned game is final or otherwise terminal; leave this machine online and stop with Ctrl+C if needed. Empty dates require manual stop. ESPN's retrieval timestamp does not prove when its score last changed, and this path does not supply sportsbook prices, Kalshi positions, model estimates, or sell decisions. These ESPN endpoints are used for local research; review provider terms before public redistribution.
+The local research receipt fetches every game ESPN returns for the selected calendar date in each league, including scheduled, live, final, and delayed games. Each league has its own receipt and `UNKNOWN` state if its fetch fails; the script never fills a failed feed with cached games. Changed snapshots are saved under `.runner/slates/`, ignored by Git. A fixed-date watcher checks every two minutes and stops when every returned game is final or otherwise terminal. `--rolling` instead follows the Chicago calendar date, checking every two minutes while games are live, at least every five minutes before games, and at least every fifteen minutes after the day's slate; stop it with Ctrl+C. Both require this machine to remain on. ESPN's retrieval timestamp does not prove when its score last changed, and this path does not supply sportsbook prices, Kalshi positions, model estimates, or sell decisions. These ESPN endpoints are used for local research; review provider terms before public redistribution.
 
 ## Private Kalshi position inventory
 

@@ -21,6 +21,13 @@ export function parseDate(value) {
   return value;
 }
 
+export function chicagoDate(now = new Date()) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(now).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
 export function normalizeEvent(event, league) {
   const competition = event?.competitions?.[0];
   const competitors = competition?.competitors ?? [];
@@ -133,20 +140,26 @@ async function writeReport(report) {
 async function main() {
   const args = process.argv.slice(2);
   const value = (flag) => { const index = args.indexOf(flag); return index < 0 ? undefined : args[index + 1]; };
-  const date = parseDate(value('--date') ?? new Date().toISOString().slice(0, 10));
-  const watch = args.includes('--watch');
+  const rolling = args.includes('--rolling');
+  if (rolling && args.includes('--date')) throw new Error('--rolling selects the Chicago date; do not also pass --date');
+  const fixedDate = rolling ? null : parseDate(value('--date') ?? chicagoDate());
+  const watch = rolling || args.includes('--watch');
   const write = watch || args.includes('--write');
   const interval = Number(value('--interval-seconds') ?? 120);
   if (!Number.isInteger(interval) || interval < 60) throw new Error('interval must be at least 60 seconds');
   do {
+    const date = rolling ? chicagoDate() : fixedDate;
     const report = await snapshot(date);
     const path = write ? await writeReport(report) : null;
     console.log(path ? join('.', '.runner', 'slates', path.pathname.split('/').at(-1)) :
       path === null && write ? `${report.generatedAt} no change` : JSON.stringify(report, null, 2));
     if (!watch) break;
-    if (report.leagues.every((feed) => feed.status === 'CURRENT_RECEIPT' && feed.count > 0 &&
+    if (!rolling && report.leagues.every((feed) => feed.status === 'CURRENT_RECEIPT' && feed.count > 0 &&
       feed.games.every((game) => ['FINAL', 'TERMINAL_OTHER'].includes(game.phase)))) break;
-    await new Promise((resolve) => setTimeout(resolve, interval * 1000));
+    const anyLive = report.leagues.some((feed) => feed.games.some((game) => ['LIVE', 'DELAYED'].includes(game.phase)));
+    const anyScheduled = report.leagues.some((feed) => feed.games.some((game) => game.phase === 'SCHEDULED'));
+    const delay = rolling && !anyLive ? anyScheduled ? Math.max(interval, 300) : Math.max(interval, 900) : interval;
+    await new Promise((resolve) => setTimeout(resolve, delay * 1000));
   } while (true);
 }
 
