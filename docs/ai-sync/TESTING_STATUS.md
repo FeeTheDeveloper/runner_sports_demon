@@ -1,5 +1,7 @@
 # Testing status
 
+Operations package: all 14 test programs/build, typecheck, 12 contract metadata checks, data/card validation, 5 artifact hashes and 11 historical hashes passed. Local HTTP verified; lint has no configured script. See [dated evidence](../ops/MACHINE_STATE_2026-09-26.md).
+
 ## Runner Sports Plug operating audit — September 26, 2026
 
 `npm run build`, all 13 `npm test` programs, `npm run contracts:validate`, `npm run system:validate`, and SQLite `PRAGMA quick_check` passed. The read-only dashboard returned HTTP 200 for `/` and `/control/status` on `127.0.0.1:8790`. These checks do not establish live provider freshness, production health, Site publication safety, or autonomous plugin execution. See [the dated operating audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md).

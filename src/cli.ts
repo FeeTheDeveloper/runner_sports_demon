@@ -15,6 +15,9 @@ const flow = new GameFlowEngine();
 
 if (command === "dashboard") {
   startApi(cache, intArg("--port", 8790), flow, undefined, { localDashboard: true });
+} else if (command === "api") {
+  // API-only mode supports local evaluation without provider ingestion or publication.
+  startApi(cache, intArg("--port", 8787), flow);
 } else {
   const store = new SqliteStore();
   if (command === "start") {
@@ -39,7 +42,7 @@ if (command === "dashboard") {
     console.log(JSON.stringify(store.importFrom(dir), null, 2));
     console.log(`Imported ${resolve(dir)} into ${store.path}`);
   } else {
-    console.log("Usage: runner-scout dashboard [--port 8790] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
+    console.log("Usage: runner-scout dashboard [--port 8790] | api [--port 8787] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
   }
 }
 

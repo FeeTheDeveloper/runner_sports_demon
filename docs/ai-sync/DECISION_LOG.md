@@ -1,5 +1,7 @@
 # Decision log
 
+2026-09-26: Preserve engine/SQLite architecture; add portable data/content artifacts with immutable fixture/historical labels and separate receipt metadata. Use API-only mode for local evaluation without ingest/publish effects. Keep unknown model fields null and require evidence references for model-output declarations. [Contract](../ops/RUNNER_DATA_SPINE.md).
+
 ## 2026-09-16 — Local control center
 
 - Implemented the requested dashboard as a local operator view in Demon, preserving Site ownership of the consumer product.

@@ -1,5 +1,7 @@
 # Session handoff log
 
+2026-09-26: Codex completed the requested operations prompt on feat/runner-operations-data-spine. Local changes remain uncommitted. Dashboard 8790 and API-only 8787 verified; provider markets HISTORICAL, content FIXTURE. No cross-repository consumer acceptance is claimed. [Full handoff](../ops/MACHINE_STATE_2026-09-26.md).
+
 ## 2026-09-26 — Runner Sports Plug operating audit
 
 - Audited the installed skills-only Runner Sports Plug against this checkout and recorded operating scope, risks, and verification in [RUNNER_PLUGIN_OPERATIONS_2026-09-26.md](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md).

@@ -1,5 +1,7 @@
 # Data Schema
 
+The [operations data spine](docs/ops/RUNNER_DATA_SPINE.md) adds strict `runner.data.v1` and `runner.content-card.v1` schemas beside the existing engine contracts. JSON/Markdown examples and hashes are stored under `data/`; legacy season manifests now include explicit historical provenance. `npm run data:validate` checks actual instances and artifact checksums.
+
 SQLite remains the local event/research store. Totals history is separated into flow snapshots, projections, market snapshots, trend scores, signals, decision windows, window transitions, and set points. Every analytical record carries source and/or processed timestamps in its payload and indexed envelope.
 
 `src/storage/schema.sql` is authoritative. JSON payloads preserve exposed model components while relational columns support event, market, status, and timestamp queries.

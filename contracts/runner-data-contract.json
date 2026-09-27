@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runner.data.v1",
+  "title": "Runner operations artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "kind",
+    "runnerEventId",
+    "sport",
+    "league",
+    "source",
+    "provider",
+    "retrievedAt",
+    "eventStartTime",
+    "transformVersion",
+    "freshness",
+    "confidence",
+    "redistribution",
+    "intelligence",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "runner.data.v1"
+    },
+    "artifactId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "kind": {
+      "enum": [
+        "schedule",
+        "market",
+        "observation",
+        "model",
+        "content",
+        "manifest"
+      ]
+    },
+    "runnerEventId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "sport": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "league": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "retrievedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "eventStartTime": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "transformVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "freshness": {
+      "enum": [
+        "LIVE",
+        "CURRENT",
+        "RECENT",
+        "HISTORICAL",
+        "FIXTURE",
+        "UNKNOWN"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "UNKNOWN"
+      ]
+    },
+    "redistribution": {
+      "enum": [
+        "PUBLIC",
+        "INTERNAL",
+        "RESTRICTED",
+        "UNKNOWN"
+      ]
+    },
+    "intelligence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "modelProbability",
+        "marketProbability",
+        "fairPrice",
+        "executablePrice",
+        "edge"
+      ],
+      "properties": {
+        "classification": {
+          "enum": [
+            "UNKNOWN",
+            "INFERENCE",
+            "MODEL_OUTPUT"
+          ]
+        },
+        "modelProbability": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "marketProbability": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fairPrice": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "executablePrice": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "edge": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "modelEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "modelFile",
+            "version",
+            "inputRecord",
+            "outputRecord"
+          ],
+          "properties": {
+            "modelFile": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "inputRecord": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            "outputRecord": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "const": "MODEL_OUTPUT"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "modelEvidence"
+            ]
+          },
+          "else": {
+            "properties": {
+              "modelProbability": {
+                "type": "null"
+              },
+              "fairPrice": {
+                "type": "null"
+              },
+              "edge": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "homeTeam": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "awayTeam": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "marketId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "selection": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "observationSource": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "sourceTimestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

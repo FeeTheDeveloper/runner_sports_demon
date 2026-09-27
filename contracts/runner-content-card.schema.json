@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runner.content-card.v1",
+  "title": "Runner content card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "cardType",
+    "artifact",
+    "sections"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "runner.content-card.v1"
+    },
+    "cardType": {
+      "enum": [
+        "pregame",
+        "halftime",
+        "game-total",
+        "team-total",
+        "rushing-prop",
+        "receiving-prop",
+        "countercase",
+        "final-recap",
+        "live-desk",
+        "schedule"
+      ]
+    },
+    "artifact": {
+      "$ref": "runner.data.v1"
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Current State",
+        "Verified Evidence",
+        "Runner Analysis",
+        "Market Comparison",
+        "Countercase / Invalidation",
+        "Confidence / Uncertainty",
+        "Source Freshness",
+        "Next Action"
+      ],
+      "properties": {
+        "Current State": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Verified Evidence": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Runner Analysis": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Market Comparison": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Countercase / Invalidation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Confidence / Uncertainty": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Source Freshness": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "Next Action": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    }
+  }
+}

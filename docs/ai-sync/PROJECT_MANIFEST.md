@@ -1,5 +1,7 @@
 # Project manifest
 
+2026-09-26 addition: src/operations owns strict schema validation/content tooling using Ajv and ajv-formats. API-only command and repository content/snapshot routes extend the existing native HTTP runtime. [Data/route contract](../ops/RUNNER_DATA_SPINE.md). Earlier baseline details below are dated.
+
 Last verified: 2026-09-16. Dashboard work began at `3af26af`; earlier source audit baseline was `ae89200`.
 
 | Field | Verified value / evidence |
