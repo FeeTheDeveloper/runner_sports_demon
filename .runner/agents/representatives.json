@@ -1,6 +1,6 @@
 {
   "schema_version": "runner.agent-representatives.v1",
-  "updated_at": "2026-09-26",
+  "updated_at": "2026-09-27",
   "entity": "Runner Sports & Analytics",
   "controller": "King Fee",
   "technical_owner": "Fee The Developer LLC",
@@ -72,6 +72,40 @@
       "external_action_eligibility": "NOT_ENABLED",
       "approved_local_scope": ["Runner research assistance", "Demon/Site task coordination", "Prepare drafts and reviewable handoffs"],
       "granted_external_capabilities": []
+    },
+    {
+      "agent_id": "AGT-RSA-REP-003",
+      "profile": ".github/agents/runner-repo-boss.agent.md",
+      "display_name": "Repo Boss",
+      "identity_type": "WORKSPACE_ACCOUNT_REGISTRATION",
+      "identity_type_basis": "Owner-directed registration of an existing Google Workspace account observed in an Admin console screenshot; no claim of a connected session",
+      "role": "Repository operations account of record for the Runner tenant",
+      "controller": "King Fee",
+      "repositories": ["FeeTheDeveloper/runner_sports_demon", "FeeTheDeveloper/runner_sports-site"],
+      "registration_state": "REGISTERED",
+      "primary_email": "repo@werunsportsandanalytics.com",
+      "candidate_email": null,
+      "email_verification": "OWNER_SUPPLIED_ADMIN_CONSOLE_SCREENSHOT",
+      "google_subject_id": null,
+      "google_console_path_identifier": "2bn6wsx2icj91v",
+      "google_console_path_identifier_note": "Provisional console URL segment only; not a provider-verified immutable subject and not an identity binding",
+      "google_space_id": null,
+      "google_connection_state": "NOT_CONNECTED",
+      "account_evidence": "Admin console screenshot 2026-09-27: Active, last sign-in 8 minutes prior, created Sep 26 2026, OU Runner Sports & Analytics LLC, 83 of 83 Google services on, no MDM, profile incomplete",
+      "workspace_account_state": "ACTIVE",
+      "organizational_unit": "Runner Sports & Analytics LLC",
+      "admin_role_state": "UNVERIFIED",
+      "admin_role_state_basis": "Admin roles and privileges card was not visible in the capture; the only readable setting row was cropped to its OFF value and cannot be attributed to a named setting",
+      "two_step_verification_state": "UNVERIFIED",
+      "recovery_information_state": "MISSING_SECONDARY_EMAIL_AND_PHONE",
+      "portrait": null,
+      "portrait_state": "AWAITING_OWNER_MAPPING",
+      "credential_state": "TEMPORARY_PASSWORD_RESET_REQUIRED",
+      "license_eligibility": "UNVERIFIED",
+      "external_action_eligibility": "NOT_ENABLED",
+      "approved_local_scope": ["Repository operations account of record", "Roster and board ownership reference"],
+      "granted_external_capabilities": [],
+      "audit_record": "docs/ops/RUNNER_WORKSPACE_ACCOUNT_AUDIT_2026-09-27.md"
     }
   ]
 }

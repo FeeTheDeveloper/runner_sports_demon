@@ -1,0 +1,374 @@
+{
+  "schema_version": "runner.agent-board.v1",
+  "updated_at": "2026-09-27",
+  "entity": "Runner Sports & Analytics",
+  "controller": "King Fee",
+  "record_scope": "Duty assignment for rostered Runner agents. This is the only record that resolves an alias to a duty.",
+  "roster_reference": ".runner/agents/roster.json",
+  "operations_account_of_record": "AGT-RSA-REP-003",
+  "assignment_state": "ASSIGNED_ON_BOARD_ONLY",
+  "assignment_state_note": "Duties are documented lanes of responsibility. No runtime agent, schedule, mailbox session or external-action runtime is created by this board.",
+  "lanes": [
+    "Ingestion",
+    "Normalization",
+    "Modeling",
+    "Signals",
+    "Delivery",
+    "Assurance",
+    "Continuity"
+  ],
+  "assignments": [
+    {
+      "agent_id": "AGT-RSA-OPS-001",
+      "alias": "BOSKO",
+      "duty_id": "D-15",
+      "duty": "Model registry and manifest governance",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "MODEL_REGISTRY.json",
+        "MODEL_REGISTRY.md",
+        "contracts/model-manifest.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-002",
+      "alias": "BRASI",
+      "duty_id": "D-14",
+      "duty": "Feature engineering",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/models",
+        "contracts/feature-manifest.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-003",
+      "alias": "BREEDAN",
+      "duty_id": "D-24",
+      "duty": "Content card generation",
+      "lane": "Delivery",
+      "primary_surfaces": [
+        "src/publishing",
+        "contracts/runner-content-card.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-004",
+      "alias": "CASALS",
+      "duty_id": "D-03",
+      "duty": "Canonical event identity mapping",
+      "lane": "Normalization",
+      "primary_surfaces": [
+        "src/games",
+        "contracts/runner-event.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-005",
+      "alias": "CHERITTO",
+      "duty_id": "D-21",
+      "duty": "Control API surface",
+      "lane": "Delivery",
+      "primary_surfaces": [
+        "src/api"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-006",
+      "alias": "CLEMENZA",
+      "duty_id": "D-11",
+      "duty": "Totals engine",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/totals",
+        "TOTALS_ENGINE.md"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-007",
+      "alias": "DRUCKER",
+      "duty_id": "D-06",
+      "duty": "Kalshi venue ingestion",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "src/connectors"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-008",
+      "alias": "FREDO",
+      "duty_id": "D-17",
+      "duty": "Market reaction detection",
+      "lane": "Signals",
+      "primary_surfaces": [
+        "src/intel"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-009",
+      "alias": "GINGER",
+      "duty_id": "D-19",
+      "duty": "Suppression and false-positive control",
+      "lane": "Signals",
+      "primary_surfaces": [
+        "src/signals",
+        "SIGNAL_REGISTRY.md"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-010",
+      "alias": "HAGEN",
+      "duty_id": "D-02",
+      "duty": "Timestamp and latency integrity",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "src/ingestion.ts",
+        "src/state"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-011",
+      "alias": "HANNA",
+      "duty_id": "D-30",
+      "duty": "Orchestration, claims and handoff reconciliation",
+      "lane": "Continuity",
+      "primary_surfaces": [
+        ".runner/work",
+        ".runner/handoffs"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-012",
+      "alias": "LESTER",
+      "duty_id": "D-13",
+      "duty": "Vig removal and fair-price engine",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/models"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-013",
+      "alias": "MARINO",
+      "duty_id": "D-22",
+      "duty": "Dashboard and cockpit integration",
+      "lane": "Delivery",
+      "primary_surfaces": [
+        "src/dashboard",
+        "assets/dashboard"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-014",
+      "alias": "MCCAULEY",
+      "duty_id": "D-18",
+      "duty": "Signal generation",
+      "lane": "Signals",
+      "primary_surfaces": [
+        "src/signals"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-015",
+      "alias": "NANCE",
+      "duty_id": "D-16",
+      "duty": "Backtesting harness",
+      "lane": "Assurance",
+      "primary_surfaces": [
+        "BACKTESTING.md",
+        "src/tests"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-016",
+      "alias": "NERI",
+      "duty_id": "D-20",
+      "duty": "Replay determinism",
+      "lane": "Assurance",
+      "primary_surfaces": [
+        "src/state",
+        "src/storage"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-017",
+      "alias": "PENTANGELI",
+      "duty_id": "D-26",
+      "duty": "Contract and schema validation",
+      "lane": "Assurance",
+      "primary_surfaces": [
+        "contracts",
+        "scripts/validate-runner-contracts.mjs"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-018",
+      "alias": "PISCANO",
+      "duty_id": "D-01",
+      "duty": "Live feed session health and reconnect integrity",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "src/connectors",
+        "src/ingestion.ts"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-019",
+      "alias": "REMO",
+      "duty_id": "D-04",
+      "duty": "Market snapshot normalization",
+      "lane": "Normalization",
+      "primary_surfaces": [
+        "src/normalization",
+        "contracts/market-snapshot.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-020",
+      "alias": "ROTHSTEIN",
+      "duty_id": "D-10",
+      "duty": "Calibration and reliability",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/models",
+        "MODEL_NOTES.md"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-021",
+      "alias": "SANTORO",
+      "duty_id": "D-28",
+      "duty": "Security boundaries and secret hygiene",
+      "lane": "Assurance",
+      "primary_surfaces": [
+        ".env.example",
+        "docs/ai-sync/SECURITY_BOUNDARIES.md"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-022",
+      "alias": "SHERBERT",
+      "duty_id": "D-07",
+      "duty": "Polymarket venue ingestion",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "src/connectors"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-023",
+      "alias": "SHIHERLIS",
+      "duty_id": "D-27",
+      "duty": "QA and release gating",
+      "lane": "Assurance",
+      "primary_surfaces": [
+        "src/tests",
+        "docs/ai-sync/TESTING_STATUS.md"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-024",
+      "alias": "SONNY",
+      "duty_id": "D-23",
+      "duty": "Site publishing contract",
+      "lane": "Delivery",
+      "primary_surfaces": [
+        "src/publishing",
+        "contracts/site-publish.schema.json"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-025",
+      "alias": "TESSIO",
+      "duty_id": "D-05",
+      "duty": "Odds API ingestion",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "src/connectors"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-026",
+      "alias": "TOMMASINO",
+      "duty_id": "D-08",
+      "duty": "Historical backfill and archive integrity",
+      "lane": "Ingestion",
+      "primary_surfaces": [
+        "HISTORICAL_DATA_WORKFLOW.md",
+        "src/storage"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-027",
+      "alias": "TREJO",
+      "duty_id": "D-12",
+      "duty": "Game-flow and adversity modeling",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/game-flow",
+        "src/adversity"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-028",
+      "alias": "VITO",
+      "duty_id": "D-29",
+      "duty": "Documentation and AI-sync continuity",
+      "lane": "Continuity",
+      "primary_surfaces": [
+        "docs/ai-sync"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-029",
+      "alias": "WAINGRO",
+      "duty_id": "D-09",
+      "duty": "Probability model maintenance",
+      "lane": "Modeling",
+      "primary_surfaces": [
+        "src/models"
+      ],
+      "state": "ASSIGNED"
+    },
+    {
+      "agent_id": "AGT-RSA-OPS-030",
+      "alias": "WEBB",
+      "duty_id": "D-25",
+      "duty": "Observability and alerting",
+      "lane": "Delivery",
+      "primary_surfaces": [
+        "src/operations",
+        "src/utils"
+      ],
+      "state": "ASSIGNED"
+    }
+  ]
+}
