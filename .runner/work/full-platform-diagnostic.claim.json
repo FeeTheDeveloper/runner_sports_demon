@@ -1,0 +1,11 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "feat/runner-demon-cockpit",
+  "paths": ["docs/platform", "docs/ai-sync/HANDOFF_LOG.md"],
+  "task": "Runner Sports Plug Phase 0 diagnostic and evidence-based reference/build reconciliation for the full platform order",
+  "started_at": "2026-09-26",
+  "status": "complete",
+  "completion_scope": "Documentation and diagnostic handoff only; full platform implementation and release acceptance remain incomplete",
+  "completed_at": "2026-09-26"
+}
