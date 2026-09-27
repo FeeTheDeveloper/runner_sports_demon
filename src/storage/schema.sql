@@ -189,6 +189,14 @@ create table if not exists game_flow_observations (
   payload_json text not null
 );
 
+-- Observation IDs are immutable across retries/restarts; changed content needs a new ID.
+create trigger if not exists game_flow_observation_immutable
+before insert on game_flow_observations
+when exists (select 1 from game_flow_observations where id=new.id and payload_json<>new.payload_json)
+begin
+  select raise(abort, 'observation id already exists with different content');
+end;
+
 create table if not exists game_flow_snapshots (
   runner_event_id text primary key,
   updated_at text not null,

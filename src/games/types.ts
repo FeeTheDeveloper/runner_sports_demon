@@ -20,6 +20,8 @@ interface BaseFootballGame {
   homeScore?: number;
   source: "espn";
   sourceTimestamp: string;
+  sourceTimestampBasis?: "receipt" | "provider_update";
+  sourceUpdatedAt?: string | null;
   receivedTimestamp: string;
   processedTimestamp: string;
   raw: unknown;

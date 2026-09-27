@@ -31,8 +31,10 @@ export function normalizeEspnFootballScoreboard(
     const awayTeam = away?.team?.displayName;
     const homeTeam = home?.team?.displayName;
     const kickoff = event.date ?? competition?.date;
-    if (!event.id || !awayTeam || !homeTeam || !kickoff) return [];
-    const sourceTimestamp = event.date ?? kickoff;
+    if (!event.id || !awayTeam || !homeTeam || !kickoff || !Number.isFinite(Date.parse(kickoff))) return [];
+    // ESPN event.date is kickoff, not a provider update. Keep the legacy string
+    // field compatible while declaring its receipt basis and unknown update time.
+    const sourceTimestamp = receivedTimestamp;
     const state = competition?.status?.type;
     const possession = competition?.situation?.possession;
     const base = {
@@ -55,6 +57,8 @@ export function normalizeEspnFootballScoreboard(
       homeScore: scoreForStatus(mapEspnStatus(state?.state), home?.score),
       source: "espn" as const,
       sourceTimestamp,
+      sourceTimestampBasis: "receipt" as const,
+      sourceUpdatedAt: null,
       receivedTimestamp,
       processedTimestamp,
       raw: event,

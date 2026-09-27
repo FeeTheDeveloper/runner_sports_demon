@@ -1,0 +1,12 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "fix/production-readiness",
+  "task": "Prepare Runner Site premium experience, verified provider bindings and connected-launch handoff",
+  "paths": [".runner/agents/wardrobe.json", "docs/ai-sync", "docs/ops"],
+  "companion_repository": "FeeTheDeveloper/runner_sports-site",
+  "started_at": "2026-09-26",
+  "status": "local_integration_verified_release_blocked",
+  "remaining": ["Clerk production instance binding", "Supabase credential/project reconciliation", "Stripe merchant and commercial terms", "exact migration and release authorization", "model and usage acceptance", "persistent runtime deployment"],
+  "external_actions": "Provider dashboards inspected and Fanatics reference assets downloaded; no provider mutation, push, merge, migration, purchase, deployment or trading"
+}

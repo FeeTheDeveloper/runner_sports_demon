@@ -18,14 +18,17 @@ const environment = {
   RUNNER_API_BEARER_TOKEN: process.env.RUNNER_API_BEARER_TOKEN,
   RUNNER_API_ALLOWED_ORIGINS: process.env.RUNNER_API_ALLOWED_ORIGINS,
   RUNNER_API_MAX_BODY_BYTES: process.env.RUNNER_API_MAX_BODY_BYTES,
+  RUNNER_API_HOST: process.env.RUNNER_API_HOST,
+  RUNNER_API_REQUIRE_AUTH: process.env.RUNNER_API_REQUIRE_AUTH,
+  NODE_ENV: process.env.NODE_ENV,
   RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY: process.env.RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY,
 };
 const originalFetch = globalThis.fetch;
 let externalRequests = 0;
 const servers: Server[] = [];
 
-async function launch(localDashboard: boolean): Promise<Server> {
-  const server = startApi(new MarketStateCache(), 0, undefined, undefined, { localDashboard });
+async function launch(localDashboard: boolean, cache = new MarketStateCache()): Promise<Server> {
+  const server = startApi(cache, 0, undefined, undefined, { localDashboard });
   servers.push(server);
   if (!server.listening) await once(server, "listening");
   return server;
@@ -54,6 +57,9 @@ try {
   process.env.RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY = syntheticProviderSecret;
   process.env.RUNNER_API_ALLOWED_ORIGINS = "*";
   process.env.RUNNER_API_MAX_BODY_BYTES = "128";
+  process.env.RUNNER_API_HOST = "127.0.0.1";
+  process.env.NODE_ENV = "test";
+  delete process.env.RUNNER_API_REQUIRE_AUTH;
   globalThis.fetch = (async () => {
     externalRequests++;
     throw new Error("Provider access is forbidden in local dashboard integration tests");
@@ -152,8 +158,8 @@ try {
     authorization: `Bearer ${syntheticToken}`,
     "content-type": "application/json",
   }, JSON.stringify({ notes: "x".repeat(256) }));
-  assert.equal(oversized.status, 400);
-  assert.match(JSON.parse(oversized.body).error, /request body exceeds 128 bytes/);
+  assert.equal(oversized.status, 413);
+  assert.equal(JSON.parse(oversized.body).error, "request_body_too_large");
   for (const path of ["/observations", "/totals/evaluate"]) {
     assert.equal((await call(normal, path, "POST", { authorization: "Bearer wrong-token" })).status, 401);
   }
@@ -167,12 +173,40 @@ try {
   assert.equal((await call(normal, "/observations", "OPTIONS", { origin: "https://untrusted.example" })).headers["access-control-allow-origin"], undefined);
   process.env.RUNNER_API_MAX_BODY_BYTES = "1048576";
   const authorized = { authorization: `Bearer ${syntheticToken}`, "content-type": "application/json" };
+  for (const path of ["/observations", "/totals/evaluate"]) {
+    for (const payload of ["{", "null", "[]", "42", "{}"]) {
+      assert.equal((await call(normal, path, "POST", authorized, payload)).status, 400, "malformed input must be rejected before state mutation");
+    }
+  }
+  for (const path of ["/games/%ZZ/flow", "/games/%FF/totals"]) {
+    assert.equal((await call(normal, path)).status, 400, "bad URI encoding must not reject an unhandled async request");
+  }
+  assert.equal((await call(normal, "/api/health", "GET", { host: "[invalid" })).status, 200, "URL parsing must not trust Host");
+  assert.equal((await call(normal, "/schedule/nfl?date=2026-02-30")).status, 400);
+  assert.equal((await call(normal, "/schedule/nfl?date=not-a-date")).status, 400);
+  for (const path of ["/totals/live", "/totals/alerts", "/games/example/totals", "/signals/live"]) {
+    assert.equal((await call(normal, path, "POST")).status, 405, "read endpoints must enforce their method");
+  }
+  const invalidObservation = { id: "invalid", runnerEventId: "FIXTURE:INVALID", source: "HUMAN_ANALYST", observedAt: "invalid", receivedAt: "2026-09-19T12:00:01Z", confidence: 0.5 };
+  assert.equal((await call(normal, "/observations", "POST", authorized, JSON.stringify(invalidObservation))).status, 400);
+  assert.deepEqual(JSON.parse((await call(normal, "/games/live")).body).data, [], "invalid observations must not poison the flow cache");
   const observation = await call(normal, "/observations", "POST", authorized, JSON.stringify({
     id: "synthetic-api-observation", runnerEventId: "FIXTURE:NFL:AWAY:HOME", source: "HUMAN_ANALYST",
     observedAt: "2026-09-19T12:00:00Z", receivedAt: "2026-09-19T12:00:01Z", confidence: 0.5,
   }));
   assert.equal(observation.status, 201);
   assert.equal(JSON.parse(observation.body).freshness, "HISTORICAL");
+  const validInput = {
+    runnerEventId: "FIXTURE:INVALID:TOTALS", timestamp: "2026-09-19T12:00:01Z", sourceTimestamp: "2026-09-19T12:00:00Z",
+    period: 2, clockSecondsRemaining: 0, currentHomePoints: 10, currentAwayPoints: 7,
+  };
+  for (const input of [{ ...validInput, period: 5 }, { ...validInput, currentHomePoints: "10" }, { ...validInput, homeObservedPointsPerDrive: {} }, { ...validInput, sourceTimestamp: "invalid" }]) {
+    assert.equal((await call(normal, "/totals/evaluate", "POST", authorized, JSON.stringify({ input }))).status, 400);
+  }
+  for (const markets of [null, {}, [null], [{ line: 42 }]]) {
+    assert.equal((await call(normal, "/totals/evaluate", "POST", authorized, JSON.stringify({ input: validInput, markets }))).status, 400);
+  }
+  assert.equal((await call(normal, "/games/FIXTURE%3AINVALID%3ATOTALS/totals")).status, 404, "invalid evaluations must not be cached");
   const evaluation = await call(normal, "/totals/evaluate", "POST", authorized, JSON.stringify({ input: {
     runnerEventId: "FIXTURE:NFL:AWAY:HOME", timestamp: "2026-09-19T12:00:01Z", sourceTimestamp: "2026-09-19T12:00:00Z",
     period: 2, clockSecondsRemaining: 0, currentHomePoints: 10, currentAwayPoints: 7,
@@ -180,6 +214,38 @@ try {
   assert.equal(evaluation.status, 201);
   assert.equal(JSON.parse(evaluation.body).freshness, "HISTORICAL");
   assert.equal(JSON.parse((await call(normal, "/markets/live")).body).freshness, "UNKNOWN");
+  const failingCache = new MarketStateCache();
+  failingCache.all = () => { throw new Error("synthetic internal storage detail must not escape"); };
+  const failing = await launch(false, failingCache);
+  const failed = await call(failing, "/markets/live");
+  assert.equal(failed.status, 500);
+  assert.equal(JSON.parse(failed.body).error, "internal_error");
+  assert.equal((await call(failing, "/health")).status, 200, "request failures must not kill the API");
+
+  process.env.RUNNER_API_HOST = "0.0.0.0";
+  delete process.env.RUNNER_API_BEARER_TOKEN;
+  assert.throws(() => startApi(new MarketStateCache(), 0), /RUNNER_API_BEARER_TOKEN is required/);
+  process.env.RUNNER_API_BEARER_TOKEN = syntheticToken;
+  const remote = await launch(false);
+  assert.equal((await call(remote, "/health")).status, 200, "remote liveness may remain public");
+  for (const path of ["/", "/markets/live", "/games/live", "/schedule/nfl", "/content", "/totals/alerts"]) {
+    assert.equal((await call(remote, path)).status, 401, "remote engine data requires a token even from a loopback client");
+  }
+  assert.equal((await call(remote, "/markets/live", "GET", authorized)).status, 200);
+  delete process.env.RUNNER_API_BEARER_TOKEN;
+  assert.equal((await call(remote, "/markets/live", "GET", authorized)).status, 503, "removing token configuration must fail closed");
+  process.env.RUNNER_API_HOST = "127.0.0.1";
+  for (const mode of ["production", "proxy"]) {
+    process.env.NODE_ENV = mode === "production" ? "production" : "test";
+    process.env.RUNNER_API_REQUIRE_AUTH = mode === "proxy" ? "true" : "false";
+    delete process.env.RUNNER_API_BEARER_TOKEN;
+    assert.throws(() => startApi(new MarketStateCache(), 0), /RUNNER_API_BEARER_TOKEN is required/, `${mode} loopback must fail closed without auth config`);
+    process.env.RUNNER_API_BEARER_TOKEN = syntheticToken;
+    const protectedLoopback = await launch(false);
+    assert.equal((await call(protectedLoopback, "/health")).status, 200);
+    assert.equal((await call(protectedLoopback, "/markets/live")).status, 401, `${mode} loopback data requires authorization`);
+    assert.equal((await call(protectedLoopback, "/markets/live", "GET", authorized)).status, 200);
+  }
   assert.equal(externalRequests, 0, "page and status requests must not fetch providers");
   assert.equal(existsSync(missingDatabase), false, "read-only status must never initialize a database");
   console.log("control API integration tests passed");

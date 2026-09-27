@@ -25,6 +25,10 @@ assert.equal(games[0].homeRank, 3);
 assert.equal(games[0].possession, "HOME");
 assert.equal(games[0].awayScore, 10);
 assert.equal(games[0].homeScore, 7);
+assert.equal(games[0].sourceTimestamp, "2026-09-12T19:30:02Z");
+assert.equal(games[0].sourceTimestampBasis, "receipt");
+assert.equal(games[0].sourceUpdatedAt, null);
+assert.notEqual(games[0].sourceTimestamp, games[0].kickoff);
 
 const nflGames = normalizeEspnNflScoreboard({
   events: [{

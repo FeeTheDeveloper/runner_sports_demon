@@ -4,6 +4,7 @@ import { SqliteStore } from "./storage/sqlite.js";
 import { renderTerminalDashboard } from "./dashboard/terminal.js";
 import { log } from "./utils/logger.js";
 import { SitePublisher } from "./publishing/sitePublisher.js";
+import { startSerialPolling } from "./utils/polling.js";
 
 export async function runIngestionOnce(connectors: Connector[], cache: MarketStateCache, store: SqliteStore, limit: number) {
   const settled = await Promise.allSettled(connectors.map((connector) => connector.fetchMarkets(limit)));
@@ -12,8 +13,8 @@ export async function runIngestionOnce(connectors: Connector[], cache: MarketSta
     log("error", "connector fetch failed", { provider: connectors[index].provider, error: result.reason instanceof Error ? result.reason.message : String(result.reason) });
     return [];
   });
-  cache.upsertMany(markets);
   store.persistMarkets(markets);
+  cache.upsertMany(markets);
   store.persistHealth(connectors.map((connector) => connector.health()));
   return markets;
 }
@@ -22,7 +23,7 @@ export async function startIngestion(
   connectors: Connector[],
   cache: MarketStateCache,
   store: SqliteStore,
-  options: { limit: number; pollMs: number; once?: boolean; publisher?: SitePublisher },
+  options: { limit: number; pollMs: number; once?: boolean; publisher?: SitePublisher; signal?: AbortSignal },
 ) {
   const publisher = options.publisher ?? new SitePublisher();
   store.init();
@@ -45,7 +46,7 @@ export async function startIngestion(
       }
     }
   };
-  await tick();
-  if (options.once) return;
-  setInterval(() => tick().catch((error) => log("error", "ingestion tick failed", { error: error instanceof Error ? error.message : String(error) })), options.pollMs);
+  if (options.once) { await tick(); return { stop: async () => {} }; }
+  return startSerialPolling(tick, options.pollMs,
+    (error) => log("error", "ingestion tick failed", { error: error instanceof Error ? error.message : String(error) }), options.signal);
 }

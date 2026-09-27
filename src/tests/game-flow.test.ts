@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { analyzeGameFlow, validateGameFlowObservation } from "../game-flow/engine.js";
+import { analyzeGameFlow, GameFlowEngine, validateGameFlowObservation } from "../game-flow/engine.js";
 import type { GameFlowObservation } from "../types.js";
 
 const observation = (overrides: Partial<GameFlowObservation> = {}): GameFlowObservation => ({
@@ -21,6 +21,22 @@ const observation = (overrides: Partial<GameFlowObservation> = {}): GameFlowObse
 });
 
 validateGameFlowObservation(observation());
+const engine = new GameFlowEngine();
+assert.throws(() => engine.ingest(observation(), () => { throw new Error("disk full"); }), /disk full/);
+assert.equal(engine.snapshot(observation().runnerEventId), undefined, "failed persistence cannot mutate live state");
+engine.ingest(observation());
+assert.equal(engine.ingest(observation()).observationCount, 1, "duplicate receipt is idempotent");
+assert.throws(() => engine.ingest(observation({ homeScore: 99 })), /different content/);
+assert.equal(engine.snapshot(observation().runnerEventId)?.homeScore, 7);
+const recovered = new GameFlowEngine();
+const newerObservation = observation({ id: "obs-later", observedAt: "2026-09-05T20:10:00Z", receivedAt: "2026-09-05T20:10:01Z", homeScore: 14 });
+assert.throws(() => recovered.ingest(observation(), () => { throw new Error("disk full"); }, [newerObservation]), /disk full/);
+assert.equal(recovered.allSnapshots().length, 0, "history hydration must not mutate memory before persistence succeeds");
+const recoveredSnapshot = recovered.ingest(observation(), undefined, [newerObservation, observation()]);
+assert.equal(recoveredSnapshot.observationCount, 2);
+assert.equal(recoveredSnapshot.latestObservationId, newerObservation.id);
+assert.equal(recoveredSnapshot.homeScore, 14);
+assert.throws(() => recovered.ingest(observation(), undefined, [observation({ runnerEventId: "OTHER" })]), /another event/);
 const snapshot = analyzeGameFlow([
   observation(),
   observation({

@@ -1,5 +1,9 @@
 # Current state
 
+2026-09-26 connected-launch update: companion Site premium car/team skins, operations workspace and billing/provider guards are prepared locally. Browser inspection found Clerk/Supabase binding mismatches, an unconfirmed Stripe merchant and an available exact Site repository for a new Vercel import. Live wiring, migrations and deployment remain pending. Fanatics wardrobe references were downloaded locally. [Connected-launch handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md) supersedes earlier assumptions about connected accounts.
+
+2026-09-26 production hardening: local fixes on fix/production-readiness (baseline d27471c) address publishing opt-in, serialized polling/drain, API authentication/validation, persistence/recovery, canonical NFL IDs and honest model gating. Companion Site tracker/MCP/data-truth repairs are prepared. Local API token configured only in ignored .env; publication disabled. Supabase owner migration and deployed acceptance remain pending. [Current release evidence and gates](../ops/PRODUCTION_RELEASE_2026-09-26.md). Earlier process/credential claims below are historical.
+
 Operations package completed locally on 2026-09-26: strict data/content schemas, 20 fixture content shells, receipt-aware routes, API-only mode and runbook. Markets remain HISTORICAL; ESPN CFB retrieval succeeded at 17:50 UTC. See [completion evidence](../ops/MACHINE_STATE_2026-09-26.md).
 
 ## 2026-09-26 Runner Sports Plug operating audit

@@ -17,8 +17,8 @@ export class TotalsRuntime {
     }).filter((window): window is TotalsDecisionWindow => window !== undefined);
     const halftime = input.period === 2 && input.clockSecondsRemaining === 0 ? createHalftimePacket(input, projections) : undefined;
     const result = { flow, projections, markets, windows, halftime };
-    this.evaluations.set(input.runnerEventId, result);
     this.store?.persistTotals(flow, projections, markets, windows);
+    this.evaluations.set(input.runnerEventId, result);
     return result;
   }
 

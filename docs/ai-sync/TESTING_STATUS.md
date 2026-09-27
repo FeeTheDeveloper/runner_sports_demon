@@ -1,5 +1,13 @@
 # Testing status
 
+## Connected-launch Site verification - September 26, 2026
+
+Companion Site production build/lint and all 43 tests passed; after a final anonymous billing cache-header repair, the nine billing tests and production build passed again. Production dependency audit reports zero known vulnerabilities. Browser verified desktop/mobile car layout, theme selection/persistence and signed-out operations denial; compiled homepage/tracker/disabled-checkout smoke checks passed. The actual billing SQL runs in isolated PostgreSQL tests, not hosted Supabase. No authenticated provider/payment or deployed acceptance claim. Demon runtime source was unchanged in this pass; earlier 15-program evidence below remains dated. [Connected-launch handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md).
+
+## Production hardening - September 26, 2026
+
+Demon build/all 15 test programs, 12 contract checks and five handoff checks passed. Site build/lint and all 16 regression tests passed. Both production dependency audits report zero vulnerabilities; both diffs pass whitespace checks. Actual local API auth and anonymous Site tracker/MCP HTTP checks passed. Test servers were stopped. Live cross-account Clerk/Supabase acceptance, migration and deployed verification remain open. [Release evidence and scope](../ops/PRODUCTION_RELEASE_2026-09-26.md).
+
 ## Runner Demon cockpit — September 26, 2026
 
 All 14 tests/build passed. Strict UI audit has zero findings; DESIGN lint has no errors and 16 prose-mapping warnings. Browser verified desktop, 390px and 320px layouts, content/search controls, inline date errors, pause/keyboard resume and reduced motion. See [cockpit evidence and limits](../ops/DEMON_COCKPIT_2026-09-26.md).

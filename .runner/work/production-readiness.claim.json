@@ -1,0 +1,11 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "fix/production-readiness",
+  "task": "Audit and fix production release blockers; verify runtime, security and recovery",
+  "paths": ["src", ".env.example", "MODEL_REGISTRY.json", "package.json", "docs", ".github/workflows"],
+  "started_at": "2026-09-26",
+  "status": "local_hardening_complete_release_blocked",
+  "remaining": ["verified production host and Vercel target", "authorized coordinated migration and deployment", "live identity/provider acceptance", "model and full-platform acceptance"],
+  "external_actions": "No push, merge, deployment, production migration, publication or trading authorized by this claim"
+}

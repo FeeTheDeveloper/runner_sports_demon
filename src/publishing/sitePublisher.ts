@@ -2,6 +2,7 @@ import type { GameFlowSnapshot, NormalizedMarket, ProviderHealth } from "../type
 import { type ProbabilityPrediction } from "../models/probability/baseline.js";
 import type { TotalsDecisionWindow, TotalsFlowState, TotalsProjection } from "../totals/types.js";
 import { boolEnv, intEnv, optionalStringEnv } from "../utils/env.js";
+import { canPublishModel, readModelRegistry } from "../models/registry.js";
 
 export interface ForecastPublishInput {
   market: NormalizedMarket;
@@ -59,7 +60,7 @@ export interface PublishTickInput {
 const freshness = (timestamp?: string, now = Date.now()): "fresh" | "stale" | "unknown" => {
   if (!timestamp) return "unknown";
   const age = now - Date.parse(timestamp);
-  return Number.isFinite(age) && age <= 5 * 60_000 ? "fresh" : "stale";
+  return Number.isFinite(age) && age >= 0 && age <= 5 * 60_000 ? "fresh" : "stale";
 };
 
 const text = (value: string | undefined, fallback: string) => value?.trim() || fallback;
@@ -77,7 +78,7 @@ export class SitePublisher {
     this.serviceRoleKey = optionalStringEnv("RUNNER_SITE_SUPABASE_SERVICE_ROLE_KEY");
     this.timeoutMs = intEnv("RUNNER_PUBLISH_TIMEOUT_MS", 10_000);
     this.heartbeatMs = intEnv("RUNNER_HEARTBEAT_MS", 30_000);
-    this.enabled = boolEnv("RUNNER_PUBLISH_ENABLED", true) && Boolean(this.baseUrl && this.serviceRoleKey);
+    this.enabled = boolEnv("RUNNER_PUBLISH_ENABLED", false) && Boolean(this.baseUrl && this.serviceRoleKey);
   }
 
   isEnabled(): boolean {
@@ -98,14 +99,13 @@ export class SitePublisher {
     const work: Promise<unknown>[] = [];
 
     if (shouldPublishHeartbeat) {
-      this.lastHeartbeatAt = Date.now();
       work.push(this.publishEngineStatus({
         status: input.engineStatus,
         heartbeatAt: publishedAt,
         activeProviders: input.health.filter((entry) => entry.connected).map((entry) => entry.provider),
         activeGames: new Set(input.markets.map((market) => market.runnerEventId).filter(Boolean)).size,
         metadata: { marketEventCount: input.marketEventCount, priceEventCount: input.priceEventCount },
-      }));
+      }).then(() => { this.lastHeartbeatAt = Date.now(); }));
     }
 
     work.push(this.publishProviderHealth(input.health, publishedAt));
@@ -133,7 +133,7 @@ export class SitePublisher {
       id: "runner-sports-demon",
       status: input.status,
       heartbeat_at: now,
-      last_successful_publish_at: input.lastSuccessfulPublishAt ?? now,
+      last_successful_publish_at: input.lastSuccessfulPublishAt ?? null,
       sqlite_status: input.sqliteStatus ?? "ready",
       active_providers: input.activeProviders ?? [],
       active_games: input.activeGames ?? 0,
@@ -164,6 +164,14 @@ export class SitePublisher {
   }
 
   async publishForecasts(entries: ForecastPublishInput[], publishedAt = new Date().toISOString()): Promise<void> {
+    if (!this.enabled || !entries.length) return;
+    const registry = readModelRegistry();
+    if (entries.some(({ market, prediction }) => !canPublishModel(prediction.modelName, registry)
+      || prediction.marketId !== market.id || !Number.isFinite(prediction.fairProbability)
+      || prediction.fairProbability < 0 || prediction.fairProbability > 1
+      || !Number.isFinite(prediction.confidenceScore) || prediction.confidenceScore < 0 || prediction.confidenceScore > 100)) {
+      throw new Error("Forecast publication requires a validated production model and valid prediction");
+    }
     await this.upsert("runner_forecasts", entries.map(({ market, prediction, ...context }) => {
       const asOf = market.processedTimestamp ?? publishedAt;
       return {
@@ -179,9 +187,10 @@ export class SitePublisher {
         probability: prediction.fairProbability,
         fair_probability: prediction.fairProbability,
         fair_price: prediction.fairProbability,
-        edge: market.yesPrice === undefined ? null : prediction.fairProbability - market.yesPrice,
+        // This contract has no verified executable quote/cost envelope yet.
+        edge: null,
         line: context.line ?? null,
-        price: context.price ?? market.yesPrice ?? null,
+        price: null,
         confidence: prediction.confidenceScore / 100,
         model_version: prediction.modelName,
         state_version_hash: null,
@@ -190,7 +199,7 @@ export class SitePublisher {
         as_of: asOf,
         expires_at: context.expiresAt ?? null,
         freshness: freshness(asOf),
-        payload: { marketId: market.id, provider: market.provider },
+        payload: { marketId: market.id, provider: market.provider, indicativeMarketPrice: context.price ?? market.yesPrice ?? null, executionPriceState: "PRICE_UNVERIFIED" },
         published_at: publishedAt,
         updated_at: publishedAt,
       };
@@ -228,6 +237,8 @@ export class SitePublisher {
   }
 
   async publishTotalsState(evaluations: Array<{ flow: TotalsFlowState; projections: TotalsProjection[] }>, publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
+    if (!this.enabled || !evaluations.length) return;
+    this.requireProductionTotals();
     const states = evaluations.map(({ flow, projections }) => {
       const game = projections.find((projection) => projection.marketType === "GAME_TOTAL");
       return {
@@ -261,6 +272,8 @@ export class SitePublisher {
   }
 
   async publishTotalsWindows(entries: TotalsDecisionWindow[], publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
+    if (!this.enabled || !entries.length) return;
+    this.requireProductionTotals();
     const windows = entries.map((window) => ({
       id: window.id,
       runner_event_id: window.runnerEventId,
@@ -281,6 +294,8 @@ export class SitePublisher {
   }
 
   async publishSignals(entries: TotalsDecisionWindow[], publishedAt = new Date().toISOString(), context: PublisherContext = {}): Promise<void> {
+    if (!this.enabled || !entries.length) return;
+    this.requireProductionTotals();
     await this.upsert("runner_signals", entries.map((window) => ({
       id: window.id,
       signal_id: window.id,
@@ -339,8 +354,14 @@ export class SitePublisher {
     })));
   }
 
+  private requireProductionTotals(): void {
+    if (!canPublishModel("football-heuristic-v1", readModelRegistry())) {
+      throw new Error("Totals and signal publication requires a validated production model");
+    }
+  }
+
   private async upsert(table: string, rows: Record<string, unknown>[]): Promise<void> {
-    if (!rows.length) return;
+    if (!this.enabled || !rows.length) return;
     const url = new URL(`/rest/v1/${table}`, this.baseUrl!);
     url.searchParams.set("on_conflict", "id");
     const response = await fetch(url, {
@@ -355,8 +376,8 @@ export class SitePublisher {
       signal: AbortSignal.timeout(this.timeoutMs),
     });
     if (!response.ok) {
-      const responseText = await response.text();
-      throw new Error(`Site publisher failed for ${table}: ${response.status} ${response.statusText} ${responseText.slice(0, 300)}`);
+      // Never include provider bodies: they can echo credentials or private data.
+      throw new Error(`Site publisher failed for ${table}: HTTP ${response.status}`);
     }
   }
 }

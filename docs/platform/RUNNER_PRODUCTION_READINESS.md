@@ -1,5 +1,7 @@
 # Runner production readiness
 
+**Superseding engineering update:** [Production release candidate](../ops/PRODUCTION_RELEASE_2026-09-26.md) records implemented repairs and current provider checks. Findings below describe the pre-fix audit; they must not be read as the current working-tree defect list. Overall release status remains NOT READY until external acceptance gates pass.
+
 September 26, 2026. **NOT READY**
 
 ## Release blockers
@@ -23,4 +25,3 @@ Local Demon tests and Site build/lint pass; these do not override release blocke
 ## Review boundary and next action
 
 Begin with the P0 isolated fixes in [implementation status](RUNNER_IMPLEMENTATION_STATUS.md), then deliver one supported sport/market vertical slice. Retain existing repository architecture and owner changes. Production migration, deployment and external publication require the exact authorized action under the repository operating contract; none was performed here.
-

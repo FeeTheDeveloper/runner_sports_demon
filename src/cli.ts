@@ -22,11 +22,27 @@ if (command === "dashboard") {
   const store = new SqliteStore();
   if (command === "start") {
     const api = process.argv.includes("--api");
-    if (api) startApi(cache, intArg("--port", 8787), flow, store);
-    await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once") });
+    const server = api ? startApi(cache, intArg("--port", 8787), flow, store) : undefined;
+    const shutdown = new AbortController();
+    let ingestion: Awaited<ReturnType<typeof startIngestion>> | undefined;
+    const stop = () => {
+      shutdown.abort();
+      server?.close();
+      void ingestion?.stop();
+    };
+    process.once("SIGINT", stop);
+    process.once("SIGTERM", stop);
+    try {
+      ingestion = await startIngestion(createMarketConnectors(), cache, store, { limit: intEnv("RUNNER_SCOUT_MARKET_LIMIT", 250), pollMs: intEnv("RUNNER_SCOUT_POLL_MS", 30_000), once: process.argv.includes("--once"), signal: shutdown.signal });
+    } catch (error) { stop(); throw error; }
   } else if (command === "init-db") {
     store.init();
     console.log(`Initialized ${store.path}`);
+  } else if (command === "backup") {
+    const destination = process.argv[3];
+    if (!destination) throw new Error("Usage: runner-scout backup <new-file.db>");
+    store.backupTo(destination);
+    console.log(`Verified backup written to ${resolve(destination)}`);
   } else if (command === "export") {
     const base = process.argv[3] ?? process.env.RUNNER_SCOUT_EXPORT_DIR ?? "exports";
     const dir = process.argv[3] ? base : `${base}/${new Date().toISOString().replace(/[:.]/g, "-")}`;
@@ -42,7 +58,7 @@ if (command === "dashboard") {
     console.log(JSON.stringify(store.importFrom(dir), null, 2));
     console.log(`Imported ${resolve(dir)} into ${store.path}`);
   } else {
-    console.log("Usage: runner-scout dashboard [--port 8790] | api [--port 8787] | start [--once] [--api --port 8787] | init-db | export [dir] | import <dir>");
+    console.log("Usage: runner-scout dashboard [--port 8790] | api [--port 8787] | start [--once] [--api --port 8787] | init-db | backup <new-file.db> | export [dir] | import <dir>");
   }
 }
 

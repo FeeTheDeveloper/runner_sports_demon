@@ -42,6 +42,8 @@ Demon
 
 ## Staleness rules
 
+September 26 hardening: ESPN schedule normalization now stores kickoff separately, uses receipt time for its compatibility sourceTimestamp with sourceTimestampBasis=receipt, and exposes sourceUpdatedAt=null. Retrieval freshness does not establish upstream update freshness. Current NFL full-name/code joins use a verified 32-team mapping; unknown or conflicting NFL names fail closed. Historical IDs are not rewritten. [Release verification](docs/ops/PRODUCTION_RELEASE_2026-09-26.md).
+
 The current ingestion loop uses REST polling; WebSocket helpers exist but are not started by `src/ingestion.ts`. NFL play-by-play/drive ingestion remains incomplete. This is source-code verification dated 2026-09-16, not live provider validation. Provider endpoint/signing claims above are inherited documentation and were not reverified against provider services in this session.
 
 Provider health is stored in SQLite. Future signal generation must lower confidence or suppress signals when a provider is disconnected, stale, or reporting excessive latency.

@@ -1,5 +1,7 @@
 # Security boundaries
 
+2026-09-26 hardening: publishing now defaults OFF and every direct publisher method respects the flag. Engine data routes require bearer auth for NODE_ENV=production, nonloopback binding, or RUNNER_API_REQUIRE_AUTH=true; production cannot disable this with a false flag. The local dashboard remains an explicitly loopback-only operator tool and must never be publicly proxied. [Release report](../ops/PRODUCTION_RELEASE_2026-09-26.md).
+
 King Fee retains human authority. Autonomous work covers reversible repository-local actions clearly needed for the authorized objective: inspection, focused edits, tests, build, documentation and necessary local tooling.
 
 Push, merge, deploy, publish, purchase, delete production resources, rotate secrets, contact third parties, alter billing/DNS, mutate production data, and irreversible external changes require explicit authorization for the exact action. Complete local preparation and verification before requesting any missing final approval. Existing session authorization persists.

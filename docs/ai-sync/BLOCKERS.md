@@ -1,5 +1,9 @@
 # Blockers and known limitations
 
+2026-09-26 connected-launch blockers: Clerk production application binding, Supabase target reconciliation, Stripe merchant/terms, reviewed schema rollout and exact Site deployment remain pending. Browser sessions alone do not connect the application. Continuous monitoring/chat dispatch and validated paid model execution are not installed by the premium UI work. [Connection evidence and next steps](../ops/CONNECTED_LAUNCH_2026-09-26.md).
+
+2026-09-26 hardening supersedes older default-publishing/overlap/API findings below. Repairs are local and tested; production migration, deployment identity, actual cross-account acceptance and validated models remain blocked/unverified. [Current release report](../ops/PRODUCTION_RELEASE_2026-09-26.md).
+
 2026-09-26 operations update: receipt-aware API labels and artifact validation are implemented. Historical market state, unverified authenticated feeds, no scraper adapter and unverified public Site consumption remain explicit. [Current package limits](../ops/MACHINE_STATE_2026-09-26.md#blocked-items).
 
 ## 2026-09-26 operating-audit additions

@@ -1,5 +1,7 @@
 # Full-platform implementation status
 
+**Engineering update:** The owner subsequently authorized production hardening. Runtime, API, persistence and companion Site security/truth fixes are now in progress/completed locally as recorded in [the release report](../ops/PRODUCTION_RELEASE_2026-09-26.md). The earlier diagnostic-only scope below is historical; the full platform acceptance criteria remain unmet.
+
 September 26, 2026. **Diagnostic and engineering handoff prepared; full platform NOT implemented.**
 
 ## Implemented / inspected foundations
@@ -58,4 +60,3 @@ This pass adds documentation only: diagnostic, reference inventory, capability m
 The user invoked the Plug with the full reference order. Plug's installed skill assigns navigation/diagnostics and defaults to a structured handoff unless implementation is explicitly authorized. Cross-repository implementation scope was requested asynchronously; no response was received while this handoff was prepared. This document is not a claim that the full build order is complete.
 
 No push, merge, provider mutation, deployment, publication or trading occurred in this pass. Earlier local handoffs are historical evidence, not current process health.
-

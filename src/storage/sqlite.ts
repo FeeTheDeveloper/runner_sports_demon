@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import type { AdversityEvent, EventMarketAlignment, GameFlowObservation, GameFlowSnapshot, MarketEvent, NormalizedMarket, ProviderHealth, SportsbookMarketSnapshot } from "../types.js";
 import { stableHash } from "../utils/hash.js";
@@ -23,6 +24,7 @@ function sqlValue(value: unknown): string {
 // Ordered parent-before-child so importFrom() satisfies foreign keys on a fresh db.
 export const EXPORT_TABLES = [
   "games",
+  "game_state_snapshots",
   "markets",
   "market_prices",
   "market_events",
@@ -41,6 +43,8 @@ export const EXPORT_TABLES = [
   "totals_flow_snapshots", "totals_projections", "totals_market_snapshots", "totals_trend_scores",
   "totals_signals", "totals_decision_windows", "totals_window_transitions", "totals_set_points",
   "sportsbook_market_snapshots", "adversity_events", "event_market_alignments",
+  "historical_seasons", "historical_team_profiles", "historical_games", "historical_market_history",
+  "historical_drives", "historical_periods", "historical_game_state_samples",
 ] as const;
 
 export class SqliteStore {
@@ -122,9 +126,25 @@ export class SqliteStore {
     );`);
   }
 
+  gameFlowObservations(runnerEventId: string): GameFlowObservation[] {
+    return this.queryJson(`select id,runner_event_id,payload_json from game_flow_observations where runner_event_id=${sqlString(runnerEventId)};`).map(row => {
+      const observation = JSON.parse(String(row.payload_json)) as GameFlowObservation;
+      if (!observation || observation.id !== row.id || observation.runnerEventId !== row.runner_event_id) throw new Error("Stored observation identity does not match its payload");
+      return observation;
+    });
+  }
+
   persistGameFlow(observation: GameFlowObservation, snapshot: GameFlowSnapshot) {
-    this.transaction(`insert or replace into game_flow_observations(id,runner_event_id,source,observed_at,received_at,confidence,payload_json)
-      values(${sqlString(observation.id)},${sqlString(observation.runnerEventId)},${sqlString(observation.source)},${sqlString(observation.observedAt)},${sqlString(observation.receivedAt)},${sqlNumber(observation.confidence)},${sqlString(JSON.stringify(observation))});
+    if (snapshot.runnerEventId !== observation.runnerEventId) throw new Error("Observation and snapshot event must match");
+    const previous = this.queryJson(`select payload_json from game_flow_observations where id=${sqlString(observation.id)};`)[0];
+    // Preserve legacy bytes after semantic comparison: no rewrite or property-order
+    // mismatch with the immutable-row trigger on equivalent JSON retries.
+    if (previous && stableHash(JSON.parse(String(previous.payload_json))) !== stableHash(observation)) throw new Error("observation id already exists with different content");
+    const payload = previous ? String(previous.payload_json) : JSON.stringify(observation);
+    this.transaction(`insert into game_flow_observations(id,runner_event_id,source,observed_at,received_at,confidence,payload_json)
+      values(${sqlString(observation.id)},${sqlString(observation.runnerEventId)},${sqlString(observation.source)},${sqlString(observation.observedAt)},${sqlString(observation.receivedAt)},${sqlNumber(observation.confidence)},${sqlString(payload)}) on conflict(id) do nothing;
+      create temp table game_flow_history_guard(valid integer not null check(valid=1));
+      insert into game_flow_history_guard values(case when (select count(*) from game_flow_observations where runner_event_id=${sqlString(observation.runnerEventId)})=${sqlNumber(snapshot.observationCount)} then 1 else 0 end);
       insert or replace into game_flow_snapshots(runner_event_id,updated_at,payload_json)
       values(${sqlString(snapshot.runnerEventId)},${sqlString(snapshot.updatedAt)},${sqlString(JSON.stringify(snapshot))});`);
   }
@@ -156,32 +176,66 @@ export class SqliteStore {
     return Number(out) || 0;
   }
 
-  /** Dumps every table to <dir>/<table>.json plus a manifest.json. Returns row counts per table. */
+  /** Consistent SQLite snapshot, including history. Existing destinations are never overwritten. */
+  backupTo(destination: string): void {
+    const target = resolve(destination);
+    if (existsSync(target)) throw new Error("Backup destination already exists");
+    if (!existsSync(this.path)) throw new Error("Source database does not exist");
+    mkdirSync(dirname(target), { recursive: true });
+    execFileSync("sqlite3", ["-bail", "-readonly", "-cmd", ".timeout 5000", this.path, `VACUUM INTO ${sqlString(target)};`], { stdio: ["ignore", "pipe", "pipe"], maxBuffer: SqliteStore.MAX_BUFFER, windowsHide: true });
+    const check = execFileSync("sqlite3", ["-readonly", target, "PRAGMA quick_check;"], { encoding: "utf8", windowsHide: true }).trim();
+    if (check !== "ok") throw new Error("Backup integrity verification failed");
+  }
+
+  /** Exports all application tables from one consistent backup, not separate live reads. */
   exportTo(dir: string): Record<string, number> {
+    if (existsSync(join(dir, "manifest.json"))) throw new Error("Export destination already contains a manifest");
     mkdirSync(dir, { recursive: true });
     const manifest: Record<string, number> = {};
-    for (const table of EXPORT_TABLES) {
-      const rows = this.queryJson(`select * from ${table};`);
-      writeFileSync(join(dir, `${table}.json`), JSON.stringify(rows, null, 2), "utf8");
-      manifest[table] = rows.length;
+    const temporary = mkdtempSync(join(tmpdir(), "runner-export-"));
+    try {
+      const snapshotPath = join(temporary, "snapshot.db");
+      this.backupTo(snapshotPath);
+      const snapshot = new SqliteStore(snapshotPath);
+      for (const table of EXPORT_TABLES) {
+        const rows = snapshot.queryJson(`select * from ${table};`);
+        writeFileSync(join(dir, `${table}.json`), JSON.stringify(rows, null, 2), "utf8");
+        manifest[table] = rows.length;
+      }
+      writeFileSync(join(dir, "manifest.json"), JSON.stringify({ exportedAt: new Date().toISOString(), dbPath: this.path, tables: manifest }, null, 2), "utf8");
+    } finally {
+      // This directory was generated by mkdtemp solely for this snapshot.
+      if (dirname(resolve(temporary)) !== resolve(tmpdir())) throw new Error("Invalid export scratch path");
+      rmSync(temporary, { recursive: true, force: true });
     }
-    writeFileSync(join(dir, "manifest.json"), JSON.stringify({ exportedAt: new Date().toISOString(), dbPath: this.path, tables: manifest }, null, 2), "utf8");
     return manifest;
   }
 
-  /** Loads <dir>/<table>.json (as produced by exportTo) back into this db via insert-or-replace. Missing files are skipped. */
+  /** Atomically loads export rows through allowlisted UPSERTs. Missing files are skipped. */
   importFrom(dir: string): Record<string, number> {
     const manifest: Record<string, number> = {};
+    const statements: string[] = [];
     for (const table of EXPORT_TABLES) {
       const file = join(dir, `${table}.json`);
       if (!existsSync(file)) continue;
       const rows = JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>[];
+      if (!Array.isArray(rows)) throw new Error(`Invalid import rows for ${table}`);
       if (rows.length > 0) {
+        const allowed = new Set(this.queryJson(`pragma table_info(${table});`).map(row => String(row.name)));
+        if (rows.some(row => !row || typeof row !== "object" || Array.isArray(row))) throw new Error(`Invalid import row for ${table}`);
         const columns = Object.keys(rows[0]);
-        this.transaction(rows.map((row) => `insert or replace into ${table}(${columns.join(",")}) values(${columns.map((c) => sqlValue(row[c])).join(",")});`).join("\n"));
+        if (!columns.length || columns.some(column => !allowed.has(column))) throw new Error(`Unknown import column for ${table}`);
+        for (const row of rows) {
+          if (Object.keys(row).length !== columns.length || columns.some(c => !Object.hasOwn(row, c))) throw new Error(`Inconsistent import columns for ${table}`);
+          if (Object.values(row).some(value => typeof value === "object" && value !== null)) throw new Error(`Invalid import value for ${table}`);
+          // UPSERT preserves parent rows, unlike REPLACE which can delete children.
+          const updates = columns.map(c => `"${c}"=excluded."${c}"`).join(",");
+          statements.push(`insert into ${table}(${columns.map(c => `"${c}"`).join(",")}) values(${columns.map(c => sqlValue(row[c])).join(",")}) on conflict do update set ${updates};`);
+        }
       }
       manifest[table] = rows.length;
     }
+    this.transaction(statements.join("\n"));
     return manifest;
   }
 
@@ -210,7 +264,7 @@ export class SqliteStore {
   }
 
   private transaction(sql: string) { if (sql.trim()) this.exec(`begin;\n${sql}\ncommit;`); }
-  private exec(sql: string) { execFileSync("sqlite3", [this.path], { input: sql, maxBuffer: SqliteStore.MAX_BUFFER }); }
+  private exec(sql: string) { execFileSync("sqlite3", ["-bail", "-cmd", ".timeout 5000", this.path], { input: `PRAGMA foreign_keys=ON;\n${sql}`, maxBuffer: SqliteStore.MAX_BUFFER, windowsHide: true, stdio: ["pipe", "pipe", "pipe"] }); }
   private query(sql: string) { return execFileSync("sqlite3", [this.path, sql], { encoding: "utf8", maxBuffer: SqliteStore.MAX_BUFFER }); }
   private queryJson(sql: string): Record<string, unknown>[] {
     const out = execFileSync("sqlite3", ["-json", this.path, sql], { encoding: "utf8", maxBuffer: SqliteStore.MAX_BUFFER }).trim();

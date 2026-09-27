@@ -15,6 +15,16 @@ globalThis.fetch = (async (input: string | URL, init?: { body?: unknown }) => {
 
 const { SitePublisher } = await import("../publishing/sitePublisher.js");
 
+for (const setting of [undefined, "false", "", "invalid"]) {
+  if (setting === undefined) delete process.env.RUNNER_PUBLISH_ENABLED;
+  else process.env.RUNNER_PUBLISH_ENABLED = setting;
+  const disabled = new SitePublisher();
+  assert.equal(disabled.isEnabled(), false, "publishing requires explicit opt-in");
+  await disabled.publishEngineStatus({ status: "running" });
+  assert.equal(calls.length, 0, "direct publisher methods must respect the disabled gate");
+}
+process.env.RUNNER_PUBLISH_ENABLED = "true";
+
 const health: ProviderHealth[] = [{ provider: "kalshi", connected: true, reconnectAttempts: 0, eventCount: 3 }];
 const market = {
   id: "m-1",
@@ -52,11 +62,28 @@ assert.ok(!calls.some((c) => c.table === "runner_forecasts"), "still no forecast
 
 calls.length = 0;
 
-// Explicit forecasts supplied by the runtime still publish normally.
-await publisher.publishTick({
+// Explicit input cannot bypass the model acceptance gate.
+await assert.rejects(publisher.publishTick({
   ...baseInput,
   forecasts: [{ market, prediction: { marketId: market.id, modelName: "test_model", fairProbability: 0.6, confidenceScore: 50 } }],
-});
-assert.ok(calls.some((c) => c.table === "runner_forecasts"), "explicit forecasts must still publish");
+}), /validated production model/);
+assert.ok(!calls.some((c) => c.table === "runner_forecasts"), "unregistered models cannot publish official forecasts");
+calls.length = 0;
+await assert.rejects(publisher.publishTotalsState([{ flow: {} as never, projections: [] }]), /validated production model/);
+await assert.rejects(publisher.publishTotalsWindows([{} as never]), /validated production model/);
+await assert.rejects(publisher.publishSignals([{} as never]), /validated production model/);
+assert.equal(calls.length, 0, "no heuristic publication method may bypass model acceptance");
+
+calls.length = 0;
+const retrying = new SitePublisher();
+const successfulFetch = globalThis.fetch;
+globalThis.fetch = (async () => new Response("PRIVATE_PROVIDER_BODY", { status: 500 })) as typeof fetch;
+await assert.rejects(retrying.publishTick(baseInput), error => error instanceof Error && !error.message.includes("PRIVATE_PROVIDER_BODY"));
+globalThis.fetch = successfulFetch;
+await retrying.publishTick(baseInput);
+assert.ok(calls.some(c => c.table === "runner_engine_status"), "failed heartbeat retries on next tick");
+calls.length = 0;
+await publisher.publishProviderHealth([{ ...health[0], lastMessageAt: new Date(Date.now() + 60_000).toISOString() }]);
+assert.equal(calls[0].rows[0].freshness, "stale", "future timestamps must not be fresh");
 
 console.log("site publisher tests passed");

@@ -32,6 +32,7 @@ function direction(delta: number | undefined): FlowDirection {
 
 export function validateGameFlowObservation(observation: GameFlowObservation): void {
   if (!observation.runnerEventId || !observation.id) throw new Error("observation id and runnerEventId are required");
+  if (![observation.observedAt, observation.receivedAt].every(value => typeof value === "string" && Number.isFinite(Date.parse(value)))) throw new Error("valid observation timestamps are required");
   if (!observationSources.has(observation.source)) throw new Error("unsupported observation source");
   if (!Number.isFinite(observation.confidence) || observation.confidence < 0 || observation.confidence > 1) {
     throw new Error("confidence must be between 0 and 1");
@@ -47,7 +48,7 @@ export function validateGameFlowObservation(observation: GameFlowObservation): v
 
 export function analyzeGameFlow(observations: GameFlowObservation[]): GameFlowSnapshot | undefined {
   if (!observations.length) return undefined;
-  const ordered = [...observations].sort((a, b) => a.observedAt.localeCompare(b.observedAt));
+  const ordered = [...observations].sort((a, b) => Date.parse(a.observedAt) - Date.parse(b.observedAt) || Date.parse(a.receivedAt) - Date.parse(b.receivedAt) || a.id.localeCompare(b.id));
   const latest = ordered.at(-1)!;
   const previous = ordered.at(-2);
   const momentum = clamp(average([
@@ -122,12 +123,22 @@ export class GameFlowEngine {
   private readonly observations = new Map<string, GameFlowObservation[]>();
   private readonly snapshots = new Map<string, GameFlowSnapshot>();
 
-  ingest(observation: GameFlowObservation): GameFlowSnapshot {
+  ingest(observation: GameFlowObservation, persist?: (snapshot: GameFlowSnapshot) => void, persistedHistory: readonly GameFlowObservation[] = []): GameFlowSnapshot {
     validateGameFlowObservation(observation);
-    const observations = this.observations.get(observation.runnerEventId) ?? [];
-    observations.push({ ...observation, id: observation.id || stableHash(observation) });
-    this.observations.set(observation.runnerEventId, observations);
+    // Merge durable history before computing, including after a process restart.
+    // Prepare detached state so validation or persistence failure changes no live maps.
+    const merged = new Map<string, GameFlowObservation>();
+    for (const item of [...persistedHistory, ...(this.observations.get(observation.runnerEventId) ?? []), observation]) {
+      validateGameFlowObservation(item);
+      if (item.runnerEventId !== observation.runnerEventId) throw new Error("observation history belongs to another event");
+      const duplicate = merged.get(item.id);
+      if (duplicate && stableHash(duplicate) !== stableHash(item)) throw new Error("observation id already exists with different content");
+      if (!duplicate) merged.set(item.id, structuredClone(item));
+    }
+    const observations = [...merged.values()];
     const snapshot = analyzeGameFlow(observations)!;
+    persist?.(snapshot);
+    this.observations.set(observation.runnerEventId, observations);
     this.snapshots.set(observation.runnerEventId, snapshot);
     return snapshot;
   }

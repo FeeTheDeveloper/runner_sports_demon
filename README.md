@@ -64,6 +64,9 @@ npm run scout -- start --api
 
 ## Documentation
 
+- [Production release candidate and remaining gates](docs/ops/PRODUCTION_RELEASE_2026-09-26.md): security repairs, provider evidence, schema rollout and recovery. Publishing defaults off; production engine data requires bearer authentication. Models remain research-only until validated.
+- `npm run scout -- backup <new-file.db>` creates a verified consistent SQLite backup. Export/import now covers every application table and imports atomically.
+
 - [Local operations runbook](docs/ops/RUNNER_LOCAL_RUNBOOK.md): health, snapshots, content generation, ingest and export/import commands.
 - [Data spine and provider matrix](docs/ops/RUNNER_DATA_SPINE.md): contracts, provenance, freshness and Runner Sports Plug policy.
 - Generate fixture content with `npm run content:generate`; validate schemas and artifact hashes with `npm run data:validate`.

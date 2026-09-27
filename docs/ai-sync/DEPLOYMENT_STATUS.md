@@ -1,5 +1,13 @@
 # Deployment status
 
+## Connected-launch preparation - September 26, 2026
+
+Local compiled Site preview is started on loopback port 3002 for review; it is session-dependent. Vercel import search confirmed `FeeTheDeveloper/runner_sports-site` is available, but no project import/deployment was submitted. Existing `runner-dashboard-site` belongs to a different repository. Clerk/Supabase bindings and Stripe merchant/terms remain unresolved; provider tabs were retained for setup. No provider mutation, migration, commit, push, merge or deployment. [Exact current handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md).
+
+## Production hardening - September 26, 2026
+
+No push, merge, deployment or production migration performed. Local fixes are uncommitted on `fix/production-readiness`; companion Site remains on its existing `release/runner-production` branch with owner edits preserved. Live HEAD checks of the public domain root and `/api/health` returned Vercel HTTP 404. The expected Vercel project and persistent Demon host remain unverified. Local smoke-test servers were stopped; older process claims below are historical. [Release gates](../ops/PRODUCTION_RELEASE_2026-09-26.md).
+
 2026-09-26 local-only update: dashboard 8790 and API-only 8787 served the new operations routes. Port 3001 was not listening. No deployment or public Site acceptance was performed. [Evidence](../ops/MACHINE_STATE_2026-09-26.md).
 
 ## Three-repository local run — September 16, 2026, 9:37 PM Central

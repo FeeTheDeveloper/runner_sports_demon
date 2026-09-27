@@ -1,0 +1,22 @@
+{
+  "schema_version": "runner.wardrobe.v1",
+  "collection_id": "PHI-KELLY-2026-09-26",
+  "entity": "Runner Sports & Analytics",
+  "controller": "King Fee",
+  "purpose": "Shared visual references for owner-designated Runner representatives and user avatars",
+  "theme": "Eagles Kelly Green",
+  "state": "REFERENCE_ASSETS_DOWNLOADED",
+  "downloaded_image_count": 9,
+  "original_bytes_preserved": true,
+  "source": "Fanatics product pages",
+  "local_collection_name": "Clothing Assets/Fanatics Runner References 2026-09-26",
+  "provenance_manifest": "manifest.json in the local collection",
+  "items": [
+    {"id": "barkley-kelly-jersey", "product_id": "201425247", "name": "Saquon Barkley Nike alternate Game jersey", "color": "Kelly Green", "views": 3},
+    {"id": "eagles-retro-hoodie", "product_id": "202406553", "name": "Eagles Fanatics Helmet Retro pullover hoodie", "color": "Kelly Green", "views": 3},
+    {"id": "eagles-kelly-trucker", "product_id": "203845192", "name": "Eagles New Era Core Team 9FIFTY trucker snapback", "color": "Kelly Green", "views": 3}
+  ],
+  "avatar_changes_applied": false,
+  "portrait_identity_mapping": "UNASSIGNED",
+  "external_account_access_changed": false
+}
