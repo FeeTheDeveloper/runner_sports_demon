@@ -1,0 +1,9 @@
+{
+  "agent": "codex-runner-engineer",
+  "repository": "runner_sports_demon",
+  "branch": "feature/wnba-analog-rights-gate",
+  "paths": ["scripts/wnba-win-analog.mjs", "scripts/wnba-win-analog.test.mjs", "MODEL_REGISTRY.json", "MODEL_REGISTRY.md", "docs/ops/RUNNER_LOCAL_RUNBOOK.md"],
+  "task": "Add a research WNBA score-clock analog with data-rights, sample-size, and holdout gates",
+  "started_at": "2026-09-27T19:40:22Z",
+  "status": "in_progress"
+}

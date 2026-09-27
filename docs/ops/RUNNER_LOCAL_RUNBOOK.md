@@ -85,6 +85,16 @@ node scripts/live-slate.mjs --rolling --interval-seconds 120
 
 The local research receipt fetches every game ESPN returns for the selected calendar date in each league, including scheduled, live, final, and delayed games. Each league has its own receipt and `UNKNOWN` state if its fetch fails; the script never fills a failed feed with cached games. Changed snapshots are saved under `.runner/slates/`, ignored by Git. A fixed-date watcher checks every two minutes and stops when every returned game is final or otherwise terminal. `--rolling` instead follows the Chicago calendar date, checking every two minutes while games are live, at least every five minutes before games, and at least every fifteen minutes after the day's slate; stop it with Ctrl+C. Both require this machine to remain on. ESPN's retrieval timestamp does not prove when its score last changed, and this path does not supply sportsbook prices, Kalshi positions, model estimates, or sell decisions. These ESPN endpoints are used for local research; review provider terms before public redistribution.
 
+## WNBA research winner model
+
+```powershell
+node scripts/wnba-win-analog.mjs --write
+# When an approved history file and its rights record exist locally:
+node scripts/wnba-win-analog.mjs --history C:\private\wnba-states.jsonl --rights-record C:\private\wnba-rights.json --write
+```
+
+The first command writes a WNBA coverage report with `BLOCKED_DATA_RIGHTS_OR_HISTORY` and no probabilities. The second uses the latest local slate receipt, a supplied historical JSONL and a self-attested rights record. It emits experimental probabilities only after its freshness, unique-game, chronological holdout and per-state analog gates pass. The [WNBA data gate](WNBA_MODEL_DATA_GATE_2026-09-27.md) specifies the file shape, thresholds, license evidence, and BettingPros/Outlier pull blocker. This model is research-only, not a sell/stay or executable-price signal.
+
 ## Private Kalshi position inventory
 
 ```powershell

@@ -13,3 +13,5 @@ Next model milestones:
 3. Add game-state model with sport-specific features.
 4. Add Runner ensemble model combining game state, sportsbook consensus, and prediction-market prices.
 5. Backtest every signal family before promoting alert thresholds.
+
+`scripts/wnba-win-analog.mjs` implements a WNBA-specific, research-only counterpart to the NFL score/clock analog. Its state uses ten-minute regulation quarters. Historical states are limited to one nearest state per independent game, within 120 seconds and five home-margin points; at least 80 comparable games are needed per estimate. Training is restricted to 2021-2024 and a 2025 halftime holdout must have at least 100 scored games and beat a constant baseline Brier score. A separate 300-game training floor applies. A passing halftime check does not establish calibration for other live times or playoff games. The CLI requires a local rights record and a licensed historical JSONL file before producing estimates; neither is currently configured. These constraints keep it outside the production publisher and any trading flow.

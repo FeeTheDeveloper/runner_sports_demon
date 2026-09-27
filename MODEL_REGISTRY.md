@@ -5,6 +5,7 @@
 | Football totals heuristic | football-heuristic-v1 | NFL/CFB | Conservative live totals projection | observation-derived | N/A | N/A | Not calibrated | research |
 | Baseline market implied | `baseline_market_implied_v0` | multi | Smoke-test implied probability | market snapshot | N/A | N/A | None | non-production |
 | Runner NFL historical fusion | pending | NFL | Independent pregame/live projection | `runner_nfl_history.v1` | 2025 pending integration | pending | pending | awaiting implementation |
+| WNBA score/clock analog | `wnba-score-clock-analog-v0` | WNBA | Research live winner estimate | `wnba-score-clock-history.v1` | 2021-2024, pending licensed data | 2025 holdout pending | pending | research, suppressed until data gates pass |
 
 Production model changes require a version increment, feature version, validation window, calibration method, deployment date, and known weaknesses. No model in this registry authorizes automated trading.
 
