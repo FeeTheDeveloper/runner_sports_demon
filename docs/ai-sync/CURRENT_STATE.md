@@ -1,5 +1,9 @@
 # Current state
 
+## 2026-09-26 Runner Sports Plug operating audit
+
+The installed Runner Sports Plug provides skills and governing instructions for intelligence work, not a persistent runner or repository connector. The local read-only dashboard is currently reachable at `http://127.0.0.1:8790`; this process is not installed for startup. Saved markets were last processed on 2026-09-19, so the dashboard is a historical snapshot. Build, 13 tests, contract/repository validation, and SQLite `quick_check` passed. The [dated operating audit](RUNNER_PLUGIN_OPERATIONS_2026-09-26.md) records risks and scope. No engine ingestion, Site publication, deployment, or trading was performed.
+
 ## 2026-09-16 repository audit
 
 Revalidated the clean `feature/local-control-dashboard` checkout against source, tests, environment contracts, and operational records. Corrected four high-confidence runtime defects: authenticated intel uploads now supply the configured bearer token; mutation request bodies are bounded; totals reads expire elapsed decision windows; and the general API defaults to IPv4 loopback with an explicit host override for authorized deployments. Build, all 13 test programs, contract and sibling-repository validation, diff checks, and `npm audit --omit=dev` pass. No provider, publishing, deployment, push, merge, or trading action was performed.
