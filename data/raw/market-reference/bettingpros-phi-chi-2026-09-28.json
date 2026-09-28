@@ -1,0 +1,145 @@
+{
+  "schema_version": "runner.market-reference.v1",
+  "captured_at": "2026-09-28T22:08:23Z",
+  "capture_local": "2026-09-28 17:08 CDT",
+  "event": {
+    "league": "NFL",
+    "season": 2026,
+    "week": 3,
+    "away": "PHI",
+    "home": "CHI",
+    "label": "PHI @ CHI",
+    "kickoff_utc": "2026-09-29T00:15:00Z",
+    "kickoff_local": "2026-09-28 19:15 CDT",
+    "broadcast": "ABC/ESPN",
+    "records_as_displayed": { "PHI": "2-0", "CHI": "1-1" },
+    "espn_cross_check": "Kickoff and broadcast match docs/ops/TONIGHT_PREP_2026-09-28.md and the ESPN slate receipt .runner/slates/2026-09-28-20260928T135722668Z.json"
+  },
+  "source": {
+    "platform": "BettingPros",
+    "surface": "Public web odds board, owner-authenticated session",
+    "urls": [
+      "https://www.bettingpros.com/nfl/odds/",
+      "https://www.bettingpros.com/nfl/odds/moneyline/",
+      "https://www.bettingpros.com/nfl/odds/total/"
+    ],
+    "capture_method": "Manual browser observation of the single PHI@CHI row; rendered row text read as displayed. No bulk extraction, no pagination sweep, no API call, no paywall bypass.",
+    "column_mapping_verification": "Book-to-price attribution read from the rendered header order and confirmed against a viewport screenshot of the spread board showing OPEN, BEST ODDS, CONSENSUS, DraftKings and FanDuel columns for this row.",
+    "quote_timestamp": "NOT_PUBLISHED_BY_SOURCE",
+    "quote_timestamp_note": "The board does not display a per-quote source time. captured_at is Runner receipt time only and is NOT quote freshness."
+  },
+  "authority": {
+    "level": "REFERENCE_ONLY",
+    "rights_class": "UNLICENSED_THIRD_PARTY_SURFACE",
+    "model_input_approved": false,
+    "publishable": false,
+    "note": "Screen-read reference observation from a third-party research product. It is NOT a licensed market feed, NOT an executable quote, and NOT a Runner model output. It does not satisfy the market-data dependency in the tonight-prep blocker list; that still requires the Odds API / Kalshi credential decision recorded there."
+  },
+  "markets": {
+    "spread": {
+      "period": "FULL_GAME",
+      "open": { "PHI": { "line": 1.5, "price": -115 }, "CHI": { "line": -1.5, "price": -105 } },
+      "consensus": { "PHI": { "line": -3.5, "price": -110 }, "CHI": { "line": 3.5, "price": -110 }, "hold_pct": 4.76 },
+      "best_odds": { "PHI": { "line": -3.5, "price": 108 }, "CHI": { "line": 3.5, "price": -107 }, "note": "Best-odds cells are per-side bests across different books and do not form one coherent two-sided market." },
+      "books": {
+        "DraftKings": { "PHI": [-3.5, -110], "CHI": [3.5, -110] },
+        "FanDuel": { "PHI": [-3.5, -112], "CHI": [3.5, -108] },
+        "BetMGM": { "PHI": [-3.5, -105], "CHI": [3.5, -108] },
+        "Caesars": { "PHI": [-3.5, -113], "CHI": [3.5, -107] },
+        "Hard Rock": "OFF",
+        "theScore Bet": { "PHI": [-3.5, -110], "CHI": [3.5, -110] },
+        "Fanatics": { "PHI": [-3.5, -105], "CHI": [3.5, -115] },
+        "Novig": { "PHI": [-3.5, 108], "CHI": [3.5, -111] },
+        "ProphetX": { "PHI": [-3.5, 105], "CHI": [3.5, -108] },
+        "Kalshi": { "PHI": [-3.5, 108], "CHI": [3.5, -113] },
+        "Polymarket": { "PHI": [-3.5, 108], "CHI": [3.5, -113] },
+        "Betr": { "PHI": [-3.5, -108], "CHI": [3.5, -118] },
+        "Fliff": { "PHI": [-3.5, -110], "CHI": [3.5, -115] },
+        "Polymarket US": "NL",
+        "Sleeper": "NL",
+        "BetRivers": { "PHI": [-3.5, -113], "CHI": [3.5, -108] },
+        "SugarHouse": { "PHI": [-3.5, -113], "CHI": [3.5, -108] },
+        "PartyCasino": { "PHI": [-3.5, -105], "CHI": [3.5, -108] },
+        "bet365": { "PHI": [-3.5, -110], "CHI": [3.5, -110] }
+      }
+    },
+    "moneyline": {
+      "period": "FULL_GAME",
+      "open": { "PHI": -102, "CHI": -118, "hold_pct": 4.62, "devig": { "PHI": 0.4826, "CHI": 0.5174 } },
+      "consensus": { "PHI": -200, "CHI": 165, "hold_pct": 4.4, "devig": { "PHI": 0.6386, "CHI": 0.3614 } },
+      "best_odds": { "PHI": -178, "CHI": 174, "hold_pct": 0.53, "devig": { "PHI": 0.6369, "CHI": 0.3631 } },
+      "books": {
+        "DraftKings": "NL",
+        "FanDuel": { "PHI": -200, "CHI": 168 },
+        "BetMGM": { "PHI": -200, "CHI": 165 },
+        "Caesars": { "PHI": -197, "CHI": 168 },
+        "Hard Rock": "OFF",
+        "theScore Bet": { "PHI": -200, "CHI": 170 },
+        "Fanatics": { "PHI": -200, "CHI": 165 },
+        "Novig": { "PHI": -178, "CHI": 174 },
+        "ProphetX": { "PHI": -178, "CHI": 174 },
+        "Kalshi": { "PHI": -178, "CHI": 170 },
+        "Polymarket": { "PHI": -178, "CHI": 170 },
+        "Betr": { "PHI": -208, "CHI": 161 },
+        "Fliff": { "PHI": -220, "CHI": 170 },
+        "Polymarket US": "NL",
+        "Sleeper": "NL",
+        "BetRivers": { "PHI": -200, "CHI": 165 },
+        "SugarHouse": { "PHI": -200, "CHI": 165 },
+        "PartyCasino": { "PHI": -200, "CHI": 165 },
+        "bet365": { "PHI": -200, "CHI": 165 }
+      },
+      "devig_method": "Proportional (multiplicative) normalization of American-odds implied probabilities. Documented method, not a Runner model."
+    },
+    "total": {
+      "period": "FULL_GAME",
+      "open": { "line": 46.5, "over": -110, "under": -110 },
+      "consensus": { "line": 42.5, "over": -110, "under": -110, "hold_pct": 4.76 },
+      "best_odds": { "over": [41.5, -115], "under": [42.5, -102], "note": "Different lines per side; not one coherent market." },
+      "books": {
+        "DraftKings": { "line": 42.5, "over": -108, "under": -112 },
+        "FanDuel": { "line": 42.5, "over": -110, "under": -110 },
+        "BetMGM": { "line": 42.5, "over": -110, "under": -110 },
+        "Caesars": { "line": 42.5, "over": -107, "under": -113 },
+        "Hard Rock": "OFF",
+        "theScore Bet": { "line": 42.5, "over": -110, "under": -110 },
+        "Fanatics": { "line": 42.5, "over": -110, "under": -110 },
+        "Novig": { "line": 42.5, "over": 100, "under": -102 },
+        "ProphetX": { "line": 41.5, "over": -116, "under": 112 },
+        "Kalshi": { "line": 42.5, "over": 100, "under": -104 },
+        "Polymarket": { "line": 42.5, "over": 100, "under": -104 },
+        "Betr": { "line": 42.5, "over": -118, "under": -109 },
+        "Fliff": { "line": 41.5, "over": -115, "under": -110 },
+        "Polymarket US": { "line": 42.5, "over": 100, "under": -102 },
+        "Sleeper": "NL",
+        "BetRivers": { "line": 42.0, "over": -113, "under": -108 },
+        "SugarHouse": { "line": 42.0, "over": -113, "under": -108 },
+        "PartyCasino": { "line": 42.5, "over": -110, "under": -110 },
+        "bet365": { "line": 42.5, "over": -110, "under": -110 }
+      }
+    }
+  },
+  "movement_open_to_consensus": {
+    "spread_points": 5.0,
+    "spread_direction": "CHI -1.5 at open to PHI -3.5 at consensus; five points toward Philadelphia.",
+    "moneyline_devig_delta_PHI": 0.1559,
+    "moneyline_direction": "PHI de-vigged win probability moved from 0.4826 to 0.6386.",
+    "total_points": -4.0,
+    "total_direction": "46.5 down to 42.5.",
+    "interpretation_status": "UNEXPLAINED",
+    "interpretation_note": "A five-point spread move toward the road team combined with a four-point total decline is the signature of a material team-news event on the Chicago side, but no cause is established here. Do not record a cause until it is confirmed against an official injury report, inactives list or team release. The OPEN values are as displayed by BettingPros and were not corroborated against a second opening-line source."
+  },
+  "coverage": {
+    "game_spread": "AVAILABLE",
+    "game_moneyline": "AVAILABLE",
+    "game_total": "AVAILABLE",
+    "alternate_spread": "NOT_CAPTURED",
+    "alternate_total": "NOT_CAPTURED",
+    "team_total": "NOT_CAPTURED",
+    "halves_quarters": "NOT_CAPTURED",
+    "player_props": "NOT_CAPTURED",
+    "not_captured_reason": "Out of scope for this manual pass. Capturing prop and alternate-line ladders at depth would require repeated extraction across many pages, which the source rights do not permit without a written agreement."
+  },
+  "licensed_path_note": "Kalshi and Polymarket appear as columns on this board and are both already registered Runner providers (DATA_SOURCE_REGISTRY.md). Their prices for this event can be obtained directly from their own public interfaces under Runner's existing provider path, which would make them ingestible rather than reference-only. That is the supported route to a real market comparison for this game, and it requires no BettingPros data.",
+  "boundary": "BettingPros is a reference and inspiration target, not a data source. No BettingPros projection, rating, grade, pick, bet percentage, system output or other proprietary computation is stored here. The values recorded are sportsbook and prediction-market prices displayed on a board Runner's owner is entitled to view, plus the platform's own OPEN, BEST ODDS and CONSENSUS aggregate columns, which are retained solely as observed context and are explicitly marked model_input_approved false."
+}

@@ -1,0 +1,107 @@
+{
+  "schema_version": "runner.market-reference.v1",
+  "captured_at": "2026-09-28T22:20:00Z",
+  "capture_local": "2026-09-28 17:20 CDT",
+  "event": {
+    "league": "NFL",
+    "season": 2026,
+    "week": 3,
+    "away": "PHI",
+    "home": "CHI",
+    "label": "PHI @ CHI",
+    "kickoff_local_as_displayed": "7:15 PM Today",
+    "provider_event_id": "4e31b29068199a17ec9b92bafa4021685268f4fa"
+  },
+  "source": {
+    "platform": "Outlier",
+    "surface": "app.outlier.bet game page, Player props tab, Passing market group",
+    "url": "https://app.outlier.bet/NFL/games/4e31b29068199a17ec9b92bafa4021685268f4fa?marketType=PLAYER_PROP&marketGroup=PASSING_PROPS",
+    "account": "Runner Sports business profile, owner-authenticated browser session",
+    "capture_method": "Manual browser observation of one game view. Two accordion rows expanded by hand and read as rendered. No credential handling, no access-control bypass, no crawl beyond this single view.",
+    "quote_timestamp": "NOT_PUBLISHED_BY_SOURCE"
+  },
+  "authority": {
+    "level": "REFERENCE_ONLY",
+    "rights_class": "UNLICENSED_THIRD_PARTY_SURFACE",
+    "model_input_approved": false,
+    "publishable": false,
+    "note": "Third-party research product observation. Not a licensed feed, not an executable quote, not a Runner model output. No Outlier projection, rating, edge, grade or recommendation is recorded here."
+  },
+  "headline_finding": {
+    "statement": "Chicago's quarterback passing-prop market is priced for Case Keenum (#11) and Tyson Bagent (#17). No Caleb Williams passing market is offered on this page.",
+    "confidence": "HIGH for what the board offers; the accessible names and jersey numbers were read directly from the rendered market list.",
+    "inference": "Market composition implies Keenum is the expected Chicago starter and Bagent the backup: Keenum carries the full market set (Yards, TDs, Attempts, Completions, Completion %, Longest Completion, Pass+Rush, Interceptions, Sacks Taken) while Bagent carries only Yards, TDs and Pass+Rush.",
+    "verification_required": "This is market evidence, not an official source. Confirm against the official NFL injury report, the team's inactives list or a club release before recording a Chicago starter anywhere in Runner. Do not publish a player-availability claim on market composition alone.",
+    "explains": "This is the most likely driver of the open-to-consensus move recorded in bettingpros-phi-chi-2026-09-28.json: five points of spread toward Philadelphia and a four-point decline in the total. That artifact's movement block is marked UNEXPLAINED and should stay so until the official confirmation above is obtained."
+  },
+  "market_inventory": {
+    "group": "PASSING_PROPS",
+    "players": {
+      "Case Keenum": {
+        "team": "CHI",
+        "number": 11,
+        "markets": ["Passing Yards", "Passing TDs", "Passing Attempts", "Passing Completions", "Passing Completion %", "Longest Pass Cmp", "Pass + Rush Yds", "Interceptions", "Sacks Taken"]
+      },
+      "Tyson Bagent": {
+        "team": "CHI",
+        "number": 17,
+        "markets": ["Passing Yards", "Passing TDs", "Pass + Rush Yds"]
+      },
+      "Jalen Hurts": {
+        "team": "PHI",
+        "number": 1,
+        "markets": ["Passing Yards", "Passing TDs", "Passing Attempts", "Passing Completions", "Passing Completion %", "Longest Pass Cmp", "Pass + Rush Yds", "Interceptions", "Sacks Taken"]
+      }
+    },
+    "caleb_williams": "ABSENT_FROM_BOARD",
+    "total_markets_listed": 21
+  },
+  "alternate_line_ladders": {
+    "method_note": "Outlier presents each prop as an expandable alternate-line ladder. Ladders below were read from the rendered rows of the expanded accordion.",
+    "Case Keenum - Passing Yards": {
+      "captured": true,
+      "rung_count": 181,
+      "line_range": [114.5, 349.5],
+      "implied_median_line": 170.5,
+      "implied_median_prices": { "over": -104, "under": -104 },
+      "implied_median_hold_pct": 1.96,
+      "confidence": "MEDIUM"
+    },
+    "Jalen Hurts - Passing Yards": {
+      "captured": true,
+      "rung_count": 194,
+      "line_range": [124.5, 349.5],
+      "implied_median_line": 220.5,
+      "implied_median_prices": { "over": -115, "under": -120 },
+      "implied_median_hold_pct": 8.03,
+      "confidence": "MEDIUM"
+    },
+    "Tyson Bagent - Passing Yards": {
+      "captured": false,
+      "reason": "Row left collapsed; not expanded in this pass."
+    },
+    "parse_caveat": "Per-rung prices were recovered from rendered row text, and two independent parses of the Keenum ladder disagreed on price-to-side alignment at the margin (pivot read as 170.5 under one and 172.5 under the other). The line ranges, rung counts and approximate main lines are reliable; individual rung prices are NOT, and must be re-read directly from the screen before any calculation uses them.",
+    "quality_flags": {
+      "monotonicity_violations_keenum": 12,
+      "monotonicity_violations_hurts": 17,
+      "status": "CANDIDATE_ANOMALIES",
+      "note": "P(over) should be non-increasing as the threshold rises. Violations were counted after de-vigging each rung proportionally. Because of the parse caveat above, these are candidate anomalies, not confirmed stale or crossed rungs. Re-verify on screen before treating any of them as an inefficiency.",
+      "hold_dispersion": "Pivot-rung hold differs sharply between players (about 2 percent for Keenum, about 8 percent for Hurts). Any EV work across these ladders must use each rung's own two-sided price, never one assumed margin."
+    }
+  },
+  "coverage": {
+    "passing_props": "AVAILABLE",
+    "rushing_props": "NOT_CAPTURED",
+    "receiving_props": "NOT_CAPTURED",
+    "gamelines": "NOT_CAPTURED",
+    "team_props": "NOT_CAPTURED",
+    "game_props": "NOT_CAPTURED",
+    "not_captured_reason": "Out of scope for this pass. Sweeping every market group would be repeated extraction, which the source rights do not permit without a written agreement."
+  },
+  "next_actions": [
+    "Confirm the Chicago starting quarterback against the official injury report or inactives list, then update the movement interpretation in bettingpros-phi-chi-2026-09-28.json.",
+    "If the Chicago starter has changed, the PHI-CHI Week 3 matchup sheet at data/raw/nfl/matchup-sheets/season=2026/week=03/PHI-CHI.json should be checked for whether its quarterback assumptions still hold.",
+    "Re-read the Keenum and Hurts pivot rungs directly on screen if any ladder price is to be used numerically."
+  ],
+  "boundary": "Outlier is a research workflow reference and an owner-authorized interactive account, not a Runner data source. Nothing here is ingested, no proprietary Outlier computation is stored, and no value in this file is approved as model input or for publication."
+}

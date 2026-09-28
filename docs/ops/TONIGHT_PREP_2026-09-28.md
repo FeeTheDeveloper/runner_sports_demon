@@ -53,6 +53,28 @@ Run the analog at halftime for the state its holdout actually covers. Earlier an
 1. Supply the **PHI-CHI Week 3 logs/stats PDFs** so the matchup sheet can be transcribed to match the other 15.
 2. Decide whether the Demon may use the **Odds API key** already present in the Site environment. That single decision turns tonight from scoreboard-only into a model-vs-market read.
 
+## Update — 17:20 CDT, reference market capture
+
+Two of the three blockers above have moved. Recorded in [`data/raw/market-reference/`](../../data/raw/market-reference/).
+
+**The PHI-CHI matchup sheet blocker is closed.** Commit `bfad51a` added `data/raw/nfl/matchup-sheets/season=2026/week=03/PHI-CHI.json` from owner-supplied PDFs. Week 3 now holds all 16 sheets. They remain `REFERENCE_ONLY`, `model_input_approved: false`.
+
+**Chicago's quarterback market has changed, and it explains the line.** Outlier's passing-prop board for this game prices **Case Keenum (#11)** and **Tyson Bagent (#17)**. There is no Caleb Williams passing market on the page. Keenum carries the full market set and Bagent only three markets, which is the shape of a starter-and-backup pair. **This is market evidence, not an official source** — confirm against the injury report or inactives list before recording a starter anywhere in Runner, and check whether the new matchup sheet's quarterback assumptions still hold.
+
+**The market moved hard in the same direction.** BettingPros open-to-consensus for tonight:
+
+| Market | Open | Consensus | Move |
+|---|---|---|---|
+| Spread | CHI -1.5 (-105) | **PHI -3.5 (-110)** | 5.0 points to Philadelphia |
+| Moneyline | PHI -102 / CHI -118 | **PHI -200 / CHI +165** | PHI de-vigged 0.483 → 0.639 |
+| Total | 46.5 | **42.5** | -4.0 |
+
+Nineteen books are shown; Hard Rock is OFF and DraftKings shows no moneyline. Best two-sided moneyline pricing sits on the exchanges (Novig and ProphetX at PHI -178 / CHI +174, about 0.5 percent hold, against 4.4 percent at consensus).
+
+**The market-data blocker is not closed.** Both captures are `REFERENCE_ONLY`, `rights_class: UNLICENSED_THIRD_PARTY_SURFACE`, `model_input_approved: false`. They are screen-read observations from third-party research products Runner's owner is entitled to view — not a licensed feed and not an executable quote. Nothing here may feed a model or a published claim, and no model-vs-market edge may be computed from it.
+
+**There is a licensed route to the same game.** Kalshi and Polymarket both appear as columns on that board and are already registered Runner providers in `DATA_SOURCE_REGISTRY.md`. Their prices for this event can be read directly from their own public interfaces on Runner's existing provider path, which would make them ingestible rather than reference-only — and needs no third-party data at all. That is the supported way to turn tonight into a real model-vs-market read, and it is a narrower decision than moving the Site's Odds API key.
+
 ## Standing boundaries
 
 Retrieval freshness is not ESPN update freshness. The analog carries no possession, injury, roster, weather, team-strength or price input. No scoreboard lead or market midpoint is an executable exit. Nothing here is published to the Site.
