@@ -78,3 +78,43 @@ Nineteen books are shown; Hard Rock is OFF and DraftKings shows no moneyline. Be
 ## Standing boundaries
 
 Retrieval freshness is not ESPN update freshness. The analog carries no possession, injury, roster, weather, team-strength or price input. No scoreboard lead or market midpoint is an executable exit. Nothing here is published to the Site.
+
+## Update — 19:11 CDT, live run opened (Claude Code)
+
+Systems check before kickoff. Branch `feature/wnba-analog-rights-gate`, working tree clean on arrival.
+
+**Engine green.** `npm test` (build + 15 test programs + `live-coverage` and `wnba-win-analog` node suites) exit 0. Dashboard answering on `http://127.0.0.1:8790`; saved DB ready, 1,442 markets / 39,558 market events. `RUNNER_PUBLISH_ENABLED=false`, `RUNNER_ENABLE_POLYMARKET=false`, `RUNNER_API_REQUIRE_AUTH=true` — publishing stays off.
+
+**Canonical event locked.** `RUNNER:NFL:2026-09-29:PHI:CHI`, ESPN `401872963`, Soldier Field, kickoff `2026-09-29T00:15Z`. Outlier event `4e31b29068199a17ec9b92bafa4021685268f4fa`.
+
+**Both watchers live.** Rolling slate watcher heart-beating (`no change` through `2026-09-29T00:08:31Z`); analog watcher started for `--date 2026-09-28` at 120s, writing to `.runner/predictions/`. Analog correctly returns `predictions: []` while the game is `STATUS_SCHEDULED`.
+
+**Research account verified by visible in-app dialog**, not inferred from a login: `ceo@werunsportsandanalytics.com`, org Runner Sports & Analytics, **Outlier Premium**. BettingPros session also signed in. Both remain `UNLICENSED_THIRD_PARTY_SURFACE`, reference-only.
+
+### The licensed market route is open, and it is better than the reference surface
+
+The 17:20 entry identified Kalshi as the licensed path. It is confirmed and priced. Three series carry tonight's game:
+
+| Kalshi event | Markets | Read |
+|---|---|---|
+| `KXNFLGAME-26SEP28PHICHI` | 2 | PHI 0.63/0.64, CHI 0.36/0.37 |
+| `KXNFLSPREAD-26SEP28PHICHI` | 25 | PHI >1.5 through >20.5; CHI >1.5 through >14.5 |
+| `KXNFLTOTAL-26SEP28PHICHI` | 19 | Over 23.5 (0.945) through Over 65.5 (0.045) |
+
+46 two-sided contracts with depth, size and 24h volume. Receipt: `.runner/research/2026-09-28-phi-chi-kalshi-licensed-20260929T001109Z.json`.
+
+Integrity checks recorded in that receipt all pass: winner midpoints sum to **1.0000**, and all three ladders (PHI spread, CHI spread, total) are **monotone decreasing** with no crossed or stale rungs.
+
+Cross-venue coherence is tight, so there is no dislocation to chase. Kalshi PHI win mid 0.635 against a de-vigged consensus near 0.639; Kalshi `PHI >3.5` mid 0.475 against Outlier PHI -3.5 at +106 (0.485 raw); Kalshi `Over 42.5` mid 0.495 against Outlier Over 42.5 at -102.
+
+### Root cause of the market-coverage gap
+
+`src/connectors/kalshi/client.ts` `fetchMarkets` walks `/events?status=open&with_nested_markets=true` in provider order and stops at `RUNNER_SCOUT_MARKET_LIMIT` (250). It filters only on `category == "sports"` — there is **no series or sport targeting and no notion of a scheduled event**. Kalshi returned UP at `2026-09-29T00:06:16Z` and delivered World Cup futures and NFL career-milestone series; tonight's game is simply never reached. That is why the local store holds zero PHI@CHI contracts while Kalshi quotes 46 of them.
+
+The fix is narrow: add an explicit series-ticker fetch path (`KXNFLGAME`, `KXNFLSPREAD`, `KXNFLTOTAL`) so scheduled events are ingested by canonical event instead of by pagination luck. **Not implemented** — it edits a shared connector during live operation and needs owner go-ahead plus build/test/diff review.
+
+### Still UNKNOWN at kickoff
+
+Bears starting quarterback is not confirmed from an official source in this pass; Caleb Williams is out and the Keenum/Bagent split rests on market shape only. Official inactives not captured. Weather issuance time not refreshed. Player, team and game prop families were not captured and stay `UNKNOWN`. No Runner probability is eligible for this event, so **no edge or EV is stated anywhere in this run** — `baseline_market_implied_v0` echoes prices and the totals heuristic is uncalibrated.
+
+Artifacts: `.runner/research/2026-09-28-phi-chi-pregame-20260929T000841Z.json`, the archived Outlier alternate-spread a11y capture beside it, and the Kalshi receipt above. Nothing published, deployed, pushed or merged; no wager and no bet slip.

@@ -1,0 +1,1018 @@
+{
+  "schema": "runner.kalshi-licensed-game-snapshot.v1",
+  "classification": "LICENSED_PROVIDER_READ_NO_RUNNER_MODEL_NO_EDGE",
+  "provider": "kalshi",
+  "rightsClass": "REGISTERED_RUNNER_PROVIDER_PUBLIC_MARKET_DATA",
+  "canonicalEventId": "RUNNER:NFL:2026-09-29:PHI:CHI",
+  "espnEventId": "401872963",
+  "receiptAtUtc": "2026-09-29T00:11:09.912202+00:00",
+  "events": {
+    "KXNFLGAME-26SEP28PHICHI": {
+      "marketCount": 2,
+      "serverDate": "Tue, 29 Sep 2026 00:11:11 GMT",
+      "markets": [
+        {
+          "ticker": "KXNFLGAME-26SEP28PHICHI-CHI",
+          "subTitle": "Chicago",
+          "status": "active",
+          "yesBid": 0.36,
+          "yesAsk": 0.37,
+          "noBid": 0.63,
+          "noAsk": 0.64,
+          "lastPrice": 0.37,
+          "yesBidSize": 768443.79,
+          "yesAskSize": 2499749.25,
+          "volume24h": 2648488.52,
+          "openInterest": 2914507.67,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-15T20:01:06.651255Z",
+          "rulesPrimary": "If Chicago wins the Philadelphia vs Chicago Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLGAME-26SEP28PHICHI-PHI",
+          "subTitle": "Philadelphia",
+          "status": "active",
+          "yesBid": 0.63,
+          "yesAsk": 0.64,
+          "noBid": 0.36,
+          "noAsk": 0.37,
+          "lastPrice": 0.64,
+          "yesBidSize": 526247.01,
+          "yesAskSize": 3490712.42,
+          "volume24h": 8261736.23,
+          "openInterest": 8894156.54,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-15T20:01:06.651255Z",
+          "rulesPrimary": "If Philadelphia wins the Philadelphia vs Chicago Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        }
+      ]
+    },
+    "KXNFLSPREAD-26SEP28PHICHI": {
+      "marketCount": 25,
+      "serverDate": "Tue, 29 Sep 2026 00:11:11 GMT",
+      "markets": [
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI10",
+          "subTitle": "CHI Bears wins by over 9.5 points",
+          "status": "active",
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "noBid": 0.86,
+          "noAsk": 0.87,
+          "lastPrice": 0.13,
+          "yesBidSize": 13838.0,
+          "yesAskSize": 9979.25,
+          "volume24h": 12811.33,
+          "openInterest": 12857.13,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 9.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI11",
+          "subTitle": "CHI Bears wins by over 10.5 points",
+          "status": "active",
+          "yesBid": 0.1,
+          "yesAsk": 0.11,
+          "noBid": 0.89,
+          "noAsk": 0.9,
+          "lastPrice": 0.11,
+          "yesBidSize": 7164.83,
+          "yesAskSize": 6100.0,
+          "volume24h": 17456.39,
+          "openInterest": 16880.99,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 10.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI14",
+          "subTitle": "CHI Bears wins by over 13.5 points",
+          "status": "active",
+          "yesBid": 0.08,
+          "yesAsk": 0.09,
+          "noBid": 0.91,
+          "noAsk": 0.92,
+          "lastPrice": 0.09,
+          "yesBidSize": 450.0,
+          "yesAskSize": 17581.54,
+          "volume24h": 13158.35,
+          "openInterest": 12819.04,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 13.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI15",
+          "subTitle": "CHI Bears wins by over 14.5 points",
+          "status": "active",
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "noBid": 0.93,
+          "noAsk": 0.94,
+          "lastPrice": 0.06,
+          "yesBidSize": 301655.0,
+          "yesAskSize": 900.0,
+          "volume24h": 199250.14,
+          "openInterest": 185854.66,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 14.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI2",
+          "subTitle": "CHI Bears wins by over 1.5 points",
+          "status": "active",
+          "yesBid": 0.34,
+          "yesAsk": 0.35,
+          "noBid": 0.65,
+          "noAsk": 0.66,
+          "lastPrice": 0.34,
+          "yesBidSize": 14101.39,
+          "yesAskSize": 284540.52,
+          "volume24h": 13453.55,
+          "openInterest": 12243.57,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 1.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI3",
+          "subTitle": "CHI Bears wins by over 2.5 points",
+          "status": "active",
+          "yesBid": 0.32,
+          "yesAsk": 0.33,
+          "noBid": 0.67,
+          "noAsk": 0.68,
+          "lastPrice": 0.32,
+          "yesBidSize": 13001.8,
+          "yesAskSize": 365.38,
+          "volume24h": 19910.04,
+          "openInterest": 20636.19,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 2.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI4",
+          "subTitle": "CHI Bears wins by over 3.5 points",
+          "status": "active",
+          "yesBid": 0.25,
+          "yesAsk": 0.26,
+          "noBid": 0.74,
+          "noAsk": 0.75,
+          "lastPrice": 0.26,
+          "yesBidSize": 39320.6,
+          "yesAskSize": 548485.9,
+          "volume24h": 81736.86,
+          "openInterest": 81381.77,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 3.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI5",
+          "subTitle": "CHI Bears wins by over 4.5 points",
+          "status": "active",
+          "yesBid": 0.23,
+          "yesAsk": 0.24,
+          "noBid": 0.76,
+          "noAsk": 0.77,
+          "lastPrice": 0.23,
+          "yesBidSize": 8323.47,
+          "yesAskSize": 159894.23,
+          "volume24h": 19557.41,
+          "openInterest": 18906.75,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 4.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI6",
+          "subTitle": "CHI Bears wins by over 5.5 points",
+          "status": "active",
+          "yesBid": 0.21,
+          "yesAsk": 0.22,
+          "noBid": 0.78,
+          "noAsk": 0.79,
+          "lastPrice": 0.22,
+          "yesBidSize": 383800.78,
+          "yesAskSize": 1574.77,
+          "volume24h": 8668.7,
+          "openInterest": 7234.85,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 5.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI7",
+          "subTitle": "CHI Bears wins by over 6.5 points",
+          "status": "active",
+          "yesBid": 0.19,
+          "yesAsk": 0.21,
+          "noBid": 0.79,
+          "noAsk": 0.81,
+          "lastPrice": 0.21,
+          "yesBidSize": 13300.8,
+          "yesAskSize": 428940.95,
+          "volume24h": 36983.39,
+          "openInterest": 33959.93,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 6.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI8",
+          "subTitle": "CHI Bears wins by over 7.5 points",
+          "status": "active",
+          "yesBid": 0.14,
+          "yesAsk": 0.16,
+          "noBid": 0.84,
+          "noAsk": 0.86,
+          "lastPrice": 0.14,
+          "yesBidSize": 334890.5,
+          "yesAskSize": 13014.05,
+          "volume24h": 9236.65,
+          "openInterest": 8190.16,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If CHI Bears wins by more than 7.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI10",
+          "subTitle": "PHI Eagles wins by over 9.5 points",
+          "status": "active",
+          "yesBid": 0.3,
+          "yesAsk": 0.31,
+          "noBid": 0.69,
+          "noAsk": 0.7,
+          "lastPrice": 0.31,
+          "yesBidSize": 12431.92,
+          "yesAskSize": 16245.6,
+          "volume24h": 141675.1,
+          "openInterest": 128974.79,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 9.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI11",
+          "subTitle": "PHI Eagles wins by over 10.5 points",
+          "status": "active",
+          "yesBid": 0.26,
+          "yesAsk": 0.27,
+          "noBid": 0.73,
+          "noAsk": 0.74,
+          "lastPrice": 0.27,
+          "yesBidSize": 28352.07,
+          "yesAskSize": 136008.06,
+          "volume24h": 61196.94,
+          "openInterest": 56863.18,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 10.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI14",
+          "subTitle": "PHI Eagles wins by over 13.5 points",
+          "status": "active",
+          "yesBid": 0.22,
+          "yesAsk": 0.23,
+          "noBid": 0.77,
+          "noAsk": 0.78,
+          "lastPrice": 0.23,
+          "yesBidSize": 7612.21,
+          "yesAskSize": 14245.0,
+          "volume24h": 84901.07,
+          "openInterest": 82582.55,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 13.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI15",
+          "subTitle": "PHI Eagles wins by over 14.5 points",
+          "status": "active",
+          "yesBid": 0.18,
+          "yesAsk": 0.19,
+          "noBid": 0.81,
+          "noAsk": 0.82,
+          "lastPrice": 0.19,
+          "yesBidSize": 2908.53,
+          "yesAskSize": 5915.34,
+          "volume24h": 22977.95,
+          "openInterest": 24859.45,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 14.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI17",
+          "subTitle": "PHI Eagles wins by over 16.5 points",
+          "status": "active",
+          "yesBid": 0.16,
+          "yesAsk": 0.17,
+          "noBid": 0.83,
+          "noAsk": 0.84,
+          "lastPrice": 0.16,
+          "yesBidSize": 5650.0,
+          "yesAskSize": 103451.84,
+          "volume24h": 11145.68,
+          "openInterest": 12995.67,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 16.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI18",
+          "subTitle": "PHI Eagles wins by over 17.5 points",
+          "status": "active",
+          "yesBid": 0.14,
+          "yesAsk": 0.15,
+          "noBid": 0.85,
+          "noAsk": 0.86,
+          "lastPrice": 0.15,
+          "yesBidSize": 3989.83,
+          "yesAskSize": 18863.83,
+          "volume24h": 8750.98,
+          "openInterest": 8755.66,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 17.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI2",
+          "subTitle": "PHI Eagles wins by over 1.5 points",
+          "status": "active",
+          "yesBid": 0.6,
+          "yesAsk": 0.61,
+          "noBid": 0.39,
+          "noAsk": 0.4,
+          "lastPrice": 0.61,
+          "yesBidSize": 373653.2,
+          "yesAskSize": 55274.1,
+          "volume24h": 122778.28,
+          "openInterest": 139462.59,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 1.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI21",
+          "subTitle": "PHI Eagles wins by over 20.5 points",
+          "status": "active",
+          "yesBid": 0.1,
+          "yesAsk": 0.11,
+          "noBid": 0.89,
+          "noAsk": 0.9,
+          "lastPrice": 0.11,
+          "yesBidSize": 11292.46,
+          "yesAskSize": 107903.22,
+          "volume24h": 64581.05,
+          "openInterest": 62510.01,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 20.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI3",
+          "subTitle": "PHI Eagles wins by over 2.5 points",
+          "status": "active",
+          "yesBid": 0.58,
+          "yesAsk": 0.59,
+          "noBid": 0.41,
+          "noAsk": 0.42,
+          "lastPrice": 0.59,
+          "yesBidSize": 289165.74,
+          "yesAskSize": 112490.47,
+          "volume24h": 1054387.83,
+          "openInterest": 1026708.27,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 2.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI4",
+          "subTitle": "PHI Eagles wins by over 3.5 points",
+          "status": "active",
+          "yesBid": 0.47,
+          "yesAsk": 0.48,
+          "noBid": 0.52,
+          "noAsk": 0.53,
+          "lastPrice": 0.48,
+          "yesBidSize": 2116132.29,
+          "yesAskSize": 4479226.72,
+          "volume24h": 5257819.62,
+          "openInterest": 4855957.57,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 3.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI5",
+          "subTitle": "PHI Eagles wins by over 4.5 points",
+          "status": "active",
+          "yesBid": 0.43,
+          "yesAsk": 0.44,
+          "noBid": 0.56,
+          "noAsk": 0.57,
+          "lastPrice": 0.44,
+          "yesBidSize": 815195.75,
+          "yesAskSize": 140326.38,
+          "volume24h": 1508396.02,
+          "openInterest": 1362533.78,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 4.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI6",
+          "subTitle": "PHI Eagles wins by over 5.5 points",
+          "status": "active",
+          "yesBid": 0.42,
+          "yesAsk": 0.43,
+          "noBid": 0.57,
+          "noAsk": 0.58,
+          "lastPrice": 0.43,
+          "yesBidSize": 4612.2,
+          "yesAskSize": 614158.88,
+          "volume24h": 357395.16,
+          "openInterest": 320197.47,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 5.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI7",
+          "subTitle": "PHI Eagles wins by over 6.5 points",
+          "status": "active",
+          "yesBid": 0.39,
+          "yesAsk": 0.41,
+          "noBid": 0.59,
+          "noAsk": 0.61,
+          "lastPrice": 0.4,
+          "yesBidSize": 141398.93,
+          "yesAskSize": 782479.0,
+          "volume24h": 399031.41,
+          "openInterest": 393934.63,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.112149Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 6.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI8",
+          "subTitle": "PHI Eagles wins by over 7.5 points",
+          "status": "active",
+          "yesBid": 0.32,
+          "yesAsk": 0.34,
+          "noBid": 0.66,
+          "noAsk": 0.68,
+          "lastPrice": 0.34,
+          "yesBidSize": 156442.32,
+          "yesAskSize": 404852.61,
+          "volume24h": 166611.71,
+          "openInterest": 151330.49,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-22T01:05:00.176865Z",
+          "rulesPrimary": "If PHI Eagles wins by more than 7.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        }
+      ]
+    },
+    "KXNFLTOTAL-26SEP28PHICHI": {
+      "marketCount": 19,
+      "serverDate": "Tue, 29 Sep 2026 00:11:12 GMT",
+      "markets": [
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-24",
+          "subTitle": "Over 23.5 points",
+          "status": "active",
+          "yesBid": 0.94,
+          "yesAsk": 0.95,
+          "noBid": 0.05,
+          "noAsk": 0.06,
+          "lastPrice": 0.95,
+          "yesBidSize": 8025.0,
+          "yesAskSize": 11384.54,
+          "volume24h": 32385.89,
+          "openInterest": 25895.43,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 23.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-27",
+          "subTitle": "Over 26.5 points",
+          "status": "active",
+          "yesBid": 0.9,
+          "yesAsk": 0.91,
+          "noBid": 0.09,
+          "noAsk": 0.1,
+          "lastPrice": 0.91,
+          "yesBidSize": 71304.52,
+          "yesAskSize": 264.7,
+          "volume24h": 22392.22,
+          "openInterest": 22969.85,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 26.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-30",
+          "subTitle": "Over 29.5 points",
+          "status": "active",
+          "yesBid": 0.86,
+          "yesAsk": 0.87,
+          "noBid": 0.13,
+          "noAsk": 0.14,
+          "lastPrice": 0.87,
+          "yesBidSize": 4260.0,
+          "yesAskSize": 331571.72,
+          "volume24h": 13570.68,
+          "openInterest": 11911.37,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 29.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-33",
+          "subTitle": "Over 32.5 points",
+          "status": "active",
+          "yesBid": 0.79,
+          "yesAsk": 0.8,
+          "noBid": 0.2,
+          "noAsk": 0.21,
+          "lastPrice": 0.79,
+          "yesBidSize": 14932.65,
+          "yesAskSize": 503.14,
+          "volume24h": 11985.28,
+          "openInterest": 11111.59,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 32.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-36",
+          "subTitle": "Over 35.5 points",
+          "status": "active",
+          "yesBid": 0.7,
+          "yesAsk": 0.71,
+          "noBid": 0.29,
+          "noAsk": 0.3,
+          "lastPrice": 0.71,
+          "yesBidSize": 451488.48,
+          "yesAskSize": 3409.14,
+          "volume24h": 13930.11,
+          "openInterest": 12660.3,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 35.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-39",
+          "subTitle": "Over 38.5 points",
+          "status": "active",
+          "yesBid": 0.62,
+          "yesAsk": 0.64,
+          "noBid": 0.36,
+          "noAsk": 0.38,
+          "lastPrice": 0.64,
+          "yesBidSize": 18017.7,
+          "yesAskSize": 339615.37,
+          "volume24h": 49526.29,
+          "openInterest": 47686.38,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 38.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-42",
+          "subTitle": "Over 41.5 points",
+          "status": "active",
+          "yesBid": 0.53,
+          "yesAsk": 0.54,
+          "noBid": 0.46,
+          "noAsk": 0.47,
+          "lastPrice": 0.54,
+          "yesBidSize": 1129421.6,
+          "yesAskSize": 1421811.4,
+          "volume24h": 1687634.18,
+          "openInterest": 1558875.57,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 41.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-43",
+          "subTitle": "Over 42.5 points",
+          "status": "active",
+          "yesBid": 0.49,
+          "yesAsk": 0.5,
+          "noBid": 0.5,
+          "noAsk": 0.51,
+          "lastPrice": 0.5,
+          "yesBidSize": 926550.47,
+          "yesAskSize": 19893.89,
+          "volume24h": 981874.45,
+          "openInterest": 776968.67,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 42.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-44",
+          "subTitle": "Over 43.5 points",
+          "status": "active",
+          "yesBid": 0.45,
+          "yesAsk": 0.47,
+          "noBid": 0.53,
+          "noAsk": 0.55,
+          "lastPrice": 0.45,
+          "yesBidSize": 541413.09,
+          "yesAskSize": 744276.65,
+          "volume24h": 269312.76,
+          "openInterest": 233156.66,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 43.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-45",
+          "subTitle": "Over 44.5 points",
+          "status": "active",
+          "yesBid": 0.42,
+          "yesAsk": 0.44,
+          "noBid": 0.56,
+          "noAsk": 0.58,
+          "lastPrice": 0.42,
+          "yesBidSize": 99135.07,
+          "yesAskSize": 434877.37,
+          "volume24h": 55371.75,
+          "openInterest": 54578.32,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 44.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-46",
+          "subTitle": "Over 45.5 points",
+          "status": "active",
+          "yesBid": 0.39,
+          "yesAsk": 0.4,
+          "noBid": 0.6,
+          "noAsk": 0.61,
+          "lastPrice": 0.4,
+          "yesBidSize": 19513.82,
+          "yesAskSize": 12976.51,
+          "volume24h": 49468.3,
+          "openInterest": 46741.55,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 45.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-47",
+          "subTitle": "Over 46.5 points",
+          "status": "active",
+          "yesBid": 0.37,
+          "yesAsk": 0.38,
+          "noBid": 0.62,
+          "noAsk": 0.63,
+          "lastPrice": 0.36,
+          "yesBidSize": 50.0,
+          "yesAskSize": 9466.65,
+          "volume24h": 24426.35,
+          "openInterest": 24699.11,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 46.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-48",
+          "subTitle": "Over 47.5 points",
+          "status": "active",
+          "yesBid": 0.33,
+          "yesAsk": 0.35,
+          "noBid": 0.65,
+          "noAsk": 0.67,
+          "lastPrice": 0.35,
+          "yesBidSize": 18422.66,
+          "yesAskSize": 347230.34,
+          "volume24h": 22245.1,
+          "openInterest": 21412.89,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 47.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-51",
+          "subTitle": "Over 50.5 points",
+          "status": "active",
+          "yesBid": 0.26,
+          "yesAsk": 0.27,
+          "noBid": 0.73,
+          "noAsk": 0.74,
+          "lastPrice": 0.26,
+          "yesBidSize": 19271.35,
+          "yesAskSize": 15510.74,
+          "volume24h": 27237.41,
+          "openInterest": 26574.47,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 50.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-54",
+          "subTitle": "Over 53.5 points",
+          "status": "active",
+          "yesBid": 0.19,
+          "yesAsk": 0.2,
+          "noBid": 0.8,
+          "noAsk": 0.81,
+          "lastPrice": 0.19,
+          "yesBidSize": 7857.49,
+          "yesAskSize": 7840.0,
+          "volume24h": 27749.2,
+          "openInterest": 27519.72,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 53.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-57",
+          "subTitle": "Over 56.5 points",
+          "status": "active",
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "noBid": 0.86,
+          "noAsk": 0.87,
+          "lastPrice": 0.13,
+          "yesBidSize": 317218.41,
+          "yesAskSize": 3865.26,
+          "volume24h": 72349.99,
+          "openInterest": 70789.78,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 56.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-60",
+          "subTitle": "Over 59.5 points",
+          "status": "active",
+          "yesBid": 0.09,
+          "yesAsk": 0.1,
+          "noBid": 0.9,
+          "noAsk": 0.91,
+          "lastPrice": 0.1,
+          "yesBidSize": 4894.88,
+          "yesAskSize": 23971.89,
+          "volume24h": 13631.65,
+          "openInterest": 13771.15,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 59.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-63",
+          "subTitle": "Over 62.5 points",
+          "status": "active",
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "noBid": 0.93,
+          "noAsk": 0.94,
+          "lastPrice": 0.07,
+          "yesBidSize": 1395.52,
+          "yesAskSize": 15609.0,
+          "volume24h": 17204.77,
+          "openInterest": 28846.74,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 62.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        },
+        {
+          "ticker": "KXNFLTOTAL-26SEP28PHICHI-66",
+          "subTitle": "Over 65.5 points",
+          "status": "active",
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "noBid": 0.95,
+          "noAsk": 0.96,
+          "lastPrice": 0.04,
+          "yesBidSize": 10710.58,
+          "yesAskSize": 26347.19,
+          "volume24h": 44015.45,
+          "openInterest": 42522.16,
+          "closeTime": "2026-10-01T00:15:00Z",
+          "updatedTime": "2026-09-26T01:21:53.076831Z",
+          "rulesPrimary": "If PHI Eagles and CHI Bears collectively score more than 65.5 points in the PHI Eagles vs CHI Bears Pro Football game originally scheduled for Sep 28, 2026, then the market resolves to Yes."
+        }
+      ]
+    }
+  },
+  "integrityChecks": {
+    "winnerMidSum": 1.0,
+    "winnerMidSumNote": "1.0 means no vig at midpoint; deviation is the exchange's two-sided spread, not an edge",
+    "spreadPHI": {
+      "monotoneDecreasing": true,
+      "rungs": [
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI2",
+          0.605
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI3",
+          0.585
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI4",
+          0.475
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI5",
+          0.435
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI6",
+          0.425
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI7",
+          0.4
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI8",
+          0.33
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI10",
+          0.305
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI11",
+          0.265
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI14",
+          0.225
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI15",
+          0.185
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI17",
+          0.165
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI18",
+          0.145
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-PHI21",
+          0.105
+        ]
+      ]
+    },
+    "spreadCHI": {
+      "monotoneDecreasing": true,
+      "rungs": [
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI2",
+          0.345
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI3",
+          0.325
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI4",
+          0.255
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI5",
+          0.235
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI6",
+          0.215
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI7",
+          0.2
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI8",
+          0.15
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI10",
+          0.135
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI11",
+          0.105
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI14",
+          0.085
+        ],
+        [
+          "KXNFLSPREAD-26SEP28PHICHI-CHI15",
+          0.065
+        ]
+      ]
+    },
+    "total": {
+      "monotoneDecreasing": true,
+      "rungs": [
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-24",
+          0.945
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-27",
+          0.905
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-30",
+          0.865
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-33",
+          0.795
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-36",
+          0.705
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-39",
+          0.63
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-42",
+          0.535
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-43",
+          0.495
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-44",
+          0.46
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-45",
+          0.43
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-46",
+          0.395
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-47",
+          0.375
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-48",
+          0.34
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-51",
+          0.265
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-54",
+          0.195
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-57",
+          0.135
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-60",
+          0.095
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-63",
+          0.065
+        ],
+        [
+          "KXNFLTOTAL-26SEP28PHICHI-66",
+          0.045
+        ]
+      ]
+    }
+  },
+  "limitations": [
+    "Midpoint is not an executable price; size at bid/ask is finite and moves",
+    "No Runner model probability is eligible for this event, so no edge or EV is stated",
+    "Quotes are a point-in-time read; requote before any use",
+    "This snapshot was taken by a one-off read, NOT by the Demon ingestion path"
+  ],
+  "ingestionGap": {
+    "finding": "src/connectors/kalshi/client.ts fetchMarkets walks /events?status=open in provider order and stops at RUNNER_SCOUT_MARKET_LIMIT (250). It applies no series or sport targeting, so tonight's KXNFLGAME/KXNFLSPREAD/KXNFLTOTAL events are never reached and the local store holds zero contracts for this game.",
+    "evidence": "Kalshi reported UP at 2026-09-29T00:06:16Z and returned only World Cup futures and NFL career-milestone series.",
+    "proposedFix": "Add an explicit series-ticker fetch path (KXNFLGAME, KXNFLSPREAD, KXNFLTOTAL) so scheduled events are ingested by canonical event rather than by pagination luck.",
+    "status": "NOT_IMPLEMENTED_PENDING_OWNER_GO_AHEAD"
+  }
+}

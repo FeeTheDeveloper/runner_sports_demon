@@ -1,0 +1,56 @@
+{
+  "schema": "runner.research-pregame-receipt.v1",
+  "classification": "INTERACTIVE_REFERENCE_OBSERVATION_NO_RUNNER_MODEL_NO_EDGE",
+  "runId": "CLAUDE-NFL-LIVE-2026-09-28",
+  "canonicalEventId": "RUNNER:NFL:2026-09-29:PHI:CHI",
+  "providerEventId": { "espn": "401872963", "outlier": "4e31b29068199a17ec9b92bafa4021685268f4fa" },
+  "event": { "away": "Philadelphia Eagles", "home": "Chicago Bears", "venue": "Soldier Field", "kickoffUtc": "2026-09-29T00:15Z", "kickoffCt": "2026-09-28 19:15 CT" },
+  "observedAtUtc": "2026-09-29T00:12Z",
+  "phase": "T-MINUS-3-MINUTES",
+  "researchAccount": { "identity": "ceo@werunsportsandanalytics.com", "org": "Runner Sports & Analytics", "outlierTier": "Outlier Premium", "verifiedVia": "visible in-app account dialog", "rightsClass": "OWNER_AUTHORIZED_INTERACTIVE_RESEARCH_ONLY_NOT_A_LICENSED_FEED" },
+  "gamelineObservations": [
+    { "market": "MONEYLINE", "side": "PHI", "price": -174, "venue": "Novig", "source": "Outlier UI", "sourceUpdatedAt": null },
+    { "market": "MONEYLINE", "side": "CHI", "price": 175, "venue": "BetMGM", "source": "Outlier UI", "sourceUpdatedAt": null },
+    { "market": "SPREAD", "side": "PHI", "line": -3.5, "price": 106, "venue": "ProphetX", "source": "Outlier UI", "sourceUpdatedAt": null },
+    { "market": "SPREAD", "side": "CHI", "line": 3.5, "price": -102, "venue": "BetMGM", "source": "Outlier UI", "sourceUpdatedAt": null },
+    { "market": "TOTAL", "side": "OVER", "line": 42.5, "price": -102, "venue": "ProphetX", "source": "Outlier UI", "sourceUpdatedAt": null },
+    { "market": "TOTAL", "side": "UNDER", "line": 42.5, "price": -101, "venue": "ProphetX", "source": "Outlier UI", "sourceUpdatedAt": null }
+  ],
+  "bettingprosObservation": {
+    "source": "BettingPros matchup page (signed in)",
+    "board": "PHI -3.5 (+108); O 42.0 (-113) / U 43.5 (-117); PHI -174 / CHI +175",
+    "gameNote": "Line moved 5 points away from Chicago, from CHI -1.5 to CHI +3.5; spread crossed 3",
+    "attribution": "BettingPros output, NOT a Runner model output"
+  },
+  "alternateSpreadLadder": {
+    "status": "CAPTURED_RAW_PAIRING_UNVERIFIED",
+    "artifact": "see sibling *-outlier-altspread-a11y-*.txt",
+    "rangeObserved": "PHI -27.5 through CHI -21.5",
+    "note": "Line-to-price pairing was extracted by positional text pairing and drifts; re-read structurally before any sensitivity or EV work.",
+    "kalshiVenueRungsSeen": [-660, -967],
+    "kalshiImplication": "Kalshi quotes this game's alternate spread on the Outlier board, but the Demon's own Kalshi ingestion returned no contract for this event."
+  },
+  "coverageMatrix": {
+    "espnScoreboard": { "status": "AVAILABLE", "freshness": "CURRENT_RECEIPT", "sourceUpdatedAt": null, "limitation": "retrieval freshness only" },
+    "kalshiDemonIngestion": { "status": "NOT_OFFERED_FOR_THIS_EVENT", "detail": "Kalshi UP at 2026-09-29T00:06:16Z; returned career-milestone and futures NFL markets only; zero PHI@CHI game contracts in local store" },
+    "polymarket": { "status": "DISABLED", "detail": "RUNNER_ENABLE_POLYMARKET=false; stored rows stale since 2026-09-07" },
+    "oddsApi": { "status": "UNCONFIGURED", "detail": "ODDS_API_KEY empty" },
+    "kalshiAuthenticated": { "status": "NOT_CONFIGURED", "detail": "KALSHI_API_KEY_ID and KALSHI_PRIVATE_KEY_BASE64 empty; no position inventory" },
+    "playerProps": { "status": "UNKNOWN", "detail": "Not captured in this receipt; only reachable via interactive reference pages" },
+    "teamProps": { "status": "UNKNOWN" },
+    "gameProps": { "status": "UNKNOWN" },
+    "nflPlayByPlay": { "status": "NOT_IMPLEMENTED", "detail": "handoff HO-20260913-002 open" }
+  },
+  "modelStatus": {
+    "runnerProbability": "NONE_ELIGIBLE",
+    "reason": "baseline_market_implied_v0 echoes market prices; football totals heuristic uncalibrated; no calibrated NFL game or prop model",
+    "experimentalAnalog": { "model": "experimental-score-clock-analog-v0", "classification": "EXPERIMENTAL_CALCULATION_NOT_PRODUCTION_MODEL", "holdoutBrier": 0.1841, "constantBaselineBrier": 0.2488, "holdoutScope": "2025 halftime winner only", "emitsWhen": "game state goes live" }
+  },
+  "unknowns": [
+    "Bears starting QB not confirmed from an official source in this pass (Caleb Williams out; Bagent/Keenum unresolved)",
+    "Official inactives not captured",
+    "Weather issuance time not refreshed",
+    "No offered combo price and no validated joint model: any multi-leg joint probability is UNKNOWN"
+  ],
+  "actionsNotTaken": ["NOT_PUBLISHED", "NOT_DEPLOYED", "NO_WAGER", "NO_BET_SLIP", "NO_PUSH", "NO_MERGE"]
+}
