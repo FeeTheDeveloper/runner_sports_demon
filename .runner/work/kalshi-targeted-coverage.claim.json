@@ -1,0 +1,11 @@
+{
+  "agent": "codex",
+  "repository": "runner_sports_demon",
+  "branch": "fix/kalshi-targeted-event-coverage",
+  "paths": ["src/connectors/kalshi/client.ts", "src/tests/kalshi-coverage.test.ts", ".env.example", "DATA_SOURCES.md", "package.json"],
+  "task": "Fetch explicitly watched Kalshi events before broad discovery and fail on missing coverage",
+  "started_at": "2026-09-29",
+  "status": "local_fix_complete_live_acceptance_pending",
+  "completed_at": "2026-09-29",
+  "remaining": ["verified event ticker selection", "supervised live provider response check", "automatic schedule-to-provider mapping"]
+}

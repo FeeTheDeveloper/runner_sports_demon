@@ -1,5 +1,9 @@
 # Testing status
 
+## Targeted Kalshi event coverage - September 29, 2026
+
+Local `npm test` passed with a new fixture test for watched event priority, market deduplication, missing/empty event rejection, configured limit rejection and invalid watch-list health. This verifies the connector against simulated responses; no live provider response, engine restart or Site consumer acceptance was performed for this change.
+
 ## Connected-launch Site verification - September 26, 2026
 
 Companion Site production build/lint and all 43 tests passed; after a final anonymous billing cache-header repair, the nine billing tests and production build passed again. Production dependency audit reports zero known vulnerabilities. Browser verified desktop/mobile car layout, theme selection/persistence and signed-out operations denial; compiled homepage/tracker/disabled-checkout smoke checks passed. The actual billing SQL runs in isolated PostgreSQL tests, not hosted Supabase. No authenticated provider/payment or deployed acceptance claim. Demon runtime source was unchanged in this pass; earlier 15-program evidence below remains dated. [Connected-launch handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md).

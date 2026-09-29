@@ -4,6 +4,7 @@
 
 - REST base: `https://external-api.kalshi.com/trade-api/v2`
 - Implemented discovery endpoint: `GET /events?status=open&with_nested_markets=true&limit=...`
+- `RUNNER_KALSHI_EVENT_TICKERS` optionally fetches up to 20 verified, exact open event tickers before broad discovery using Kalshi's documented `tickers` filter. Watched markets count toward `RUNNER_SCOUT_MARKET_LIMIT`; a missing watched event/market or an insufficient limit fails the Kalshi poll rather than reporting incomplete coverage as healthy. This is a manual watch list, not automatic schedule-to-Kalshi mapping. Restart the engine after editing `.env` so it loads the new list.
 - WebSocket URL from public documentation/search result: `wss://external-api-ws.kalshi.com/trade-api/ws/v2`
 - WebSocket channels prepared: `orderbook_snapshot`, `orderbook_delta`, `ticker_v2`, `trade`
 - Auth headers supported: `KALSHI-ACCESS-KEY`, `KALSHI-ACCESS-SIGNATURE`, `KALSHI-ACCESS-TIMESTAMP`

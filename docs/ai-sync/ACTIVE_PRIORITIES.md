@@ -1,5 +1,7 @@
 # Active priorities
 
+2026-09-29 local coverage fix: explicit Kalshi event tickers can now be fetched ahead of broad discovery, with missing watched coverage failing the poll. Next step is verified schedule-to-provider mapping and a supervised provider response check for the exact upcoming slate. This local code path does not establish automatic event selection or complete sport/market coverage. [Source contract](../../DATA_SOURCES.md).
+
 2026-09-26 connected-launch priority: resolve verified Clerk/Supabase/Stripe bindings and commercial terms, then review coordinated schema/release actions for the exact Site project. Complete two-account and sandbox lifecycle acceptance before enabling checkout. Next model/agent work is measured usage enforcement, validated model execution and a deployed capability-scoped monitoring worker. [Launch handoff](../ops/CONNECTED_LAUNCH_2026-09-26.md).
 
 2026-09-26 hardening update: opt-in publishing, single-flight polling, receipt-vs-kickoff timing and current NFL provider-name mapping now have local fixes/tests. Next release gates are exact hosting target, Site owner migration/deployment, provider configuration, consumer acceptance and supervised monitoring/recovery. Historical identifier reconciliation and calibrated independent models remain open. [Release candidate](../ops/PRODUCTION_RELEASE_2026-09-26.md).

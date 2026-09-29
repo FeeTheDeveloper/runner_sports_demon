@@ -1,5 +1,7 @@
 # Blockers and known limitations
 
+2026-09-29: exact Kalshi event watch list support is implemented locally and tested with provider response fixtures. Operators must supply verified event tickers and a sufficient market limit; automatic schedule-to-Kalshi mapping and live provider acceptance remain open. A running engine must be restarted to load an edited `.env` watch list. [Source contract](../../DATA_SOURCES.md).
+
 2026-09-26 connected-launch blockers: Clerk production application binding, Supabase target reconciliation, Stripe merchant/terms, reviewed schema rollout and exact Site deployment remain pending. Browser sessions alone do not connect the application. Continuous monitoring/chat dispatch and validated paid model execution are not installed by the premium UI work. [Connection evidence and next steps](../ops/CONNECTED_LAUNCH_2026-09-26.md).
 
 2026-09-26 hardening supersedes older default-publishing/overlap/API findings below. Repairs are local and tested; production migration, deployment identity, actual cross-account acceptance and validated models remain blocked/unverified. [Current release report](../ops/PRODUCTION_RELEASE_2026-09-26.md).

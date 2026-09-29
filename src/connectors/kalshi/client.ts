@@ -16,34 +16,77 @@ export class KalshiConnector implements Connector {
   health(): ProviderHealth { return this.healthTracker.snapshot(); }
 
   async fetchMarkets(limit = 250): Promise<NormalizedMarket[]> {
-    const markets: NormalizedMarket[] = [];
-    let cursor: string | undefined;
     try {
-      for (let page = 0; markets.length < limit && page < 25; page += 1) {
-        const url = new URL(`${this.restBase}/events`);
-        url.searchParams.set("status", "open");
-        url.searchParams.set("with_nested_markets", "true");
-        url.searchParams.set("limit", String(Math.min(200, limit)));
-        if (cursor) url.searchParams.set("cursor", cursor);
-        const result = await fetchJson<KalshiEventsResponse>(url, { headers: this.authHeaders("GET", "/trade-api/v2/events") });
-        for (const event of result.data.events ?? []) {
-          if (typeof event.category === "string" && event.category.toLowerCase() !== "sports") continue;
-          const nested = Array.isArray(event.markets) ? event.markets as Record<string, unknown>[] : [];
-          for (const market of nested) {
-            markets.push(normalizeKalshiMarket(event, market, { receivedTimestamp: result.receivedAt, latencyMs: result.latencyMs }));
-            if (markets.length >= limit) break;
-          }
-          if (markets.length >= limit) break;
-        }
-        this.healthTracker.ok(result.latencyMs);
-        cursor = result.data.cursor;
-        if (!cursor) break;
+      if (!Number.isSafeInteger(limit) || limit < 1) throw new Error("Kalshi market limit must be a positive integer");
+      const watched = watchedEventTickers();
+      const markets = new Map<string, NormalizedMarket>();
+      if (watched.length) {
+        const found = new Set<string>();
+        await this.fetchEventPages(watched, (event, timing) => {
+          const ticker = event.event_ticker;
+          if (typeof ticker !== "string" || !watched.includes(ticker)) return false;
+          const before = markets.size;
+          this.addMarkets(event, timing, markets, limit, true);
+          if (markets.size > before) found.add(ticker);
+          return false;
+        });
+        const missing = watched.filter(ticker => !found.has(ticker));
+        if (missing.length) throw new Error(`Watched Kalshi events absent from open response: ${missing.join(", ")}`);
       }
-      return markets;
+      await this.fetchEventPages([], (event, timing) => {
+        if (typeof event.category === "string" && event.category.toLowerCase() !== "sports") return false;
+        this.addMarkets(event, timing, markets, limit, false);
+        return markets.size >= limit;
+      }, () => markets.size >= limit, Math.min(200, limit));
+      return [...markets.values()];
     } catch (error) {
       this.healthTracker.error(error);
       throw error;
     }
+  }
+
+  private addMarkets(event: Record<string, unknown>, timing: { receivedTimestamp: string; latencyMs: number }, markets: Map<string, NormalizedMarket>, limit: number, required: boolean): void {
+    const nested = Array.isArray(event.markets) ? event.markets as Record<string, unknown>[] : [];
+    for (const market of nested) {
+      if (typeof market.ticker !== "string" || !market.ticker) continue;
+      const id = `kalshi:${market.ticker}`;
+      if (markets.has(id)) continue;
+      if (markets.size >= limit) {
+        if (required) throw new Error(`Watched Kalshi markets exceed configured limit ${limit}`);
+        return;
+      }
+      markets.set(id, normalizeKalshiMarket(event, market, timing));
+    }
+  }
+
+  private async fetchEventPages(
+    tickers: string[],
+    onEvent: (event: Record<string, unknown>, timing: { receivedTimestamp: string; latencyMs: number }) => boolean,
+    isFull: () => boolean = () => false,
+    pageSize = Math.min(200, tickers.length || 200),
+  ): Promise<void> {
+    let cursor: string | undefined;
+    const seenCursors = new Set<string>();
+    for (let page = 0; page < 25 && !isFull(); page += 1) {
+      const url = new URL(`${this.restBase}/events`);
+      url.searchParams.set("status", "open");
+      url.searchParams.set("with_nested_markets", "true");
+      url.searchParams.set("limit", String(pageSize));
+      if (tickers.length) url.searchParams.set("tickers", tickers.join(","));
+      if (cursor) url.searchParams.set("cursor", cursor);
+      const result = await fetchJson<KalshiEventsResponse>(url, { headers: this.authHeaders("GET", "/trade-api/v2/events") });
+      if (!Array.isArray(result.data.events)) throw new Error("Kalshi events response is missing events");
+      this.healthTracker.ok(result.latencyMs);
+      for (const event of result.data.events) {
+        if (!event || typeof event !== "object") throw new Error("Kalshi events response contains an invalid event");
+        if (onEvent(event, { receivedTimestamp: result.receivedAt, latencyMs: result.latencyMs })) return;
+      }
+      cursor = result.data.cursor || undefined;
+      if (!cursor) return;
+      if (seenCursors.has(cursor)) throw new Error("Kalshi events pagination repeated a cursor");
+      seenCursors.add(cursor);
+    }
+    if (cursor && !isFull()) throw new Error("Kalshi events pagination exceeded 25 pages");
   }
 
   connectMarketStream(tickers: string[], onMessage: (message: unknown) => void): WebSocket {
@@ -85,4 +128,14 @@ export class KalshiConnector implements Connector {
     }
     return { "KALSHI-ACCESS-KEY": keyId, "KALSHI-ACCESS-SIGNATURE": signature, "KALSHI-ACCESS-TIMESTAMP": timestamp };
   }
+}
+
+function watchedEventTickers(): string[] {
+  const raw = process.env.RUNNER_KALSHI_EVENT_TICKERS?.trim();
+  if (!raw) return [];
+  const tickers = [...new Set(raw.split(",").map(value => value.trim().toUpperCase()))];
+  if (tickers.length > 20 || tickers.some(ticker => !/^[A-Z0-9-]{3,100}$/.test(ticker))) {
+    throw new Error("RUNNER_KALSHI_EVENT_TICKERS must contain at most 20 comma-separated Kalshi event tickers");
+  }
+  return tickers;
 }
