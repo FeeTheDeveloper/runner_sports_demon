@@ -1,0 +1,880 @@
+{
+  "schema": "runner.live-board-pack.v1",
+  "classification": "MARKET_DERIVED_AND_EXPERIMENTAL_ONLY_NO_CALIBRATED_RUNNER_MODEL",
+  "generatedAtUtc": "2026-09-29T00:19:53.815426+00:00",
+  "event": {
+    "runnerEventId": "RUNNER:NFL:2026-09-29:PHI:CHI",
+    "providerEventId": "401872963",
+    "awayTeam": "Philadelphia Eagles",
+    "homeTeam": "Chicago Bears",
+    "awayAbbreviation": "PHI",
+    "homeAbbreviation": "CHI",
+    "status": "in_progress",
+    "statusDetail": "11:53 - 1st Quarter",
+    "period": 1,
+    "clock": "11:53",
+    "venue": "Soldier Field",
+    "kickoff": "2026-09-29T00:15Z",
+    "freshness": "CURRENT",
+    "receivedTimestamp": "2026-09-29T00:21:34.595Z",
+    "sourceUpdatedAt": null
+  },
+  "kalshi": {
+    "rightsClass": "REGISTERED_RUNNER_PROVIDER_PUBLIC_MARKET_DATA",
+    "winner": [
+      {
+        "ticker": "KXNFLGAME-26SEP28PHICHI-PHI",
+        "sub": "Philadelphia",
+        "bid": 0.49,
+        "ask": 0.5,
+        "mid": 0.495,
+        "threshold": null,
+        "side": "PHI",
+        "vol24h": 9014330.66
+      },
+      {
+        "ticker": "KXNFLGAME-26SEP28PHICHI-CHI",
+        "sub": "Chicago",
+        "bid": 0.5,
+        "ask": 0.51,
+        "mid": 0.505,
+        "threshold": null,
+        "side": "CHI",
+        "vol24h": 3253042.17
+      }
+    ],
+    "spread": [
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI11",
+        "sub": "PHI Eagles wins by over 10.5 points",
+        "bid": 0.13,
+        "ask": 0.14,
+        "mid": 0.135,
+        "threshold": 11,
+        "side": "PHI",
+        "vol24h": 67105.73
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI7",
+        "sub": "CHI Bears wins by over 6.5 points",
+        "bid": 0.3,
+        "ask": 0.31,
+        "mid": 0.305,
+        "threshold": 7,
+        "side": "CHI",
+        "vol24h": 40448.12
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI17",
+        "sub": "PHI Eagles wins by over 16.5 points",
+        "bid": 0.06,
+        "ask": 0.07,
+        "mid": 0.065,
+        "threshold": 17,
+        "side": "PHI",
+        "vol24h": 11969.21
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI15",
+        "sub": "PHI Eagles wins by over 14.5 points",
+        "bid": 0.08,
+        "ask": 0.09,
+        "mid": 0.085,
+        "threshold": 15,
+        "side": "PHI",
+        "vol24h": 24862.72
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI14",
+        "sub": "PHI Eagles wins by over 13.5 points",
+        "bid": 0.1,
+        "ask": 0.11,
+        "mid": 0.105,
+        "threshold": 14,
+        "side": "PHI",
+        "vol24h": 102754.64
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI8",
+        "sub": "PHI Eagles wins by over 7.5 points",
+        "bid": 0.19,
+        "ask": 0.2,
+        "mid": 0.195,
+        "threshold": 8,
+        "side": "PHI",
+        "vol24h": 192837.03
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI10",
+        "sub": "PHI Eagles wins by over 9.5 points",
+        "bid": 0.16,
+        "ask": 0.18,
+        "mid": 0.17,
+        "threshold": 10,
+        "side": "PHI",
+        "vol24h": 150388.09
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI14",
+        "sub": "CHI Bears wins by over 13.5 points",
+        "bid": 0.11,
+        "ask": 0.13,
+        "mid": 0.12,
+        "threshold": 14,
+        "side": "CHI",
+        "vol24h": 16181.56
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI15",
+        "sub": "CHI Bears wins by over 14.5 points",
+        "bid": 0.09,
+        "ask": 0.11,
+        "mid": 0.1,
+        "threshold": 15,
+        "side": "CHI",
+        "vol24h": 200168.67
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI10",
+        "sub": "CHI Bears wins by over 9.5 points",
+        "bid": 0.19,
+        "ask": 0.21,
+        "mid": 0.2,
+        "threshold": 10,
+        "side": "CHI",
+        "vol24h": 13601.6
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI6",
+        "sub": "CHI Bears wins by over 5.5 points",
+        "bid": 0.33,
+        "ask": 0.34,
+        "mid": 0.335,
+        "threshold": 6,
+        "side": "CHI",
+        "vol24h": 9960.33
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI5",
+        "sub": "CHI Bears wins by over 4.5 points",
+        "bid": 0.35,
+        "ask": 0.36,
+        "mid": 0.355,
+        "threshold": 5,
+        "side": "CHI",
+        "vol24h": 22582.55
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI18",
+        "sub": "PHI Eagles wins by over 17.5 points",
+        "bid": 0.04,
+        "ask": 0.06,
+        "mid": 0.05,
+        "threshold": 18,
+        "side": "PHI",
+        "vol24h": 9607.12
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI3",
+        "sub": "CHI Bears wins by over 2.5 points",
+        "bid": 0.46,
+        "ask": 0.47,
+        "mid": 0.465,
+        "threshold": 3,
+        "side": "CHI",
+        "vol24h": 24320.97
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI21",
+        "sub": "PHI Eagles wins by over 20.5 points",
+        "bid": 0.03,
+        "ask": 0.04,
+        "mid": 0.035,
+        "threshold": 21,
+        "side": "PHI",
+        "vol24h": 68304.59
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI11",
+        "sub": "CHI Bears wins by over 10.5 points",
+        "bid": 0.15,
+        "ask": 0.18,
+        "mid": 0.165,
+        "threshold": 11,
+        "side": "CHI",
+        "vol24h": 17811.39
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI4",
+        "sub": "PHI Eagles wins by over 3.5 points",
+        "bid": 0.35,
+        "ask": 0.36,
+        "mid": 0.355,
+        "threshold": 4,
+        "side": "PHI",
+        "vol24h": 5713613.65
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI6",
+        "sub": "PHI Eagles wins by over 5.5 points",
+        "bid": 0.27,
+        "ask": 0.3,
+        "mid": 0.285,
+        "threshold": 6,
+        "side": "PHI",
+        "vol24h": 397751.19
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI5",
+        "sub": "PHI Eagles wins by over 4.5 points",
+        "bid": 0.29,
+        "ask": 0.3,
+        "mid": 0.295,
+        "threshold": 5,
+        "side": "PHI",
+        "vol24h": 1674087.06
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI8",
+        "sub": "CHI Bears wins by over 7.5 points",
+        "bid": 0.23,
+        "ask": 0.25,
+        "mid": 0.24,
+        "threshold": 8,
+        "side": "CHI",
+        "vol24h": 14214.93
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI7",
+        "sub": "PHI Eagles wins by over 6.5 points",
+        "bid": 0.25,
+        "ask": 0.27,
+        "mid": 0.26,
+        "threshold": 7,
+        "side": "PHI",
+        "vol24h": 468810.49
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI2",
+        "sub": "PHI Eagles wins by over 1.5 points",
+        "bid": 0.44,
+        "ask": 0.46,
+        "mid": 0.45,
+        "threshold": 2,
+        "side": "PHI",
+        "vol24h": 135015.37
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-PHI3",
+        "sub": "PHI Eagles wins by over 2.5 points",
+        "bid": 0.43,
+        "ask": 0.44,
+        "mid": 0.435,
+        "threshold": 3,
+        "side": "PHI",
+        "vol24h": 1179546.64
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI4",
+        "sub": "CHI Bears wins by over 3.5 points",
+        "bid": 0.37,
+        "ask": 0.38,
+        "mid": 0.375,
+        "threshold": 4,
+        "side": "CHI",
+        "vol24h": 87226.6
+      },
+      {
+        "ticker": "KXNFLSPREAD-26SEP28PHICHI-CHI2",
+        "sub": "CHI Bears wins by over 1.5 points",
+        "bid": 0.48,
+        "ask": 0.49,
+        "mid": 0.485,
+        "threshold": 2,
+        "side": "CHI",
+        "vol24h": 13726.88
+      }
+    ],
+    "total": [
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-27",
+        "sub": "Over 26.5 points",
+        "bid": 0.96,
+        "ask": 0.97,
+        "mid": 0.965,
+        "threshold": 27,
+        "side": "CHI",
+        "vol24h": 22488.41
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-42",
+        "sub": "Over 41.5 points",
+        "bid": 0.65,
+        "ask": 0.66,
+        "mid": 0.655,
+        "threshold": 42,
+        "side": "CHI",
+        "vol24h": 1733430.54
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-57",
+        "sub": "Over 56.5 points",
+        "bid": 0.21,
+        "ask": 0.22,
+        "mid": 0.215,
+        "threshold": 57,
+        "side": "CHI",
+        "vol24h": 72561.38
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-60",
+        "sub": "Over 59.5 points",
+        "bid": 0.14,
+        "ask": 0.15,
+        "mid": 0.145,
+        "threshold": 60,
+        "side": "CHI",
+        "vol24h": 17860.65
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-33",
+        "sub": "Over 32.5 points",
+        "bid": 0.89,
+        "ask": 0.9,
+        "mid": 0.895,
+        "threshold": 33,
+        "side": "CHI",
+        "vol24h": 12623.04
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-30",
+        "sub": "Over 29.5 points",
+        "bid": 0.93,
+        "ask": 0.94,
+        "mid": 0.935,
+        "threshold": 30,
+        "side": "CHI",
+        "vol24h": 17129.27
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-63",
+        "sub": "Over 62.5 points",
+        "bid": 0.1,
+        "ask": 0.11,
+        "mid": 0.105,
+        "threshold": 63,
+        "side": "CHI",
+        "vol24h": 17354.13
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-44",
+        "sub": "Over 43.5 points",
+        "bid": 0.59,
+        "ask": 0.61,
+        "mid": 0.6,
+        "threshold": 44,
+        "side": "CHI",
+        "vol24h": 315348.06
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-51",
+        "sub": "Over 50.5 points",
+        "bid": 0.37,
+        "ask": 0.38,
+        "mid": 0.375,
+        "threshold": 51,
+        "side": "CHI",
+        "vol24h": 40767.91
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-66",
+        "sub": "Over 65.5 points",
+        "bid": 0.06,
+        "ask": 0.07,
+        "mid": 0.065,
+        "threshold": 66,
+        "side": "CHI",
+        "vol24h": 44684.5
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-36",
+        "sub": "Over 35.5 points",
+        "bid": 0.82,
+        "ask": 0.83,
+        "mid": 0.825,
+        "threshold": 36,
+        "side": "CHI",
+        "vol24h": 21866.53
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-39",
+        "sub": "Over 38.5 points",
+        "bid": 0.74,
+        "ask": 0.75,
+        "mid": 0.745,
+        "threshold": 39,
+        "side": "CHI",
+        "vol24h": 56715.62
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-54",
+        "sub": "Over 53.5 points",
+        "bid": 0.28,
+        "ask": 0.29,
+        "mid": 0.285,
+        "threshold": 54,
+        "side": "CHI",
+        "vol24h": 27935.39
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-24",
+        "sub": "Over 23.5 points",
+        "bid": 0.97,
+        "ask": 0.98,
+        "mid": 0.975,
+        "threshold": 24,
+        "side": "CHI",
+        "vol24h": 34005.17
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-48",
+        "sub": "Over 47.5 points",
+        "bid": 0.45,
+        "ask": 0.47,
+        "mid": 0.46,
+        "threshold": 48,
+        "side": "CHI",
+        "vol24h": 25170.72
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-45",
+        "sub": "Over 44.5 points",
+        "bid": 0.56,
+        "ask": 0.57,
+        "mid": 0.565,
+        "threshold": 45,
+        "side": "CHI",
+        "vol24h": 70332.08
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-47",
+        "sub": "Over 46.5 points",
+        "bid": 0.49,
+        "ask": 0.51,
+        "mid": 0.5,
+        "threshold": 47,
+        "side": "CHI",
+        "vol24h": 25812.47
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-46",
+        "sub": "Over 45.5 points",
+        "bid": 0.52,
+        "ask": 0.54,
+        "mid": 0.53,
+        "threshold": 46,
+        "side": "CHI",
+        "vol24h": 57834.52
+      },
+      {
+        "ticker": "KXNFLTOTAL-26SEP28PHICHI-43",
+        "sub": "Over 42.5 points",
+        "bid": 0.64,
+        "ask": 0.65,
+        "mid": 0.645,
+        "threshold": 43,
+        "side": "CHI",
+        "vol24h": 1176163.68
+      }
+    ],
+    "winnerMidSum": 1.0
+  },
+  "sportsbookDevig": {
+    "source": "Outlier UI observation at 2026-09-29T00:12Z (UNLICENSED_THIRD_PARTY_SURFACE, reference only)",
+    "method": "src/models/vig/engine.ts calculateVig \u2014 proportional overround removal",
+    "moneyline": {
+      "legs": [
+        {
+          "american": -174,
+          "raw": 0.635,
+          "fair": 0.6359,
+          "side": "PHI"
+        },
+        {
+          "american": 175,
+          "raw": 0.3636,
+          "fair": 0.3641,
+          "side": "CHI"
+        }
+      ],
+      "overround": -0.0013
+    },
+    "spread35": {
+      "legs": [
+        {
+          "american": 106,
+          "raw": 0.4854,
+          "fair": 0.4901,
+          "side": "PHI -3.5"
+        },
+        {
+          "american": -102,
+          "raw": 0.505,
+          "fair": 0.5099,
+          "side": "CHI +3.5"
+        }
+      ],
+      "overround": -0.0096
+    },
+    "total425": {
+      "legs": [
+        {
+          "american": -102,
+          "raw": 0.505,
+          "fair": 0.5012,
+          "side": "Over 42.5"
+        },
+        {
+          "american": -101,
+          "raw": 0.5025,
+          "fair": 0.4988,
+          "side": "Under 42.5"
+        }
+      ],
+      "overround": 0.0074
+    }
+  },
+  "experimentalAnalog": {
+    "model": "experimental-score-clock-analog-v0",
+    "classification": "EXPERIMENTAL_CALCULATION_NOT_PRODUCTION_MODEL",
+    "criticalCaveat": "Team-blind. It knows only score, clock and the 2016-2024 home-win base rate. It does not know PHI is 2-0, that Caleb Williams is out, or anything about either roster. Its disagreement with the market is NOT a signal.",
+    "holdout": {
+      "status": "measured",
+      "trainGames": 2467,
+      "holdoutSeason": 2025,
+      "holdoutGames": 264,
+      "brier": 0.1841,
+      "constantBaselineBrier": 0.2488,
+      "logLoss": 0.5466,
+      "scope": "halftime winner only; does not validate prices, edges, other game times, or 2026"
+    },
+    "trajectory": [
+      {
+        "at": "2026-09-29T00:16:47.299045+00:00",
+        "statusDetail": "15:00 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 0,
+        "homeWinProb": 0.552
+      },
+      {
+        "at": "2026-09-29T00:18:50.255718+00:00",
+        "statusDetail": "14:22 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 0,
+        "homeWinProb": 0.553
+      },
+      {
+        "at": "2026-09-29T00:20:52.441250+00:00",
+        "statusDetail": "12:38 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 0,
+        "homeWinProb": 0.555
+      },
+      {
+        "at": "2026-09-29T00:22:54.435925+00:00",
+        "statusDetail": "10:52 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 0,
+        "homeWinProb": 0.557
+      },
+      {
+        "at": "2026-09-29T00:24:56.694467+00:00",
+        "statusDetail": "8:47 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 6,
+        "homeWinProb": 0.699
+      },
+      {
+        "at": "2026-09-29T00:26:58.478878+00:00",
+        "statusDetail": "8:47 - 1st Quarter",
+        "awayScore": 0,
+        "homeScore": 7,
+        "homeWinProb": 0.702
+      }
+    ]
+  },
+  "runnerModelEligibility": {
+    "status": "NONE_ELIGIBLE",
+    "reason": "baseline_market_implied_v0 echoes market prices; football totals heuristic uncalibrated; no calibrated NFL game, spread, total or prop model exists.",
+    "consequence": "No Runner probability, no edge, no EV and no wager recommendation is produced anywhere in this pack."
+  },
+  "refreshedAtUtc": "2026-09-29T01:02:00.929636+00:00",
+  "resolvedUnknowns": {
+    "bearsStartingQb": {
+      "answer": "Case Keenum",
+      "evidence": "ESPN live play-by-play shows C.Keenum passing on Chicago's opening drive",
+      "confirmedAtUtc": "2026-09-29T00:21:32.591096+00:00",
+      "previousStatus": "UNKNOWN \u2014 inferred only from Outlier prop-board shape"
+    },
+    "officialInactives": {
+      "source": "ESPN summary injuries block",
+      "rows": [
+        {
+          "team": "CHI",
+          "player": "Anthony Johnson Jr.",
+          "status": "Injured Reserve",
+          "detail": "Undisclosed"
+        },
+        {
+          "team": "CHI",
+          "player": "Caleb Williams",
+          "status": "Out",
+          "detail": "Hamstring"
+        },
+        {
+          "team": "CHI",
+          "player": "Ozzy Trapilo",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "CHI",
+          "player": "Jamree Kromah",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "CHI",
+          "player": "Jayden Loving",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "PHI",
+          "player": "Tanner McKee",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "PHI",
+          "player": "Fred Johnson",
+          "status": "Out",
+          "detail": "Knee"
+        },
+        {
+          "team": "PHI",
+          "player": "Cole Payton",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "PHI",
+          "player": "AJ Epenesa",
+          "status": "Out",
+          "detail": "Coach's Decision"
+        },
+        {
+          "team": "PHI",
+          "player": "Dallas Goedert",
+          "status": "Out",
+          "detail": "Knee - MCL"
+        }
+      ]
+    }
+  },
+  "liveRepricing": {
+    "observation": "Kalshi PHI win mid moved 0.635 (pregame, 00:11Z) to 0.555 (00:19Z) with the score still 0-0",
+    "cause": "Chicago's opening drive: 5 plays, 34 yards, reached the PHI 32 \u2014 Keenum 3/3 short passing plus two D'Andre Swift runs",
+    "liquidityCheck": "Bid/ask stayed 1 cent wide and last traded 0.56, so this is a genuine repricing, not a thin-market artifact",
+    "kalshiVolume24h": 9014330.66
+  },
+  "devigCaveat": "The moneyline devig returns a NEGATIVE overround (-0.0013) because PHI -174 and CHI +175 were the best prices across two different venues. No single book offers that pair, so it is not an obtainable two-sided market and must not be read as free value.",
+  "liveScore": {
+    "away": "PHI",
+    "awayScore": 0,
+    "home": "CHI",
+    "homeScore": 7,
+    "statusDetail": "8:47 - 1st Quarter",
+    "scoringPlay": "Luther Burden III 8 Yd pass from Case Keenum (Cairo Santos kick); CHI drive 11 plays, 66 yards, 6:13"
+  },
+  "ladderIntegrity": {
+    "spreadPHI": [],
+    "spreadCHI": [],
+    "total": [],
+    "note": "Empty list means monotone. Earlier PHI violations at >1.5/>2.5 and >5.5/>6.5 cleared after the touchdown repriced the ladder."
+  },
+  "marketTrack": [
+    {
+      "utc": "00:11",
+      "phiWinMid": 0.635
+    },
+    {
+      "utc": "00:19",
+      "phiWinMid": 0.555
+    },
+    {
+      "utc": "00:21",
+      "phiWinMid": 0.575
+    },
+    {
+      "utc": "00:25",
+      "phiWinMid": 0.495
+    }
+  ],
+  "analogVsMarket": {
+    "atTouchdown": {
+      "analogHomeWin": 0.699,
+      "marketHomeWin": 0.505,
+      "gap": 0.194
+    },
+    "interpretation": "The analog over-weights an early seven-point lead because it is team-blind. The gap is the analog's blind spot, not an edge."
+  },
+  "artifact": "https://claude.ai/artifact/EUAZqCVv95BtHPrXxdW6Y8",
+  "positions": {
+    "source": "Kalshi portfolio page, owner-authorized interactive read at 2026-09-29T00:36Z",
+    "rightsClass": "OWNER_ACCOUNT_INTERACTIVE_READ_NOT_AN_API_RECEIPT",
+    "apiRouteStatus": "NOT_CONFIGURED \u2014 KALSHI_API_KEY_ID and KALSHI_PRIVATE_KEY_BASE64 still empty",
+    "account": {
+      "portfolio": 185.22,
+      "positions": 161.44,
+      "cash": 23.78,
+      "change24h": -6.54,
+      "change24hPct": -6.98,
+      "apiTier": "Basic"
+    },
+    "combos": [
+      {
+        "id": "A",
+        "openedAt": "2026-09-28 19:31 CT",
+        "cost": 74.99,
+        "contracts": 153.84,
+        "avgPriceCents": 48.74,
+        "maxPayout": 153.84,
+        "mark": 72.3,
+        "return": -2.68,
+        "returnPct": -4.0,
+        "legs": [
+          {
+            "leg": "Saquon Barkley 60+ rushing yards",
+            "entryPct": 69,
+            "livePct": null,
+            "note": "No public Kalshi series resolved for rushing yards; 2 carries 16 yards at time of read"
+          },
+          {
+            "leg": "No - CHI Bears wins by over 1.5 points",
+            "entryPct": 49,
+            "livePct": 45.5,
+            "note": "Complement of KXNFLSPREAD-26SEP28PHICHI-CHI2 yes-mid 0.545"
+          },
+          {
+            "leg": "PHI Eagles team total over 17.5",
+            "entryPct": 66,
+            "livePct": 53.5,
+            "note": "KXNFLTEAMTOTAL-26SEP28PHICHI-PHI18"
+          }
+        ],
+        "correlation": {
+          "naiveIndependenceProduct": 0.2232,
+          "offeredEntryPrice": 0.4874,
+          "ratio": 2.18,
+          "finding": "Kalshi priced the combo at 2.18x the independence product, consistent with strongly positively correlated legs. All three legs express the same Philadelphia-controls-the-game script.",
+          "jointEdge": "UNKNOWN",
+          "jointEdgeReason": "No validated joint model exists in Runner for this event; marginal probabilities must not be multiplied for dependent legs."
+        }
+      },
+      {
+        "id": "B",
+        "openedAt": "2026-09-28 19:31 CT",
+        "cost": 92.99,
+        "contracts": 232.73,
+        "avgPriceCents": 39.95,
+        "maxPayout": 232.73,
+        "mark": 89.14,
+        "return": -3.85,
+        "returnPct": -4.0,
+        "legs": "UNKNOWN",
+        "legsReason": "The detail panel initiates a sell-quote request on the position; it was not opened."
+      }
+    ],
+    "exposure": {
+      "totalCost": 167.98,
+      "totalMark": 161.44,
+      "concentration": "Both combos are Philadelphia-directional with no offsetting position. PHI win probability has moved 0.635 to 0.445 since the pregame quote."
+    },
+    "sellHoldAnalysis": {
+      "status": "UNKNOWN",
+      "missing": [
+        "validated fair value",
+        "executable exit quote including fees",
+        "independent Runner probability"
+      ],
+      "note": "A market midpoint is not an executable exit and a scoreboard state is not a fair value. No sell, hold or add recommendation is produced."
+    },
+    "actionsNotTaken": [
+      "NO_ORDER_PLACED",
+      "NO_ORDER_AMENDED",
+      "NO_ORDER_CANCELLED",
+      "NO_SELL_QUOTE_SUBMITTED",
+      "NO_CREDENTIALS_READ"
+    ]
+  },
+  "postgame": {
+    "settledAtUtc": "2026-09-29T15:34:10.410632+00:00",
+    "final": {
+      "away": "PHI",
+      "awayScore": 7,
+      "home": "CHI",
+      "homeScore": 27,
+      "status": "Final"
+    },
+    "scoringPlays": [
+      "Q1 8:47 Luther Burden III 8 Yd pass from Case Keenum (Santos kick) 0-7",
+      "Q2 1:52 Cairo Santos 29 Yd FG 0-10",
+      "Q2 0:00 Jalen Hurts 1 Yd Rush (Elliott kick) 7-10",
+      "Q3 10:17 Cairo Santos 48 Yd FG 7-13",
+      "Q3 5:47 Kalif Raymond 41 Yd pass from Case Keenum (Santos kick) 7-20",
+      "Q4 7:19 Case Keenum 1 Yd Rush (Santos kick) 7-27"
+    ],
+    "marketPathPhiWin": [
+      0.635,
+      0.575,
+      0.495,
+      0.445,
+      0.0
+    ],
+    "comboASettlement": {
+      "legs": [
+        {
+          "leg": "Saquon Barkley 60+ rushing yards",
+          "result": "HIT",
+          "actual": "15 carries, 82 yards, long 17"
+        },
+        {
+          "leg": "No - CHI Bears wins by over 1.5 points",
+          "result": "LOST",
+          "actual": "Chicago won by 20"
+        },
+        {
+          "leg": "PHI Eagles team total over 17.5",
+          "result": "LOST",
+          "actual": "Philadelphia scored 7"
+        }
+      ],
+      "comboResult": "LOST",
+      "cost": 74.99,
+      "payout": 0.0,
+      "note": "All-or-nothing combo. One leg of three hit."
+    },
+    "comboBSettlement": {
+      "result": "UNVERIFIED",
+      "cost": 92.99,
+      "reason": "Legs were never read, and the browser session has since ended. Confirm from the portfolio History tab or the API route."
+    },
+    "correlationLesson": {
+      "observed": "The three Combo A legs were priced at 48.74c against a 22.3c independence product because they were strongly positively correlated.",
+      "outcome": "Correlation is symmetric. The same dependence that lifted the offered price above the independence product also meant the legs failed together once the game script went against Philadelphia. Two of three failed on the same cause: Chicago controlling the game.",
+      "runnerEdgeClaimed": "NONE \u2014 no joint model existed, and none was asserted before or after the result."
+    },
+    "immutability": "No pregame or live forecast in this pack was rewritten. This block is appended settlement only."
+  }
+}

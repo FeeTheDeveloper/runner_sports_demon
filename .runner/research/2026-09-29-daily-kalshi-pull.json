@@ -1,0 +1,157 @@
+{
+  "schema": "runner.daily-kalshi-pull.v1",
+  "date": "2026-09-29",
+  "classification": "LICENSED_PROVIDER_READ_NO_RUNNER_MODEL_NO_EDGE",
+  "rightsClass": "REGISTERED_RUNNER_PROVIDER_PUBLIC_MARKET_DATA",
+  "generatedAtUtc": "2026-09-29T15:32:36.528134+00:00",
+  "leagues": {
+    "WNBA": [
+      {
+        "event": "KXWNBAGAME-26SEP29LVIND",
+        "markets": [
+          {
+            "ticker": "KXWNBAGAME-26SEP29LVIND-LV",
+            "team": "LV",
+            "sub": "Las Vegas",
+            "bid": 0.47,
+            "ask": 0.48,
+            "mid": 0.475,
+            "vol24h": 86930.69
+          },
+          {
+            "ticker": "KXWNBAGAME-26SEP29LVIND-IND",
+            "team": "IND",
+            "sub": "Indiana",
+            "bid": 0.52,
+            "ask": 0.53,
+            "mid": 0.525,
+            "vol24h": 78521.5
+          }
+        ],
+        "midSum": 1.0
+      },
+      {
+        "event": "KXWNBAGAME-26SEP29MINNY",
+        "markets": [
+          {
+            "ticker": "KXWNBAGAME-26SEP29MINNY-MIN",
+            "team": "MIN",
+            "sub": "Minnesota",
+            "bid": 0.59,
+            "ask": 0.6,
+            "mid": 0.595,
+            "vol24h": 87533.01
+          },
+          {
+            "ticker": "KXWNBAGAME-26SEP29MINNY-NY",
+            "team": "NY",
+            "sub": "New York",
+            "bid": 0.4,
+            "ask": 0.42,
+            "mid": 0.41,
+            "vol24h": 35909.3
+          }
+        ],
+        "midSum": 1.005
+      }
+    ],
+    "MLB": [
+      {
+        "event": "KXMLBGAME-26SEP291400PHIATL",
+        "markets": [
+          {
+            "ticker": "KXMLBGAME-26SEP291400PHIATL-PHI",
+            "team": "PHI",
+            "sub": "Philadelphia",
+            "bid": 0.36,
+            "ask": 0.37,
+            "mid": 0.365,
+            "vol24h": 446979.72
+          },
+          {
+            "ticker": "KXMLBGAME-26SEP291400PHIATL-ATL",
+            "team": "ATL",
+            "sub": "Atlanta",
+            "bid": 0.63,
+            "ask": 0.64,
+            "mid": 0.635,
+            "vol24h": 351677.57
+          }
+        ],
+        "midSum": 1.0
+      },
+      {
+        "event": "KXMLBGAME-26SEP291700CWSHOU",
+        "markets": [
+          {
+            "ticker": "KXMLBGAME-26SEP291700CWSHOU-CWS",
+            "team": "CWS",
+            "sub": "Chicago WS",
+            "bid": 0.46,
+            "ask": 0.47,
+            "mid": 0.465,
+            "vol24h": 194745.98
+          },
+          {
+            "ticker": "KXMLBGAME-26SEP291700CWSHOU-HOU",
+            "team": "HOU",
+            "sub": "Houston",
+            "bid": 0.53,
+            "ask": 0.54,
+            "mid": 0.535,
+            "vol24h": 109773.15
+          }
+        ],
+        "midSum": 1.0
+      },
+      {
+        "event": "KXMLBGAME-26SEP292000BOSNYY",
+        "markets": [
+          {
+            "ticker": "KXMLBGAME-26SEP292000BOSNYY-NYY",
+            "team": "NYY",
+            "sub": "New York Y",
+            "bid": 0.55,
+            "ask": 0.56,
+            "mid": 0.555,
+            "vol24h": 885491.31
+          },
+          {
+            "ticker": "KXMLBGAME-26SEP292000BOSNYY-BOS",
+            "team": "BOS",
+            "sub": "Boston",
+            "bid": 0.44,
+            "ask": 0.45,
+            "mid": 0.445,
+            "vol24h": 298790.88
+          }
+        ],
+        "midSum": 1.0
+      },
+      {
+        "event": "KXMLBGAME-26SEP292200CHCSD",
+        "markets": [
+          {
+            "ticker": "KXMLBGAME-26SEP292200CHCSD-CHC",
+            "team": "CHC",
+            "sub": "Chicago C",
+            "bid": 0.45,
+            "ask": 0.46,
+            "mid": 0.455,
+            "vol24h": 64831.87
+          },
+          {
+            "ticker": "KXMLBGAME-26SEP292200CHCSD-SD",
+            "team": "SD",
+            "sub": "San Diego",
+            "bid": 0.54,
+            "ask": 0.55,
+            "mid": 0.545,
+            "vol24h": 126115.28
+          }
+        ],
+        "midSum": 1.0
+      }
+    ]
+  }
+}

@@ -118,3 +118,31 @@ The fix is narrow: add an explicit series-ticker fetch path (`KXNFLGAME`, `KXNFL
 Bears starting quarterback is not confirmed from an official source in this pass; Caleb Williams is out and the Keenum/Bagent split rests on market shape only. Official inactives not captured. Weather issuance time not refreshed. Player, team and game prop families were not captured and stay `UNKNOWN`. No Runner probability is eligible for this event, so **no edge or EV is stated anywhere in this run** — `baseline_market_implied_v0` echoes prices and the totals heuristic is uncalibrated.
 
 Artifacts: `.runner/research/2026-09-28-phi-chi-pregame-20260929T000841Z.json`, the archived Outlier alternate-spread a11y capture beside it, and the Kalshi receipt above. Nothing published, deployed, pushed or merged; no wager and no bet slip.
+
+## Postgame — final and settlement
+
+**Chicago 27, Philadelphia 7.** Case Keenum, starting in place of Caleb Williams, threw two touchdowns and ran one in. Philadelphia's only score was a Hurts 1-yard run on the last play of the half.
+
+The licensed Kalshi market tracked the game honestly the whole way: Philadelphia's win probability went `0.635` pregame, `0.575` after the opening drive stalled, `0.495` on Chicago's touchdown, `0.445` early in the second quarter, and to zero at the whistle. There was no point at which the market lagged the scoreboard.
+
+The experimental score-clock analog's disagreement was, as recorded live, its blind spot rather than a signal — it read Chicago at 69.9% on the opening touchdown against the market's 50.5%. It happened to land on the right side, which is not evidence the analog is good: it is team-blind, and the result is one sample well outside its halftime-only holdout scope.
+
+### What the combo settlement shows
+
+Combo A settled **lost** at a $74.99 cost. One leg of three hit:
+
+| Leg | Entry | Result | Actual |
+|---|---|---|---|
+| Saquon Barkley 60+ rushing yards | 69% | **HIT** | 15 carries, 82 yards |
+| No · CHI wins by over 1.5 | 49% | LOST | Chicago won by 20 |
+| PHI team total over 17.5 | 66% | LOST | Philadelphia scored 7 |
+
+This is the correlation point from the live board, resolved. Kalshi priced those legs at 48.74¢ against a 22.3¢ independence product precisely because they were strongly positively correlated. **That correlation is symmetric.** The same dependence that lifted the offered price also meant two of the three legs failed on a single shared cause — Chicago controlling the game. A combo built entirely from one side of one game script has far less diversification than a leg count suggests.
+
+No Runner edge was claimed on this position before the game and none is claimed after it. The result does not validate or invalidate a model, because no eligible model existed.
+
+Combo B, cost $92.99, remains **UNVERIFIED** — its legs were never read, because the detail panel initiates a sell-quote request on the live position.
+
+### Standing gaps, unchanged
+
+`KALSHI_API_KEY_ID` and `KALSHI_PRIVATE_KEY_BASE64` are still empty, so `kalshi-positions-readonly.mjs` cannot confirm settlement and there is no position receipt under `.runner/positions/`. The Kalshi connector still walks `/events` in provider order and stops at 250; series-targeted fetch remains unapplied. Both remain owner decisions.
