@@ -1,5 +1,7 @@
 # Decision log
 
+2026-10-02: Keep BettingPros Premium in an on-demand, browser-observed research lane. Save only selected, attributed, reference-only packets in ignored local `.runner/research/bettingpros/`; the validator rejects source-time substitution, ambiguous event IDs, model-output labels, and publication flags. A separate 2–4 leg combo skill compares exact Kalshi contract terms and leaves joint edge UNKNOWN without a validated joint model and offered combo price. No scheduled BettingPros collector, wager path, or Site feed is created. [Workflow](../ops/BETTINGPROS_BROWSER_RESEARCH.md).
+
 2026-09-26: Preserve engine/SQLite architecture; add portable data/content artifacts with immutable fixture/historical labels and separate receipt metadata. Use API-only mode for local evaluation without ingest/publish effects. Keep unknown model fields null and require evidence references for model-output declarations. [Contract](../ops/RUNNER_DATA_SPINE.md).
 
 ## 2026-09-16 — Local control center

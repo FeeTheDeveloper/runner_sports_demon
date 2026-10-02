@@ -1,5 +1,9 @@
 # Testing status
 
+## BettingPros browser skill and combo worksheet - October 2, 2026
+
+`npm run build` and `npm test` passed, including focused packet validation for provenance, canonical event identity, quote time, publication/model labels, independent comparison, and duplicate IDs. A staged skills-only Runner Sports Plug 0.1.4 package passed local Autopilot validation and deterministic two-build SHA256 comparison; a fresh extraction validated. The stock Autopilot directory-descriptor preflight cannot run on Windows, so an isolated Windows-compatible copy was used for local packaging. No installed-plugin, public submission, live feed, or wager acceptance test was performed. [Browser and packet evidence](../ops/BETTINGPROS_BROWSER_RESEARCH.md).
+
 ## Targeted Kalshi event coverage - September 29, 2026
 
 Local `npm test` passed with a new fixture test for watched event priority, market deduplication, missing/empty event rejection, configured limit rejection and invalid watch-list health. This verifies the connector against simulated responses; no live provider response, engine restart or Site consumer acceptance was performed for this change.

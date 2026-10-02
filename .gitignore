@@ -20,4 +20,6 @@ exports/
 .runner/slates/*.json
 .runner/slates/*.log
 .runner/positions/*.json
+.runner/research/bettingpros/
+.runner/research/combos/
 .runner/transcripts/*.json
