@@ -25,7 +25,7 @@ export function renderControlDashboard(): string {
 <aside class="sidebar">
   <a class="brand" href="#overview" aria-label="Runner home"><img class="brand-image" src="/assets/runner-logo.png" width="627" height="627" alt="Runner Sports & Analytics"><span>RUNNER<small>DEMON CONTROL</small></span></a>
   <div class="workspace"><span class="workspace-icon">D</span><div>DEMON / LOCAL<small>Sports intelligence engine</small></div><span class="workspace-dot"></span></div>
-  <div class="nav-label">WORKSPACE</div><nav aria-label="Main navigation">${nav("overview", "Overview")}${nav("markets", "Markets", "nav-markets")}${nav("schedule", "Game schedule")}${nav("totals", "Totals desk")}</nav>
+  <div class="nav-label">WORKSPACE</div><nav aria-label="Main navigation">${nav("overview", "Overview")}${nav("markets", "Markets", "nav-markets")}${nav("schedule", "Game schedule")}${nav("totals", "Totals desk")}<a href="/research/combos/tonight" aria-label="Tonight's combo research">${icon("markets")}<span>Combo research</span></a></nav>
   <div class="nav-label second">OPERATIONS</div><nav aria-label="Operations">${nav("providers", "Data providers")}${nav("workflows", "Work queue", "nav-work")}${nav("models", "Model registry")}${nav("content", "Content studio")}</nav>
   <div class="sidebar-bottom"><div class="local-chip"><span class="dot lime"></span> LOCAL WORKSPACE</div><p>Intelligence first.<br>Every signal needs evidence.</p><div class="owner"><span>KF</span><div>King Fee<small>Fee The Developer</small></div></div></div>
 </aside>

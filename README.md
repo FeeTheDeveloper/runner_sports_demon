@@ -48,6 +48,8 @@ This command binds to loopback and reads the existing SQLite store without initi
 
 Use `npm run dashboard -- --port 8791` for another port. Stop with Ctrl+C in the launch terminal. The original engine/API commands below retain their behavior.
 
+The local dashboard's **Combo research** link opens `/research/combos/tonight`. It rereads the fixed 2026-10-02 NCAAF/WNBA worksheet in `.runner/research/combos/` every 30 seconds. This is a file-backed research view, not a live quote feed or an executable bet slip; source receipt times and missing combo inputs remain visible. `/research/combos/source` exposes the original worksheet as plain text on the same loopback-only dashboard.
+
 ### Market ingestion
 
 ```bash

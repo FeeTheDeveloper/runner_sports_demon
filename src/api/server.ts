@@ -12,6 +12,7 @@ import { renderWebDashboard } from "../dashboard/web.js";
 import { CfbScheduleService, NflScheduleService } from "../games/discovery/service.js";
 import { boolEnv, intEnv, optionalStringEnv } from "../utils/env.js";
 import { renderControlDashboard } from "../dashboard/control-web.js";
+import { readComboResearchSource, renderComboResearch } from "../dashboard/combo-research.js";
 import { readControlSnapshot } from "../dashboard/control.js";
 import { freshnessAt, metadata, readContent } from "../operations/data.js";
 
@@ -120,6 +121,16 @@ export function startApi(cache: MarketStateCache, port = 8787, flow = new GameFl
     if (request.method === "GET" && (path === "/" || path === "/dashboard")) {
       response.setHeader("content-type", "text/html; charset=utf-8");
       response.end(options.localDashboard ? renderControlDashboard() : renderWebDashboard());
+      return;
+    }
+    if (request.method === "GET" && options.localDashboard && path === "/research/combos/tonight") {
+      try { response.setHeader("content-type", "text/html; charset=utf-8"); response.end(renderComboResearch()); }
+      catch { response.statusCode = 503; response.end(JSON.stringify({ error: "combo_report_unavailable" })); }
+      return;
+    }
+    if (request.method === "GET" && options.localDashboard && path === "/research/combos/source") {
+      try { response.setHeader("content-type", "text/plain; charset=utf-8"); response.end(readComboResearchSource()); }
+      catch { response.statusCode = 503; response.end(JSON.stringify({ error: "combo_report_unavailable" })); }
       return;
     }
     if (request.method === "GET" && path === "/control/status" && options.localDashboard) {
