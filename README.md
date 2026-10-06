@@ -2,6 +2,8 @@
 
 Local-first Runner Sports market intelligence service for live Kalshi and Polymarket monitoring.
 
+[Portfolio evidence and truth boundary](docs/PORTFOLIO_CASE_STUDY.md)
+
 ## Architecture contract
 
 Demon SQLite
