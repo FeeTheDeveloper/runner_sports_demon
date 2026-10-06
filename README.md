@@ -65,3 +65,7 @@ npm run scout -- start --api
 Open `http://localhost:8787/`. CFB schedule filters support `date=YYYY-MM-DD`, `sport=cfb|ncaaf`, and `ranked=true|false`. Canonical game ids must be URL encoded when embedded in client-generated paths. Submit a validated, market-independent baseline with `POST /baselines`; inspect it and guarded sportsbook comparisons at `/games/:id/baselines` and `/games/:id/comparisons`.
 
 The Odds API worker requires `ODDS_API_KEY`. Missing credentials are surfaced as `DISABLED` provider health and no sportsbook data is fabricated.
+
+## Video production (OpenMontage)
+
+[OpenMontage](https://github.com/calesthio/OpenMontage) is attached as a pinned git submodule at `vendor/openmontage` (AGPL-3.0, kept separate from this codebase). Fetch it with `git submodule update --init --depth 1 vendor/openmontage`. Setup, license boundary, and key handling: [`OPENMONTAGE.md`](OPENMONTAGE.md).
