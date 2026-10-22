@@ -9,7 +9,7 @@
 | Company | Runner Sports & Analytics LLC |
 | Project | `runner-sports-analytics` Claude plugin (lineage: ChatGPT "Runner Sports Plug" 0.1.4) |
 | Repository | FeeTheDeveloper/runner_sports_demon |
-| Branch | feat/runner-sports-analytics-plugin-flow-studio @ 3d85ba0 (base main @ 8cc8be7) |
+| Branch | feat/runner-sports-analytics-plugin-flow-studio @ 3eafebe (commits 3d85ba0, cac1939, 3eafebe; base main @ 8cc8be7) |
 | Status | READY |
 | Current owner | Claude |
 | Next owner | King Fee (PR review and merge), then the plugin release owner (Claude plugin upload; ChatGPT Runner Sports Plug overlay once its backend ID is resolved) |
@@ -26,6 +26,7 @@ Give the Runner Sports & Analytics plugin a source-controlled home and insert th
 - VERIFIED — `claude plugin validate plugin/runner-sports-analytics` passed (Claude Code 2.1.308). `npm ci`, `npm run build`, `npm test` (all 15 suites), `npm run contracts:validate` (10 contracts, 5 handoffs) pass. `npm run audit -- --skip-exec` reports the same pre-existing non-strict FAIL rows as `main` (missing `AGENT_GUIDE.md` referenced by `OPENMONTAGE.md`, stale `system-status.json`, uncalibrated model); regenerated audit outputs were not committed. No runtime code touched.
 - VERIFIED — Secret/PII pattern scan of the plugin tree: clean. Fresh-context invocation test of the new skill: C1–C8 PASS, C9 wording defects fixed before commit.
 - VERIFIED — Repository visibility is PUBLIC; `OWNERSHIP-NOTICE.md` classifies the plugin PRIVATE with no public redistribution license. Placement was King Fee's call; README now carries the rule that proprietary model output, account identifiers, credentials and unreleased media never enter this tree.
+- VERIFIED — Copilot review on PR #28 raised two doctrine conflicts in pre-existing plugin skills, both confirmed against `AGENTS.md`, `RUNNER_SYNC_AUDIT.md` and `MODEL_NOTES.md` and fixed in 3eafebe: `intelligence-desk` MODEL OUTPUT restricted to Demon-produced, versioned output with lineage (site-local calculations are at most CALCULATION); `engineering-handoff` marks the go-live plan's odds-to-probability / de-vig / edge recipe superseded by independent, versioned Demon forecasts. Archival reference preserved; `SHA256SUMS` regenerated. King Fee may reverse either edit if the plugin doctrine is meant to differ from the repository contract.
 - UNRESOLVED — Whether the ChatGPT Runner Sports Plug (0.1.4) should also receive `runner-sports-flow-studio` via its overlay path; blocked on its backend ID.
 
 ## Requested action
@@ -78,5 +79,6 @@ None for the repository change.
 - 2026-10-22 15:51 — Home for the Runner Sports plugin source: `runner_sports_demon` (option B) — King Fee — DECIDED
 - 2026-10-22 — Seed 0.1.1 from the installed 0.1.0 content despite its failed checksums; regenerate `SHA256SUMS` and record the mismatch in PROVENANCE — Claude — applied
 - 2026-10-22 — Do not fabricate a ChatGPT/Codex manifest for this package; the ChatGPT Runner Sports Plug stays a separate account-only release until its backend ID is resolved — Claude — applied
+- 2026-10-22 — Applied two review-driven doctrine alignments to pre-existing skills (Demon model authority); reversible, documented in PROVENANCE — Claude — applied, flagged for King Fee
 - 2026-10-22 — RECOMMENDED: decide whether `runner_sports_demon` should become private given the PRIVATE classification of the plugin — King Fee — OPEN
 - 2026-10-22 — Handoff record not placed in Dropbox: hub `/Fee The Developer/ChatGPT Transfers/` does not exist in the connected Dropbox account — Claude — King Fee to place or approve creating the hub
