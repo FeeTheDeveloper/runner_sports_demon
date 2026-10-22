@@ -54,7 +54,7 @@ Label reasoning whenever the distinction is material:
 | --- | --- |
 | FACT | Directly supported by a verified source |
 | CALCULATION | Mechanically derived from supported inputs, with the inputs stated |
-| MODEL OUTPUT | Produced by verified Runner infrastructure (`runner_sports_demon` or the site's versioned model modules) with a model version |
+| MODEL OUTPUT | Produced by verified Demon infrastructure (`runner_sports_demon`) with an explicit model name and version; a record displayed through the site keeps its originating Demon model/version and forecast lineage. Site-local calculations are at most CALCULATION, never MODEL OUTPUT (`runner_sports_demon/AGENTS.md`: the site must not become a second authoritative model engine) |
 | INFERENCE | Analytical interpretation |
 | OPINION / STRATEGIC JUDGMENT | Non-factual recommendation or framing |
 | UNKNOWN | Unsupported or unverifiable |

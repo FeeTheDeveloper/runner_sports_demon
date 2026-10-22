@@ -23,11 +23,11 @@
 
 | This plugin | Source | Change |
 | --- | --- | --- |
-| `intelligence-desk` | `instructions` | Rewritten as a Claude-native governing skill with explicit trigger phrases and operating-term routing. LOCK and go-live references carried verbatim. |
+| `intelligence-desk` | `instructions` | Rewritten as a Claude-native governing skill with explicit trigger phrases and operating-term routing. LOCK and go-live references carried verbatim. 0.1.1: MODEL OUTPUT restricted to Demon-produced, versioned output with lineage; site-local calculations are never MODEL OUTPUT (aligns with `runner_sports_demon/AGENTS.md` and `RUNNER_SYNC_AUDIT.md`). |
 | `slate-research` | `runner-market-research` | Export-adapter header removed; companion paths updated; MLB added to the coverage matrix (site and go-live plan both cover it). |
 | `live-desk` | new | Built from LOCK §11 (Game Flow Intelligence), §12 (LIVE DESK / QUICK FLIP / RUNNER RECEIPT), and the owner's totals, game-flow, and alerts priorities. |
 | `media-research` | `runner-youtube-research` | Export-adapter header removed; companion paths updated. |
-| `engineering-handoff` | new | Built from LOCK §4, §16, §17, §18, §19, the go-live plan, and the owner's engineering operating instructions. |
+| `engineering-handoff` | new | Built from LOCK §4, §16, §17, §18, §19, the go-live plan, and the owner's engineering operating instructions. 0.1.1: the go-live plan's odds-to-probability / de-vig / edge recipe marked superseded by independent, versioned Demon forecasts (`MODEL_NOTES.md`). |
 | `campaign-director` | `flow-campaign-director` | Scoped to Runner Sports & Analytics only; other-company brand profiles removed for entity separation; LOCK §15 creative system merged into the Runner brand reference. Veo, Flow Music, and dashboard references carried over. 0.1.1: one additive companion-pointer paragraph to `runner-sports-flow-studio`. |
 | `runner-sports-flow-studio` | FTD Google Flow / Flow Music portfolio handoff, 2026-10-22 (`runner-sports-flow-skill-handoff.zip`, SKILL.md sha256 `d2e82a45baef808eca4ec3b33d9af7072383b58125987953184454231658a2b5`) | Merged with verified repository identities (both Runner repositories public; no proprietary output or unreleased media committed), explicit `intelligence-desk` load and relative reference paths into `campaign-director`, kit precedence and status mapping, approval and no-tout wording, official Google Flow model and credit pages, and a dated docs-only verification note. Passed a fresh-context invocation test (C1–C8) before merge. |
 

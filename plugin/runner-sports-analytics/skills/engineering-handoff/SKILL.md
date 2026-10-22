@@ -9,7 +9,7 @@ metadata:
 
 # Engineering Handoff
 
-Load `../intelligence-desk/SKILL.md` first and apply its repository lock, entity firewall, security lock, and evidence standards. Read `../intelligence-desk/references/RSA_Go_Live_Plan.md` when the task touches the presentation site's data layer, cron, Supabase schema, or deployment; treat it as a dated plan, not current state.
+Load `../intelligence-desk/SKILL.md` first and apply its repository lock, entity firewall, security lock, and evidence standards. Read `../intelligence-desk/references/RSA_Go_Live_Plan.md` when the task touches the presentation site's data layer, cron, Supabase schema, or deployment; treat it as a dated plan, not current state. Its model and edge recipe (odds to implied probability, de-vig, edge presented as a "Runner model") is superseded: market-implied probability is never an independent Runner forecast (`runner_sports_demon/MODEL_NOTES.md`, immutable baseline seam). Probability and edge come only from independent, versioned Demon forecasts, and are reported unavailable when no eligible forecast exists.
 
 Engineering authority: Fee The Developer LLC under King Fee. Runner owns the intelligence and editorial conclusions the code serves. Hutchrok governance records are not repositories.
 
