@@ -1,0 +1,40 @@
+---
+name: runner-sports-flow-studio
+description: "Use for Runner Sports Plug / Runner Sports & Analytics Google Flow, Veo, Flow Music, video ads, music beds, campaign storytelling and corresponding repository integration handoffs."
+---
+
+# Runner Sports Plug / Runner Sports & Analytics Flow Studio
+
+## Entity-specific scope
+Make original NBA/NFL/NCAAF/NCAAB/NHL/MLB analysis explainers, preview videos, data-dashboard visualizations, player matchup breakdowns, research tutorials and matchday sports promos.
+
+Sports claims must be source-verified and timestamped. Distinguish historical data from future probabilities, predictions from facts, and analysis from picks. Do not invent live odds, outcomes, player statistics or sports footage rights; avoid misleading guaranteed-win language. Runner is a research, analytics and decision-support platform: never present a campaign as a wager, tout, or guaranteed outcome, and never use league, team or sportsbook marks without clearance.
+
+**Repos/destinations (verified against the FeeTheDeveloper account repository listing on 2026-10-22):** `FeeTheDeveloper/runner_sports_demon` (public; analytics engine; default branch `main`) and `FeeTheDeveloper/runner_sports-site` (public; presentation site at werunsportsandanalytics.com; default branch `main`). Both repositories are public: no private Runner model output, proprietary signal logic, account identifiers or unreleased media may be committed to either as campaign assets. Confirm the actual name and default branch again before making changes; maintain private vs public file separation.
+
+## Relationship to `campaign-director` / `flow-campaign-director`
+Load `../intelligence-desk/SKILL.md` first; it loads the behavioral lock RUNNER-GPT-LOCK-20260925-V1, which governs every claim made in a campaign.
+
+This skill is the Runner Sports-scoped production and QA contract. The plugin's existing Flow skill (`campaign-director` in the Claude `runner-sports-analytics` package; `flow-campaign-director` in the ChatGPT Runner Sports Plug) remains the prompt-craft and dashboard reference (Veo prompting, Flow Music prompting, dashboard click-paths, the Runner brand profile and component library, the no-tout / no-marks guardrails). Its references live beside that skill, not this one: `../campaign-director/references/` in the Claude package, `../flow-campaign-director/references/` in the ChatGPT package. Load `veo-prompting.md`, `flow-music-prompting.md`, `flow-dashboard.md` and `runner-brand.md` from there when writing prompts or click-paths; apply this skill's scope, approval, music and handoff rules on top. Do not copy their content here; the field lists below are this skill's contract, not a replacement for them.
+
+Precedence: the campaign kit uses the sibling's twelve-section kit structure; this skill's deliverable contract (below) is the checklist every kit must satisfy, and the items that structure lacks (specific company account, repo destination, required evidence, return status) are appended as a closing section. Mode and status mapping: the sibling's `Mode: Prepare | Drive` is the same PREPARE / generate split used here (Drive is the generating mode, browser only); the kit header's `DRAFT | READY` describes the kit document; the return status in this skill (`PLANNED / GENERATED / REVIEWED / APPROVED / PUBLISHED`) describes the campaign. A READY kit with nothing generated is PLANNED.
+
+## Google Flow video production skill
+
+**Mode:** PREPARE by default. Generate only if a real signed-in Google Flow browser surface is available and the user authorizes the generation and its credit budget. Inspect actual account, project, model, cost and the visible generation controls. Never claim a rendering/export/publish without evidence.
+
+**Brief to storyboard:** identify one entity, campaign objective, audience, platform, length, target aspect ratio, approved CTA, licensed assets, publishing timeline and budget. Read only brand-specific sources (the Runner brand profile and approved Runner assets). Write a 6–12-shot cut list or shorter sequence matching platform length. For each shot give subject, action, background, camera lens/motion, lighting, duration, continuity ingredient, still composition-lock prompt, full video prompt, audio treatment and retry prompt. Use original (owned or licensed) assets and preserve logo placements for post.
+
+**Flow controls:** Verify current text-to-video, frames/ingredients to video, video editing, extension, Scenebuilder, orientation and output model options at execution. Different models may support different settings; do not make assumptions. Inspect output and reuse approved image ingredients. Prepare versions for 9:16 reels and 16:9 widescreen, noting crops/reframes.
+
+**Flow Music:** Prepare the music brief in any mode; generate original Lyria/Google Flow Music soundbeds, jingles or background music only through the supported UI. If the music surface is unavailable in the signed-in account (it may sit on a different surface or plan than the Flow web dashboard), prepare a portable Lyria brief and mark rendering pending. Music brief states target BPM, meter, style words, instrumentation, bass/drums, harmony, original melodic character, structure by timestamps, vocal policy, mix dynamics and intended edit points. Separate optional music-video workflow, including authorized audio-reference upload, from original music composition. Access/credits/features/usage terms must be verified live. Preserve music cue metadata and allowed usage.
+
+**QA and approval:** verify brand identity, claims, rights to every reference and human/voice depiction, subtitles, continuity, technical playback, loudness, aspect ratio, account isolation and platform disclosures. Do not spend credits without approved limits, publish, upload unreleased media or share confidential assets without approval. Original soundtrack does not guarantee clearance from current platform terms. Every statistic, line or probability shown on screen carries its source and retrieval time, or is removed.
+
+**Engineering handoff:** When ChatGPT (Runner Sports Plug) is the active surface it provides the brief, prompt package and verification checklist; whichever assistant holds this skill authors the kit when it is the active surface. Gemini/Flow handles production; Claude/Claude Code builds repo integrations and deployment changes through PRs; GitHub remains code source of truth; use Dropbox as approved artifact handoff. Preserve per-entity accounts, repos and data. Return status: PLANNED / GENERATED / REVIEWED / APPROVED / PUBLISHED with evidence.
+
+**Deliverable contract:** Objective; current condition; specific company account; source and approved assets; cut plan; per-shot exact prompts; music prompt and cue sheet; credit/rights controls; export/caption targets; repo destination (may be "none / Dropbox only" for a pure-media campaign with no site or code change); QA acceptance criteria; required evidence; decisions needed.
+
+**Official docs:** https://labs.google/fx/tools/flow ; https://support.google.com/flow/answer/16353334 (create videos) ; https://support.google.com/flow/answer/16935718 (edit videos and build scenes) ; https://support.google.com/flow/answer/16352836 (models and supported features) ; https://support.google.com/flow/answer/16526234 (credits) ; https://support.google.com/flow/answer/17083868 (Flow Music) ; https://support.google.com/flow/answer/17084421 (Flow Music videos)
+
+**Verification note (2026-10-22, docs only, not a live UI read):** the official model and credit pages state that features and credit costs vary by model and change over time (for example, the Quality tier does not support ingredients or extend; cost tables say to check the prompt box settings for current costs), and none of the official Flow or Flow Music help pages state ownership, commercial-use or watermark terms. Treat every model, cost and rights fact as an execution-time check against the signed-in account, Google's terms and the plan-benefit pages.

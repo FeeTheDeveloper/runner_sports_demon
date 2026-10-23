@@ -1,0 +1,20 @@
+{
+  "name": "runner-sports-analytics",
+  "version": "0.1.1",
+  "description": "Runner Sports & Analytics intelligence desk for Claude: verified slate research, Live Desk game-flow reasoning, media claim tracking, model-vs-market price discipline, engineering handoffs for the Runner repositories, and Runner-scoped campaign direction. Research and analysis only; no wagering execution.",
+  "author": {
+    "name": "Runner Sports & Analytics LLC"
+  },
+  "homepage": "https://werunsportsandanalytics.com",
+  "license": "Proprietary",
+  "keywords": [
+    "runner-sports",
+    "sports-intelligence",
+    "market-research",
+    "live-desk",
+    "game-flow",
+    "company-workflows",
+    "claude"
+  ],
+  "skills": "./skills/"
+}
